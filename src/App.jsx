@@ -5,16 +5,16 @@ import {
   LayoutGrid, Award, Terminal, 
   Cpu, Database, Code, LogOut, BarChart2,
   Loader2, User, CheckSquare, Square,
-  ShieldAlert, Eye, Lock, History, Brain, Globe, Sigma, Network, MessageSquare, Mail, UserPlus, LogIn
+  ShieldAlert, Eye, Lock, History, Brain, Globe, Sigma, Network, MessageSquare, Mail, UserPlus, LogIn, ArrowLeft
 } from 'lucide-react';
 
 /**
- * 🚀 ENTERPRISE EXAM PLATFORM v9.7 - "Randomization Engine"
+ * 🚀 ENTERPRISE EXAM PLATFORM v9.8 - "History & Review Edition"
  * Features:
+ * - Exam History View: Track past performance
+ * - Detailed Answer Review: See right/wrong answers after submission
  * - Fisher-Yates Shuffle for Questions AND Options
  * - Secure Login (Email/Password)
- * - User Registration Flow
- * - Master Admin Access (Hidden)
  * - Full 300+ Question Database Active
  * - Glassmorphism UI
  */
@@ -23,342 +23,340 @@ import {
 // 1. DATA LAYER (FULL DATABASE)
 // ==========================================
 
+const // --- COMBINED QUESTIONS DATABASE ---
+// Merged content from Volume 1 (db1.txt) and Extended DB (db2.txt).
+// PLUS NEW GENERATED CONTENT based on uploaded syllabus files.
+// Contains unique questions covering Python, C++, DS, ML, DL, NLP, and Math.
+
 const QUESTIONS_DB = {
+  
+  // ==================================================================================
+  // 1. PYTHON (Fundamentals to Advanced Automation)
+  // ==================================================================================
   python: [
-    // --- FUNDAMENTALS (8 Questions) ---
-    { id: 101, topic: "Fundamentals", type: "mcq", marks: 3, question: "What is the output of print(type([]) is list)?", options: ["True", "False", "Error", "None"], correct: 0, hint: "Checks type.", explanation: "[] creates a list." },
-    { id: 102, topic: "Fundamentals", type: "mcq", marks: 4, question: "Which operator performs floor division?", options: ["/", "//", "%", "**"], correct: 1, hint: "Double slash.", explanation: "// truncates decimal." },
-    { id: 103, topic: "Fundamentals", type: "mcq", marks: 3, question: "What is the result of 2 ** 3?", options: ["6", "8", "9", "5"], correct: 1, hint: "Power.", explanation: "2 to the power of 3." },
-    { id: 104, topic: "Fundamentals", type: "mcq", marks: 3, question: "Which is not a core datatype?", options: ["List", "Tuple", "Class", "Dictionary"], correct: 2, hint: "User defined.", explanation: "Class is a blueprint." },
-    { id: 105, topic: "Fundamentals", type: "mcq", marks: 4, question: "Output of bool('False')?", options: ["True", "False", "Error", "None"], correct: 0, hint: "Non-empty string.", explanation: "Non-empty strings are Truthy." },
-    { id: 106, topic: "Fundamentals", type: "mcq", marks: 3, question: "Function to get memory address?", options: ["id()", "type()", "get()", "mem()"], correct: 0, hint: "Identity.", explanation: "id() returns the object's identity." },
-    { id: 107, topic: "Fundamentals", type: "mcq", marks: 3, question: "Correct way to create a single item tuple?", options: ["(1)", "(1,)", "[1]", "1,"], correct: 1, hint: "Comma.", explanation: "A comma is required: (1,)." },
-    { id: 108, topic: "Fundamentals", type: "mcq", marks: 4, question: "Which key word deletes a reference?", options: ["remove", "del", "erase", "clear"], correct: 1, hint: "Delete.", explanation: "del keyword removes references." },
+    // --- FROM VOLUME 1 (IDs 1000+) ---
+    { id: 1001, topic: "Fundamentals", type: "mcq", marks: 3, question: "What does print(type([]) is list) output?", options: ["True", "False", "Error", "None"], correct: 0, hint: "Check type.", explanation: "[] creates a list, so type([]) is list." },
+    { id: 1002, topic: "Operators", type: "mcq", marks: 3, question: "Result of 3 // 2?", options: ["1.5", "1", "2", "3"], correct: 1, hint: "Floor.", explanation: "// is floor division." },
+    { id: 1003, topic: "Operators", type: "mcq", marks: 3, question: "Result of 2 ** 3?", options: ["6", "8", "9", "5"], correct: 1, hint: "Power.", explanation: "2 to the power of 3 is 8." },
+    { id: 1004, topic: "Datatypes", type: "mcq", marks: 3, question: "Which is immutable?", options: ["List", "Dictionary", "Set", "Tuple"], correct: 3, hint: "Parentheses.", explanation: "Tuples cannot be changed once created." },
+    { id: 1005, topic: "Booleans", type: "mcq", marks: 3, question: "bool('False') evaluates to?", options: ["True", "False", "Error", "None"], correct: 0, hint: "Non-empty string.", explanation: "Any non-empty string is Truthy." },
+    { id: 1006, topic: "Memory", type: "mcq", marks: 4, question: "Function to get object memory address?", options: ["id()", "addr()", "mem()", "loc()"], correct: 0, hint: "Identity.", explanation: "id() returns the unique identifier." },
+    { id: 1007, topic: "Strings", type: "mcq", marks: 4, question: "f-string syntax for variable x?", options: ["f'{x}'", "f(x)", "'{x}'", "%x"], correct: 0, hint: "Curly braces.", explanation: "Prefixed with f, variables inside {}." },
+    { id: 1020, topic: "List", type: "mcq", marks: 4, question: "Add element to end of list?", options: ["push()", "add()", "append()", "insert()"], correct: 2, hint: "Append.", explanation: "list.append(x)." },
+    { id: 1021, topic: "List", type: "mcq", marks: 4, question: "Remove item by index?", options: ["pop()", "remove()", "del()", "discard()"], correct: 0, hint: "Pop.", explanation: "pop(index) removes at index." },
+    { id: 1022, topic: "Set", type: "mcq", marks: 4, question: "Set intersection operator?", options: ["&", "|", "^", "-"], correct: 0, hint: "And.", explanation: "& operator or intersection()." },
+    { id: 1023, topic: "Dictionary", type: "mcq", marks: 4, question: "Get value with default fallback?", options: ["d.get(k, default)", "d[k]", "d.fetch(k)", "d.val(k)"], correct: 0, hint: "Get.", explanation: "get() prevents KeyError." },
+    { id: 1024, topic: "Loops", type: "mcq", marks: 3, question: "Skip current iteration?", options: ["continue", "break", "pass", "skip"], correct: 0, hint: "Next.", explanation: "continue jumps to next loop cycle." },
+    { id: 1025, topic: "Comprehension", type: "mcq", marks: 5, question: "List comp for squares of evens?", options: ["[x**2 for x in L if x%2==0]", "[x^2 where x%2==0]", "L.square().even()", "None"], correct: 0, hint: "Standard syntax.", explanation: "[expr for var in iter if cond]." },
+    { id: 1040, topic: "Functions", type: "mcq", marks: 4, question: "Arbitrary keyword arguments?", options: ["*args", "**kwargs", "args[]", "kw[]"], correct: 1, hint: "Double star.", explanation: "**kwargs collects named args." },
+    { id: 1041, topic: "Lambda", type: "mcq", marks: 4, question: "Anonymous function keyword?", options: ["lambda", "def", "anon", "func"], correct: 0, hint: "Lambda.", explanation: "Creates small anonymous functions." },
+    { id: 1042, topic: "Scope", type: "mcq", marks: 4, question: "Modify global variable inside func?", options: ["global x", "extern x", "var x", "nonlocal x"], correct: 0, hint: "Global.", explanation: "Declares variable as global scope." },
+    { id: 1043, topic: "Modules", type: "mcq", marks: 3, question: "Import module as alias?", options: ["import math as m", "import m from math", "alias math m", "using math"], correct: 0, hint: "As.", explanation: "import ... as ..." },
+    { id: 1044, topic: "Scripting", type: "mcq", marks: 4, question: "Main execution check?", options: ["if __name__ == '__main__':", "if main():", "void main()", "start()"], correct: 0, hint: "Dunder name.", explanation: "Standard entry point guard." },
+    { id: 1060, topic: "OOP", type: "mcq", marks: 4, question: "Constructor method?", options: ["__init__", "__new__", "constructor", "main"], correct: 0, hint: "Init.", explanation: "Initializes the object." },
+    { id: 1061, topic: "OOP", type: "mcq", marks: 4, question: "Reference to current instance?", options: ["self", "this", "me", "obj"], correct: 0, hint: "Self.", explanation: "First parameter of instance methods." },
+    { id: 1062, topic: "Inheritance", type: "mcq", marks: 4, question: "Check if class is subclass?", options: ["issubclass()", "isinstance()", "check()", "type()"], correct: 0, hint: "Sub.", explanation: "issubclass(Child, Parent)." },
+    { id: 1063, topic: "Exceptions", type: "mcq", marks: 4, question: "Block always executed?", options: ["finally", "else", "except", "catch"], correct: 0, hint: "Final.", explanation: "Runs regardless of errors." },
+    { id: 1064, topic: "Exceptions", type: "mcq", marks: 4, question: "Manually trigger error?", options: ["raise", "throw", "trigger", "error"], correct: 0, hint: "Raise.", explanation: "raise ValueError()." },
+    { id: 1080, topic: "Web Scraping", type: "mcq", marks: 4, question: "BS4: Find first tag?", options: ["find()", "find_all()", "search()", "first()"], correct: 0, hint: "Single.", explanation: "Returns first match." },
+    { id: 1081, topic: "Selenium", type: "mcq", marks: 5, question: "Locate by CSS Selector?", options: ["By.CSS_SELECTOR", "By.CSS", "By.STYLE", "By.QUERY"], correct: 0, hint: "Selector.", explanation: "driver.find_element(By.CSS_SELECTOR, ...)" },
+    { id: 1082, topic: "Requests", type: "mcq", marks: 3, question: "HTTP Get?", options: ["requests.get()", "http.get()", "fetch()", "get()"], correct: 0, hint: "Library name.", explanation: "requests.get(url)." },
+    { id: 1083, topic: "File I/O", type: "mcq", marks: 4, question: "Safe file opening?", options: ["with open(...) as f", "open(...)", "file.open()", "f = open"], correct: 0, hint: "Context manager.", explanation: "Ensures file closing." },
 
-    // --- COLLECTIONS (8 Questions) ---
-    { id: 109, topic: "Collections", type: "mcq", marks: 3, question: "Which is immutable?", options: ["List", "Set", "Dictionary", "Tuple"], correct: 3, hint: "Parentheses.", explanation: "Tuples are immutable." },
-    { id: 110, topic: "Collections", type: "mcq", marks: 5, question: "Select correct dictionary syntax.", options: ["d = {'a': 1}", "d = ('a', 1)", "d = ['a': 1]", "d = {a = 1}"], correct: 0, hint: "Curly braces.", explanation: "Dictionaries use {}." },
-    { id: 111, topic: "Collections", type: "mcq", marks: 4, question: "Add element to end of list?", options: ["push()", "add()", "append()", "insert()"], correct: 2, hint: "Append.", explanation: "list.append()." },
-    { id: 112, topic: "Collections", type: "mcq", marks: 4, question: "Symmetric difference operator?", options: ["&", "|", "^", "-"], correct: 2, hint: "XOR.", explanation: "^ operator." },
-    { id: 113, topic: "Collections", type: "mcq", marks: 5, question: "Slice last 3 elements?", options: ["L[-3:]", "L[:-3]", "L[3:]", "L[-3]"], correct: 0, hint: "Negative slicing.", explanation: "L[-3:]." },
-    { id: 114, topic: "Collections", type: "mcq", marks: 4, question: "Remove item from set?", options: ["remove()", "del()", "delete()", "pop(index)"], correct: 0, hint: "Remove.", explanation: "set.remove()." },
-    { id: 115, topic: "Collections", type: "mcq", marks: 4, question: "Merge two dictionaries d1 and d2?", options: ["d1.update(d2)", "d1.add(d2)", "d1 + d2", "d1.append(d2)"], correct: 0, hint: "Update.", explanation: "d1.update(d2)." },
-    { id: 116, topic: "Collections", type: "mcq", marks: 3, question: "Sort a list in place?", options: ["sorted(L)", "L.sort()", "L.order()", "sort(L)"], correct: 1, hint: "Method.", explanation: "L.sort() modifies the list." },
+    // --- FROM EXTENDED DB (IDs 1400+) ---
+    { id: 1400, topic: "Web Scraping", type: "mcq", marks: 4, question: "BS4: Find all tags?", options: ["find_all()", "get_all()", "search()", "query()"], correct: 0, hint: "Find list.", explanation: "Returns a ResultSet of elements." },
+    { id: 1401, topic: "Selenium", type: "mcq", marks: 5, question: "WebDriverWait is used for?", options: ["Explicit Waits", "Implicit Waits", "Pausing", "Clicking"], correct: 0, hint: "Specific condition.", explanation: "Waits for a certain condition to be true." },
+    { id: 1402, topic: "Selenium", type: "mcq", marks: 4, question: "Locate element by ID?", options: ["By.ID", "By.TAG", "By.NAME", "By.CLASS"], correct: 0, hint: "Unique.", explanation: "driver.find_element(By.ID, 'id')." },
+    { id: 1403, topic: "Requests", type: "mcq", marks: 3, question: "Check response success?", options: ["status_code == 200", "status == OK", "code == 1", "success()"], correct: 0, hint: "HTTP 200.", explanation: "Standard success code." },
+    { id: 1404, topic: "File IO", type: "mcq", marks: 4, question: "Context Manager keyword?", options: ["with", "using", "open", "context"], correct: 0, hint: "Auto close.", explanation: "Ensures file is closed." },
+    { id: 1405, topic: "Decorators", type: "mcq", marks: 5, question: "Decorator syntax?", options: ["@func", "#func", "$func", "&func"], correct: 0, hint: "At.", explanation: "Syntactic sugar for func = decorator(func)." },
+    { id: 1406, topic: "Generators", type: "mcq", marks: 4, question: "Generator uses which keyword?", options: ["yield", "return", "break", "continue"], correct: 0, hint: "Produce.", explanation: "Yields value and pauses state." },
+    { id: 1407, topic: "OOP", type: "mcq", marks: 5, question: "MRO stands for?", options: ["Method Resolution Order", "Method Return Object", "Main Runtime Object", "None"], correct: 0, hint: "Hierarchy.", explanation: "Order in which classes are searched for methods." },
+    { id: 1408, topic: "Modules", type: "mcq", marks: 3, question: "Entry point check?", options: ["if __name__ == '__main__':", "if main():", "start()", "init()"], correct: 0, hint: "Script execution.", explanation: "Prevents code from running on import." },
 
-    // --- CONTROL FLOW (8 Questions) ---
-    { id: 117, topic: "Control Flow", type: "mcq", marks: 5, question: "List comprehension for even squares?", options: ["[x**2 for x in range(10) if x%2==0]", "[x^2 for x in range(10) where x%2==0]", "(x**2 for x in range(10) if x%2==0)", "[x*2 for x in range(10)]"], correct: 0, hint: "Standard syntax.", explanation: "Correct comprehension." },
-    { id: 118, topic: "Control Flow", type: "mcq", marks: 3, question: "What does 'break' do?", options: ["Skip iteration", "Exit loop", "Restart", "Exit program"], correct: 1, hint: "Stop loop.", explanation: "Terminates loop." },
-    { id: 119, topic: "Control Flow", type: "mcq", marks: 3, question: "Short hand if-else?", options: ["Ternary Operator", "Binary Switch", "Lambda", "Short Circuit"], correct: 0, hint: "Three parts.", explanation: "Ternary." },
-    { id: 120, topic: "Control Flow", type: "mcq", marks: 3, question: "Skip current iteration?", options: ["continue", "break", "pass", "skip"], correct: 0, hint: "Continue.", explanation: "continue statement." },
-    { id: 121, topic: "Control Flow", type: "mcq", marks: 4, question: "Output of range(3)?", options: ["0, 1, 2", "1, 2, 3", "0, 1, 2, 3", "1, 2"], correct: 0, hint: "Starts at 0.", explanation: "0, 1, 2." },
-    { id: 122, topic: "Control Flow", type: "mcq", marks: 4, question: "Else block in loop executes when?", options: ["Loop finishes naturally", "Always", "Loop breaks", "Never"], correct: 0, hint: "No break.", explanation: "When loop is not interrupted by break." },
-    { id: 123, topic: "Control Flow", type: "mcq", marks: 3, question: "Placeholder statement?", options: ["pass", "null", "none", "skip"], correct: 0, hint: "Pass.", explanation: "pass does nothing." },
-    { id: 124, topic: "Control Flow", type: "mcq", marks: 4, question: "Iterate with index?", options: ["enumerate()", "range()", "zip()", "index()"], correct: 0, hint: "Enumerate.", explanation: "enumerate() yields index and value." },
-
-    // --- FUNCTIONS (8 Questions) ---
-    { id: 125, topic: "Functions", type: "mcq", marks: 3, question: "Return multiple values?", options: ["return a, b", "return [a, b]", "return {a, b}", "return a + b"], correct: 0, hint: "Tuple.", explanation: "Returns a tuple." },
-    { id: 126, topic: "Functions", type: "mcq", marks: 4, question: "Arbitrary keyword args?", options: ["*args", "**kwargs", "args[]", "kw[]"], correct: 1, hint: "Double star.", explanation: "**kwargs." },
-    { id: 127, topic: "Functions", type: "mcq", marks: 5, question: "Lambda to square?", options: ["lambda x: x**2", "lambda x -> x^2", "def x: x**2", "x => x**2"], correct: 0, hint: "lambda.", explanation: "lambda x: x**2." },
-    { id: 128, topic: "Functions", type: "mcq", marks: 4, question: "Global variable keyword?", options: ["global", "nonlocal", "static", "extern"], correct: 0, hint: "Global.", explanation: "global." },
-    { id: 129, topic: "Functions", type: "mcq", marks: 3, question: "Define a function?", options: ["def func():", "function func():", "func():", "define func():"], correct: 0, hint: "Def.", explanation: "def keyword." },
-    { id: 130, topic: "Functions", type: "mcq", marks: 4, question: "Documentation string?", options: ["__doc__", "__init__", "__str__", "__help__"], correct: 0, hint: "Doc.", explanation: "__doc__ holds the docstring." },
-    { id: 131, topic: "Functions", type: "mcq", marks: 5, question: "Map function purpose?", options: ["Apply func to all items", "Filter items", "Reduce items", "Sort items"], correct: 0, hint: "Mapping.", explanation: "Applies function to iterable." },
-    { id: 132, topic: "Functions", type: "mcq", marks: 5, question: "Function calling itself?", options: ["Recursion", "Looping", "Nesting", "Callback"], correct: 0, hint: "Recurse.", explanation: "Recursion." },
-
-    // --- OOP (8 Questions) ---
-    { id: 133, topic: "OOP", type: "mcq", marks: 4, question: "Constructor name?", options: ["__init__", "__const__", "__new__", "init"], correct: 0, hint: "Dunder init.", explanation: "__init__." },
-    { id: 134, topic: "OOP", type: "mcq", marks: 5, question: "What is super()?", options: ["Access parent methods", "Create new object", "Delete parent", "Init var"], correct: 0, hint: "Parent.", explanation: "Access parent." },
-    { id: 135, topic: "OOP", type: "mcq", marks: 4, question: "Inheritance syntax?", options: ["class Child(Parent):", "class Child extends Parent:", "class Child inherits Parent:", "def Child(Parent):"], correct: 0, hint: "Parens.", explanation: "class Child(Parent):" },
-    { id: 136, topic: "OOP", type: "mcq", marks: 4, question: "String rep method?", options: ["__str__", "toString()", "__repr__", "string()"], correct: 0, hint: "Str.", explanation: "__str__." },
-    { id: 137, topic: "OOP", type: "mcq", marks: 4, question: "Check instance type?", options: ["isinstance()", "typeof()", "check()", "type()"], correct: 0, hint: "is instance.", explanation: "isinstance()." },
-    { id: 138, topic: "OOP", type: "mcq", marks: 4, question: "Method overriding is?", options: ["Same method, child class", "Same method, same class", "Different method", "None"], correct: 0, hint: "Child class.", explanation: "Redefining parent method in child." },
-    { id: 139, topic: "OOP", type: "mcq", marks: 5, question: "Operator overloading method for +?", options: ["__add__", "__plus__", "__sum__", "__op__"], correct: 0, hint: "Add.", explanation: "__add__." },
-    { id: 140, topic: "OOP", type: "mcq", marks: 4, question: "Class variable access?", options: ["Class.var", "Class::var", "Class->var", "var"], correct: 0, hint: "Dot.", explanation: "Class.var." },
-
-    // --- MODULES & ADVANCED (Existing) ---
-    { id: 141, topic: "Exception Handling", type: "mcq", marks: 5, question: "Catch specific error?", options: ["except ZeroDivisionError:", "catch ZeroDivisionError:", "if Error:", "try Error:"], correct: 0, hint: "except.", explanation: "except ErrorName." },
-    { id: 142, topic: "File Handling", type: "mcq", marks: 3, question: "Append mode?", options: ["'a'", "'w'", "'r'", "'x'"], correct: 0, hint: "Append.", explanation: "'a'." },
-    { id: 143, topic: "RegEx", type: "mcq", marks: 6, question: "One or more digits?", options: ["\\d+", "\\d*", "\\D+", "[0-9]"], correct: 0, hint: "Plus.", explanation: "\\d+." },
-    { id: 144, topic: "Web Scraping", type: "mcq", marks: 5, question: "Browser automation?", options: ["Selenium", "Requests", "BS4", "Scrapy"], correct: 0, hint: "Driver.", explanation: "Selenium." },
-    { id: 145, topic: "Modules", type: "mcq", marks: 3, question: "Math module?", options: ["math", "calc", "num", "sys"], correct: 0, hint: "Math.", explanation: "math." },
-    { id: 146, topic: "Exception Handling", type: "mcq", marks: 5, question: "Raise error manually?", options: ["raise ValueError()", "throw ValueError()", "error()", "trigger()"], correct: 0, hint: "Raise.", explanation: "raise." },
-    { id: 147, topic: "File Handling", type: "mcq", marks: 4, question: "Auto close file?", options: ["with open(...) as f:", "f = open(...)", "file.open()", "open().close()"], correct: 0, hint: "With.", explanation: "with statement." },
-    { id: 148, topic: "Scripting", type: "mcq", marks: 3, question: "Command line args?", options: ["sys.argv", "os.args", "cmd.list", "args"], correct: 0, hint: "sys.", explanation: "sys.argv." },
-    { id: 149, topic: "OS Module", type: "mcq", marks: 4, question: "Get CWD?", options: ["os.getcwd()", "os.pwd()", "os.dir()", "os.path()"], correct: 0, hint: "Get CWD.", explanation: "os.getcwd()." },
-    { id: 150, topic: "Exception Handling", type: "mcq", marks: 3, question: "Always executed block?", options: ["finally", "else", "except", "done"], correct: 0, hint: "Finally.", explanation: "finally." },
-
-    // --- NEW: ADVANCED MODULES & AUTOMATION (20 Questions) ---
-    { id: 151, topic: "Modules", type: "mcq", marks: 3, question: "Current date and time?", options: ["datetime.datetime.now()", "time.now()", "date.current()", "datetime.now()"], correct: 0, hint: "Nested datetime.", explanation: "datetime module has a datetime class." },
-    { id: 152, topic: "Modules", type: "mcq", marks: 3, question: "Pick random element?", options: ["random.choice(L)", "random.pick(L)", "random.select(L)", "L.random()"], correct: 0, hint: "Choice.", explanation: "random.choice()." },
-    { id: 153, topic: "Modules", type: "mcq", marks: 4, question: "Generate unique ID?", options: ["uuid.uuid4()", "random.id()", "os.id()", "sys.uid()"], correct: 0, hint: "UUID.", explanation: "uuid.uuid4() creates random UUID." },
-    { id: 154, topic: "Scripting", type: "mcq", marks: 5, question: "Execute external command?", options: ["subprocess.run()", "os.execute()", "sys.run()", "cmd.exec()"], correct: 0, hint: "Subprocess.", explanation: "subprocess.run() is recommended." },
-    { id: 155, topic: "Database", type: "mcq", marks: 5, question: "Connect to MySQL?", options: ["mysql.connector.connect()", "db.connect()", "sql.open()", "mysql.open()"], correct: 0, hint: "Connector.", explanation: "mysql.connector.connect()." },
-    { id: 156, topic: "Database", type: "mcq", marks: 4, question: "Execute SQL query in Python?", options: ["cursor.execute()", "db.run()", "query.run()", "sql.exec()"], correct: 0, hint: "Cursor.", explanation: "Using a cursor object." },
-    { id: 157, topic: "Database", type: "mcq", marks: 4, question: "Fetch all results?", options: ["cursor.fetchall()", "cursor.getall()", "cursor.read()", "db.fetch()"], correct: 0, hint: "Fetch all.", explanation: "fetchall()." },
-    { id: 158, topic: "Web Scraping", type: "mcq", marks: 4, question: "Find element by ID (BS4)?", options: ["soup.find(id='x')", "soup.get_id('x')", "soup.select('#x')", "Both A and C"], correct: 3, hint: "Find or Select.", explanation: "Both find() and select() work." },
-    { id: 159, topic: "Web Automation", type: "mcq", marks: 5, question: "Selenium locate element?", options: ["driver.find_element()", "driver.locate()", "driver.get()", "driver.search()"], correct: 0, hint: "Find element.", explanation: "driver.find_element(By...)." },
-    { id: 160, topic: "Web Automation", type: "mcq", marks: 4, question: "Selenium: type text?", options: ["element.send_keys()", "element.type()", "element.text()", "element.input()"], correct: 0, hint: "Keys.", explanation: "send_keys()." },
-    { id: 161, topic: "Functions", type: "mcq", marks: 5, question: "Reduce function module?", options: ["functools", "math", "collections", "itertools"], correct: 0, hint: "Func tools.", explanation: "from functools import reduce." },
-    { id: 162, topic: "Functions", type: "mcq", marks: 4, question: "Filter function returns?", options: ["Iterator", "List", "Tuple", "None"], correct: 0, hint: "Lazy.", explanation: "Returns an iterator." },
-    { id: 163, topic: "Modules", type: "mcq", marks: 3, question: "Wait for 2 seconds?", options: ["time.sleep(2)", "os.wait(2)", "sys.pause(2)", "sleep(2)"], correct: 0, hint: "Sleep.", explanation: "time.sleep()." },
-    { id: 164, topic: "RegEx", type: "mcq", marks: 4, question: "Match start of string?", options: ["^", "$", "*", "?"], correct: 0, hint: "Carrot.", explanation: "^ matches start." },
-    { id: 165, topic: "RegEx", type: "mcq", marks: 4, question: "Match end of string?", options: ["$", "^", "#", "!"], correct: 0, hint: "Dollar.", explanation: "$ matches end." },
-    { id: 166, topic: "OS Module", type: "mcq", marks: 4, question: "List files in dir?", options: ["os.listdir()", "os.show()", "os.files()", "os.dir()"], correct: 0, hint: "List dir.", explanation: "os.listdir()." },
-    { id: 167, topic: "Modules", type: "mcq", marks: 3, question: "Check main execution?", options: ["if __name__ == '__main__':", "if main():", "if __init__:", "run main"], correct: 0, hint: "Dunder name.", explanation: "Standard entry point check." },
-    { id: 168, topic: "Modules", type: "mcq", marks: 4, question: "Package requirement?", options: ["__init__.py", "__main__.py", "package.py", "setup.py"], correct: 0, hint: "Init.", explanation: "__init__.py makes a folder a package." },
-    { id: 169, topic: "Web Scraping", type: "mcq", marks: 3, question: "HTTP Get request?", options: ["requests.get()", "http.get()", "urllib.get()", "fetch()"], correct: 0, hint: "Requests lib.", explanation: "requests.get()." },
-    { id: 170, topic: "Web Scraping", type: "mcq", marks: 3, question: "Check status code?", options: ["resp.status_code", "resp.code", "resp.status", "resp.check"], correct: 0, hint: "Status code.", explanation: "status_code attribute." },
-    { id: 171, topic: "Fundamentals", type: "mcq", marks: 4, question: "f-string syntax?", options: ["f'Val: {x}'", "'Val: {x}'", "f('Val: ', x)", "str(x)"], correct: 0, hint: "Prefix f.", explanation: "f-strings introduced in 3.6." },
-    { id: 172, topic: "OOP", type: "mcq", marks: 4, question: "Delete object property?", options: ["del obj.prop", "delete obj.prop", "obj.prop.remove()", "remove(obj.prop)"], correct: 0, hint: "Del.", explanation: "del keyword." },
-    { id: 173, topic: "Collections", type: "mcq", marks: 4, question: "Set intersection?", options: ["&", "|", "^", "+"], correct: 0, hint: "Ampersand.", explanation: "& operator." },
-    { id: 174, topic: "Control Flow", type: "mcq", marks: 4, question: "Zip two lists?", options: ["zip(a, b)", "combine(a, b)", "merge(a, b)", "map(a, b)"], correct: 0, hint: "Zip.", explanation: "zip() returns iterator of tuples." },
-    { id: 175, topic: "Exception Handling", type: "mcq", marks: 4, question: "Ensure cleanup?", options: ["finally", "catch", "except", "else"], correct: 0, hint: "Finally.", explanation: "finally block runs regardless of errors." }
+    // --- NEWLY GENERATED (Based on Topics of Python.txt) ---
+    { id: 1100, topic: "RegEx", type: "mcq", marks: 4, question: "Module used for Regular Expressions?", options: ["regex", "re", "pyre", "reg"], correct: 1, hint: "Standard lib.", explanation: "The 're' module provides RegEx support." },
+    { id: 1101, topic: "RegEx", type: "mcq", marks: 4, question: "Function to match pattern at start of string?", options: ["re.match()", "re.search()", "re.findall()", "re.split()"], correct: 0, hint: "Beginning only.", explanation: "re.match() checks for a match only at the beginning of the string." },
+    { id: 1102, topic: "OS Module", type: "mcq", marks: 4, question: "List files in directory?", options: ["os.list()", "os.listdir()", "os.files()", "os.get()"], correct: 1, hint: "List Dir.", explanation: "os.listdir() returns a list of entries in the directory." },
+    { id: 1103, topic: "Sys Module", type: "mcq", marks: 4, question: "Access command line arguments?", options: ["sys.args", "sys.argv", "sys.cla", "sys.input"], correct: 1, hint: "Arg Vector.", explanation: "sys.argv is the list of command line arguments." },
+    { id: 1104, topic: "File Handling", type: "mcq", marks: 3, question: "Mode to read binary file?", options: ["'rb'", "'r'", "'wb'", "'rw'"], correct: 0, hint: "Read Binary.", explanation: "'rb' opens a file for reading in binary format." },
+    { id: 1105, topic: "OOP", type: "mcq", marks: 5, question: "Dunder method for string representation?", options: ["__str__", "__init__", "__repr__", "__string__"], correct: 0, hint: "User friendly.", explanation: "__str__ returns the informal string representation of an object." },
+    { id: 1106, topic: "JSON", type: "mcq", marks: 4, question: "Convert Python dict to JSON string?", options: ["json.dump()", "json.dumps()", "json.load()", "json.parse()"], correct: 1, hint: "Dump String.", explanation: "json.dumps() serializes obj to a JSON formatted str." }
   ],
 
+  // ==================================================================================
+  // 2. C++ PROGRAMMING
+  // ==================================================================================
   cpp: [
-    // --- BASICS (5 Questions) ---
-    { id: 201, topic: "Basics", type: "mcq", marks: 3, question: "Standard output object?", options: ["cout", "print", "System.out", "cin"], correct: 0, hint: "c-out.", explanation: "cout." },
-    { id: 202, topic: "Basics", type: "mcq", marks: 3, question: "Invalid loop?", options: ["repeat-until", "for", "while", "do-while"], correct: 0, hint: "Pascal.", explanation: "repeat-until." },
-    { id: 203, topic: "Basics", type: "mcq", marks: 3, question: "Standard namespace?", options: ["std", "standard", "stl", "cpp"], correct: 0, hint: "std.", explanation: "std." },
-    { id: 204, topic: "Basics", type: "mcq", marks: 4, question: "Reference variable syntax?", options: ["int &ref = x;", "int ref = &x;", "int *ref = x;", "ref int = x;"], correct: 0, hint: "&.", explanation: "int &ref = x;" },
-    { id: 205, topic: "Basics", type: "mcq", marks: 3, question: "Entry point?", options: ["main", "start", "run", "init"], correct: 0, hint: "main.", explanation: "main()." },
+    // --- FROM VOLUME 1 (IDs 2000+) ---
+    { id: 2001, topic: "Basics", type: "mcq", marks: 3, question: "Standard Output Stream?", options: ["cout", "cin", "cerr", "print"], correct: 0, hint: "Console Out.", explanation: "std::cout." },
+    { id: 2002, topic: "Basics", type: "mcq", marks: 3, question: "Input Operator?", options: [">>", "<<", "::", "->"], correct: 0, hint: "Extraction.", explanation: "cin >> var." },
+    { id: 2003, topic: "OOP", type: "mcq", marks: 4, question: "Access modifier for internal use only?", options: ["private", "public", "protected", "friend"], correct: 0, hint: "Hidden.", explanation: "Not accessible from outside." },
+    { id: 2004, topic: "Encapsulation", type: "mcq", marks: 4, question: "Role of Setter?", options: ["Set private attribute value", "Print value", "Delete value", "Init class"], correct: 0, hint: "Mutator.", explanation: "Controlled modification of data." },
+    { id: 2005, topic: "Encapsulation", type: "mcq", marks: 4, question: "Static member characteristic?", options: ["Shared by all objects", "Unique to object", "Constant", "Private"], correct: 0, hint: "Shared.", explanation: "Belongs to class, not instance." },
+    { id: 2010, topic: "Inheritance", type: "mcq", marks: 5, question: "Avoid Diamond Problem?", options: ["Virtual Inheritance", "Multiple Inheritance", "Static", "Abstract"], correct: 0, hint: "Virtual.", explanation: "class B : virtual public A." },
+    { id: 2011, topic: "Inheritance", type: "mcq", marks: 4, question: "Order of Constructor call?", options: ["Base -> Derived", "Derived -> Base", "Random", "Simultaneous"], correct: 0, hint: "Parent first.", explanation: "Base class constructed first." },
+    { id: 2012, topic: "Inheritance", type: "mcq", marks: 4, question: "Scope Resolution Operator?", options: ["::", "->", ".", ":"], correct: 0, hint: "Double colon.", explanation: "Used to access global/static members." },
+    { id: 2020, topic: "Polymorphism", type: "mcq", marks: 5, question: "Virtual Function syntax?", options: ["virtual void f();", "void virtual f();", "abstract void f();", "virtual f()"], correct: 0, hint: "Prefix.", explanation: "Enables runtime polymorphism." },
+    { id: 2021, topic: "Polymorphism", type: "mcq", marks: 5, question: "Pure Virtual Function?", options: ["= 0", "= null", "abstract", "empty"], correct: 0, hint: "Zero.", explanation: "virtual void f() = 0;" },
+    { id: 2022, topic: "Memory", type: "mcq", marks: 4, question: "Dynamic allocation?", options: ["new", "malloc", "alloc", "create"], correct: 0, hint: "New.", explanation: "C++ style allocation." },
+    { id: 2023, topic: "Memory", type: "mcq", marks: 4, question: "Free dynamic memory?", options: ["delete", "free", "remove", "clear"], correct: 0, hint: "Delete.", explanation: "Partner to new." },
+    { id: 2030, topic: "Abstraction", type: "mcq", marks: 4, question: "Abstract Class must have?", options: ["At least one pure virtual function", "No methods", "No variables", "Static methods"], correct: 0, hint: "Pure.", explanation: "Cannot be instantiated." },
+    { id: 2031, topic: "Exception", type: "mcq", marks: 4, question: "Keyword to trigger exception?", options: ["throw", "raise", "error", "catch"], correct: 0, hint: "Throw.", explanation: "throw e;" },
 
-    // --- OOP BASICS (8 Questions) ---
-    { id: 206, topic: "OOP", type: "mcq", marks: 3, question: "Default class access?", options: ["private", "public", "protected", "friend"], correct: 0, hint: "Hidden.", explanation: "private." },
-    { id: 207, topic: "OOP", type: "mcq", marks: 5, question: "Correct class def?", options: ["class Box { public: int w; };", "class Box: public int w;", "def class Box { int w };", "struct Box ( int w )"], correct: 0, hint: "Semi-colon.", explanation: "class Box { ... };" },
-    { id: 208, topic: "OOP", type: "mcq", marks: 4, question: "Constructors have return type?", options: ["No", "Yes", "Void", "Int"], correct: 0, hint: "No return.", explanation: "No return type." },
-    { id: 209, topic: "OOP", type: "mcq", marks: 4, question: "Copy constructor arg?", options: ["const ClassName &obj", "ClassName obj", "ClassName *obj", "None"], correct: 0, hint: "Reference.", explanation: "const reference." },
-    { id: 210, topic: "OOP", type: "mcq", marks: 5, question: "Destructor syntax?", options: ["~ClassName() {}", "ClassName() {}", "!ClassName()", "deinit()"], correct: 0, hint: "~Name.", explanation: "~ClassName() {}" },
-    { id: 211, topic: "OOP", type: "mcq", marks: 4, question: "Object creation on stack?", options: ["Box b;", "Box b = new Box();", "new Box;", "Box* b;"], correct: 0, hint: "Direct.", explanation: "Box b;" },
-    { id: 212, topic: "OOP", type: "mcq", marks: 4, question: "Access public member?", options: ["obj.member", "obj->member", "obj::member", "obj:member"], correct: 0, hint: "Dot.", explanation: "obj.member" },
-    { id: 213, topic: "OOP", type: "mcq", marks: 5, question: "Static member shared?", options: ["Yes, by all objects", "No, unique to object", "Only by child classes", "None"], correct: 0, hint: "Shared.", explanation: "Shared by all instances." },
+    // --- FROM EXTENDED DB (IDs 1600+) ---
+    { id: 1600, topic: "OOP", type: "mcq", marks: 4, question: "Destructor is called when?", options: ["Object goes out of scope", "Object created", "Manually", "Never"], correct: 0, hint: "End of life.", explanation: "Automatically called to clean up." },
+    { id: 1601, topic: "Polymorphism", type: "mcq", marks: 5, question: "Virtual Function enables?", options: ["Runtime Polymorphism", "Compile time Poly", "Encapsulation", "None"], correct: 0, hint: "Late binding.", explanation: "Allows overriding in derived classes." },
+    { id: 1602, topic: "Inheritance", type: "mcq", marks: 5, question: "Diamond Problem solved by?", options: ["Virtual Inheritance", "Static", "Friend", "Abstract"], correct: 0, hint: "Virtual base.", explanation: "Prevents duplicate base class instances." },
+    { id: 1603, topic: "Pointers", type: "mcq", marks: 4, question: "Symbol for Address-of?", options: ["&", "*", "->", "."], correct: 0, hint: "Ampersand.", explanation: "Returns memory address." },
+    { id: 1604, topic: "Pointers", type: "mcq", marks: 4, question: "Symbol for Dereference?", options: ["*", "&", "->", "::"], correct: 0, hint: "Star.", explanation: "Accesses value at address." },
+    { id: 1605, topic: "Memory", type: "mcq", marks: 4, question: "Allocate heap memory?", options: ["new", "malloc", "alloc", "create"], correct: 0, hint: "New.", explanation: "C++ operator for dynamic allocation." },
+    { id: 1606, topic: "Memory", type: "mcq", marks: 4, question: "Deallocate heap memory?", options: ["delete", "free", "remove", "clear"], correct: 0, hint: "Delete.", explanation: "Frees memory allocated by new." },
 
-    // --- ENCAPSULATION (7 Questions) ---
-    { id: 214, topic: "Encapsulation", type: "mcq", marks: 4, question: "Destructor symbol?", options: ["~", "#", "!", "-"], correct: 0, hint: "Tilde.", explanation: "~." },
-    { id: 215, topic: "Encapsulation", type: "mcq", marks: 3, question: "Current object pointer?", options: ["this", "self", "me", "obj"], correct: 0, hint: "this.", explanation: "this." },
-    { id: 216, topic: "Encapsulation", type: "mcq", marks: 4, question: "Access private data?", options: ["Getters/Setters", "Directly", "Inheritance", "Global"], correct: 0, hint: "Methods.", explanation: "Getters/Setters." },
-    { id: 217, topic: "Encapsulation", type: "mcq", marks: 5, question: "Scope resolution operator?", options: ["::", "->", ".", ":"], correct: 0, hint: "Double colon.", explanation: "::" },
-    { id: 218, topic: "Encapsulation", type: "mcq", marks: 4, question: "Static function accesses?", options: ["Only static members", "All members", "Only public members", "None"], correct: 0, hint: "Static.", explanation: "Only static members." },
-    { id: 219, topic: "Encapsulation", type: "mcq", marks: 4, question: "Initialize const member?", options: ["Initializer list", "Constructor body", "Setter", "Directly"], correct: 0, hint: "List.", explanation: "Initializer list." },
-    { id: 220, topic: "Encapsulation", type: "mcq", marks: 4, question: "Friend function?", options: ["Access private members", "Member of class", "Inherits class", "Is static"], correct: 0, hint: "Access.", explanation: "Can access private members." },
-
-    // --- INHERITANCE (8 Questions) ---
-    { id: 221, topic: "Inheritance", type: "mcq", marks: 4, question: "Inheritance syntax?", options: ["class B : public A", "class B extends A", "class B inherits A", "class B(A)"], correct: 0, hint: "Colon.", explanation: "class B : public A" },
-    { id: 222, topic: "Inheritance", type: "mcq", marks: 4, question: "Multiple parents?", options: ["Multiple", "Multilevel", "Hierarchical", "Single"], correct: 0, hint: "Multiple.", explanation: "Multiple Inheritance." },
-    { id: 223, topic: "Inheritance", type: "mcq", marks: 4, question: "Diamond problem solution?", options: ["Virtual Inheritance", "Friend", "Static", "Abstract"], correct: 0, hint: "Virtual base.", explanation: "Virtual Inheritance." },
-    { id: 224, topic: "Inheritance", type: "mcq", marks: 4, question: "Child only access?", options: ["protected", "private", "public", "friend"], correct: 0, hint: "Protected.", explanation: "protected." },
-    { id: 225, topic: "Inheritance", type: "mcq", marks: 4, question: "Constructor call order?", options: ["Base then Derived", "Derived then Base", "Random", "Simultaneous"], correct: 0, hint: "Parent first.", explanation: "Base then Derived." },
-    { id: 226, topic: "Inheritance", type: "mcq", marks: 5, question: "Ambiguity resolution?", options: ["Scope resolution ::", "Virtual", "Static", "Override"], correct: 0, hint: "::", explanation: "Scope resolution operator." },
-    { id: 227, topic: "Inheritance", type: "mcq", marks: 4, question: "Private inheritance means?", options: ["Public becomes Private", "Public becomes Protected", "No change", "Error"], correct: 0, hint: "Private.", explanation: "Public members become private." },
-    { id: 228, topic: "Inheritance", type: "mcq", marks: 4, question: "Destructor in inheritance?", options: ["Virtual destructor", "Static destructor", "Private destructor", "None"], correct: 0, hint: "Virtual.", explanation: "Should be virtual." },
-
-    // --- POLYMORPHISM (8 Questions) ---
-    { id: 229, topic: "Pointers", type: "mcq", marks: 5, question: "Alloc int on heap?", options: ["int* p = new int;", "int p = new int;", "int* p = malloc(int);", "new int p;"], correct: 0, hint: "new.", explanation: "int* p = new int;" },
-    { id: 230, topic: "Pointers", type: "mcq", marks: 4, question: "Address-of?", options: ["&", "*", "->", "."], correct: 0, hint: "&.", explanation: "&." },
-    { id: 231, topic: "Pointers", type: "mcq", marks: 5, question: "Delete array?", options: ["delete[] ptr;", "delete ptr;", "free(ptr);", "remove ptr;"], correct: 0, hint: "[]", explanation: "delete[] ptr;" },
-    { id: 232, topic: "Polymorphism", type: "mcq", marks: 5, question: "Runtime poly keyword?", options: ["virtual", "override", "dynamic", "abstract"], correct: 0, hint: "Virtual.", explanation: "virtual." },
-    { id: 233, topic: "Polymorphism", type: "mcq", marks: 4, question: "Compile-time poly?", options: ["Overloading", "Overriding", "Virtual", "Abstract"], correct: 0, hint: "Overloading.", explanation: "Overloading." },
-    { id: 234, topic: "Polymorphism", type: "mcq", marks: 4, question: "Overriding is?", options: ["Runtime", "Compile-time", "Static", "None"], correct: 0, hint: "Runtime.", explanation: "Runtime." },
-    { id: 235, topic: "Polymorphism", type: "mcq", marks: 5, question: "Operator overloading?", options: ["operator+", "func+", "add()", "plus()"], correct: 0, hint: "operator.", explanation: "operator+." },
-    { id: 236, topic: "Polymorphism", type: "mcq", marks: 4, question: "Safe downcasting?", options: ["dynamic_cast", "static_cast", "const_cast", "reinterpret_cast"], correct: 0, hint: "Dynamic.", explanation: "dynamic_cast." },
-
-    // --- ABSTRACTION & EXCEPTIONS (Existing) ---
-    { id: 237, topic: "Abstraction", type: "mcq", marks: 5, question: "Pure virtual syntax?", options: ["= 0", "= null", "abstract", "virtual"], correct: 0, hint: "= 0.", explanation: "= 0." },
-    { id: 238, topic: "Abstraction", type: "mcq", marks: 4, question: "Class with pure virtual?", options: ["Abstract Class", "Virtual Class", "Interface", "Static Class"], correct: 0, hint: "Abstract.", explanation: "Abstract Class." },
-    { id: 239, topic: "Exception Handling", type: "mcq", marks: 5, question: "Catch-all?", options: ["catch (...)", "catch (Exception e)", "catch (ALL)", "except:"], correct: 0, hint: "...", explanation: "catch(...) {}" },
-    { id: 240, topic: "Exception Handling", type: "mcq", marks: 4, question: "Raise exception?", options: ["throw", "raise", "error", "catch"], correct: 0, hint: "Throw.", explanation: "throw." },
-    { id: 241, topic: "Templates", type: "mcq", marks: 6, question: "Template decl?", options: ["template <typename T>", "template class T", "generic <T>", "class <T>"], correct: 0, hint: "typename.", explanation: "template <typename T>." },
-    { id: 242, topic: "Advanced", type: "mcq", marks: 5, question: "Access private ext?", options: ["friend", "public", "static", "extern"], correct: 0, hint: "Friend.", explanation: "friend." },
-    { id: 243, topic: "Advanced", type: "mcq", marks: 5, question: "Stdlib vector add?", options: ["push_back()", "add()", "append()", "insert()"], correct: 0, hint: "Push.", explanation: "push_back()." },
-    { id: 244, topic: "Advanced", type: "mcq", marks: 4, question: "Constant keyword?", options: ["const", "final", "static", "let"], correct: 0, hint: "const.", explanation: "const." },
-    { id: 245, topic: "Basics", type: "mcq", marks: 4, question: "Pointer size (64-bit)?", options: ["8 bytes", "4 bytes", "2 bytes", "16 bytes"], correct: 0, hint: "64 bits.", explanation: "8 bytes." },
-    { id: 246, topic: "Basics", type: "mcq", marks: 3, question: "Logical OR?", options: ["||", "OR", "|", "&&"], correct: 0, hint: "Pipes.", explanation: "||" },
-    { id: 247, topic: "Basics", type: "mcq", marks: 3, question: "Increment operator?", options: ["++", "+=", "inc", "add"], correct: 0, hint: "Plus plus.", explanation: "++" },
-    { id: 248, topic: "OOP", type: "mcq", marks: 4, question: "Member pointer?", options: ["->", ".", "::", "*"], correct: 0, hint: "Arrow.", explanation: "Arrow -> for pointers." },
-    { id: 249, topic: "OOP", type: "mcq", marks: 4, question: "Shallow vs Deep?", options: ["Copying", "Inheritance", "Polymorphism", "None"], correct: 0, hint: "Copy.", explanation: "Copy Constructor." },
-    { id: 250, topic: "Basics", type: "mcq", marks: 3, question: "Terminator?", options: [";", ".", ":", "}"], correct: 0, hint: "Semi-colon.", explanation: ";" },
-
-    // --- NEW: ADVANCED OOP & DETAILS (20 Questions) ---
-    { id: 251, topic: "Encapsulation", type: "mcq", marks: 4, question: "Init static member?", options: ["Outside class", "In constructor", "Inside class", "Not possible"], correct: 0, hint: "Scope.", explanation: "Type Class::var = val;" },
-    { id: 252, topic: "Encapsulation", type: "mcq", marks: 4, question: "Friend class can?", options: ["Access all members", "Access public only", "Inherit", "Override"], correct: 0, hint: "All.", explanation: "Friends access private/protected." },
-    { id: 253, topic: "Inheritance", type: "mcq", marks: 5, question: "Virtual Base Class used for?", options: ["Diamond Problem", "Polymorphism", "Abstraction", "Encapsulation"], correct: 0, hint: "Ambiguity.", explanation: "Solves ambiguity in multiple inheritance." },
-    { id: 254, topic: "Pointers", type: "mcq", marks: 4, question: "Void pointer?", options: ["Generic pointer", "Null pointer", "Zero pointer", "Empty"], correct: 0, hint: "Generic.", explanation: "Can hold address of any type." },
-    { id: 255, topic: "Polymorphism", type: "mcq", marks: 4, question: "Abstract class object?", options: ["Cannot create", "Can create", "Only pointer", "Both A and C"], correct: 3, hint: "Instance.", explanation: "Cannot instantiate, but pointers allowed." },
-    { id: 256, topic: "Exceptions", type: "mcq", marks: 3, question: "Rethrow exception?", options: ["throw;", "throw e;", "return;", "exit;"], correct: 0, hint: "Empty throw.", explanation: "throw; inside catch rethrows." },
-    { id: 257, topic: "Basics", type: "mcq", marks: 4, question: "Inline function?", options: ["Replaced at call site", "Faster compile", "Smaller code", "Virtual"], correct: 0, hint: "Expand.", explanation: "Compiler optimization." },
-    { id: 258, topic: "OOP", type: "mcq", marks: 5, question: "Deep copy needed when?", options: ["Dynamic memory used", "Static members", "Large objects", "Inheritance"], correct: 0, hint: "Pointers.", explanation: "To avoid double free errors." },
-    { id: 259, topic: "Encapsulation", type: "mcq", marks: 4, question: "Setter function?", options: ["Mutator", "Accessor", "Constructor", "Destructor"], correct: 0, hint: "Mutate.", explanation: "Modifies private data." },
-    { id: 260, topic: "Encapsulation", type: "mcq", marks: 4, question: "Getter function?", options: ["Accessor", "Mutator", "Constructor", "Destructor"], correct: 0, hint: "Access.", explanation: "Returns private data." },
-    { id: 261, topic: "Inheritance", type: "mcq", marks: 5, question: "Order of destruction?", options: ["Derived then Base", "Base then Derived", "Random", "Parallel"], correct: 0, hint: "Reverse.", explanation: "Reverse of construction." },
-    { id: 262, topic: "Pointers", type: "mcq", marks: 5, question: "Array of pointers?", options: ["int *arr[10]", "int arr[10]*", "int (*arr)[10]", "int arr*"], correct: 0, hint: "* before [].", explanation: "Array of 10 integer pointers." },
-    { id: 263, topic: "Basics", type: "mcq", marks: 3, question: "New line char?", options: ["\\n", "\\l", "\\r", "\\t"], correct: 0, hint: "n.", explanation: "New line." },
-    { id: 264, topic: "Basics", type: "mcq", marks: 3, question: "Manipulator for newline?", options: ["endl", "newl", "end", "nl"], correct: 0, hint: "end line.", explanation: "std::endl." },
-    { id: 265, topic: "OOP", type: "mcq", marks: 4, question: "Function overloading?", options: ["Same name, diff args", "Same name, diff return", "Diff name", "Virtual"], correct: 0, hint: "Signature.", explanation: "Compile-time polymorphism." },
-    { id: 266, topic: "Templates", type: "mcq", marks: 5, question: "Template specialization?", options: ["Custom logic for type", "Inheritance", "Overloading", "Error"], correct: 0, hint: "Special.", explanation: "Specific implementation for a type." },
-    { id: 267, topic: "Pointers", type: "mcq", marks: 4, question: "Dereference operator?", options: ["*", "&", "->", "::"], correct: 0, hint: "Star.", explanation: "* gets value at address." },
-    { id: 268, topic: "Inheritance", type: "mcq", marks: 4, question: "Hybrid inheritance?", options: ["Combination of types", "Single only", "Interface", "None"], correct: 0, hint: "Mix.", explanation: "Mixing multiple types (e.g. multiple + multilevel)." },
-    { id: 269, topic: "OOP", type: "mcq", marks: 4, question: "Object slicing?", options: ["Derived assigned to Base", "Base assigned to Derived", "Cut object", "Delete"], correct: 0, hint: "Slice off.", explanation: "Derived parts lost when assigned to Base by value." },
-    { id: 270, topic: "Basics", type: "mcq", marks: 3, question: "Ternary operator?", options: ["?:", "if-else", "switch", "->"], correct: 0, hint: "Question.", explanation: "Condition ? True : False." },
-    { id: 271, topic: "Abstraction", type: "mcq", marks: 5, question: "Interface in C++?", options: ["Pure abstract class", "keyword interface", "struct", "header"], correct: 0, hint: "Abstract.", explanation: "Class with only pure virtual functions." },
-    { id: 272, topic: "Exceptions", type: "mcq", marks: 4, question: "Standard exception class?", options: ["std::exception", "std::error", "Exception", "Error"], correct: 0, hint: "std.", explanation: "Base class for exceptions." },
-    { id: 273, topic: "OOP", type: "mcq", marks: 4, question: "Default constructor?", options: ["No args", "1 arg", "All args", "None"], correct: 0, hint: "Empty.", explanation: "Constructor with no parameters." },
-    { id: 274, topic: "Pointers", type: "mcq", marks: 5, question: "Memory leak cause?", options: ["No delete after new", "No new", "Null pointer", "Stack var"], correct: 0, hint: "Clean up.", explanation: "Failing to free dynamic memory." },
-    { id: 275, topic: "Basics", type: "mcq", marks: 3, question: "Global scope operator?", options: ["::", "global", "extern", "."], correct: 0, hint: "Unary ::", explanation: "::x accesses global x." }
+    // --- NEWLY GENERATED (Based on Topics of C++.txt) ---
+    { id: 2100, topic: "Templates", type: "mcq", marks: 5, question: "Purpose of Templates?", options: ["Generic Programming", "Memory Management", "Multithreading", "File I/O"], correct: 0, hint: "Code reuse.", explanation: "Templates allow writing generic code that works with any data type." },
+    { id: 2101, topic: "STL", type: "mcq", marks: 4, question: "Dynamic array in STL?", options: ["std::vector", "std::array", "std::list", "std::deque"], correct: 0, hint: "Resizable.", explanation: "Vectors are sequence containers representing arrays that can change in size." },
+    { id: 2102, topic: "Friends", type: "mcq", marks: 4, question: "Friend function capability?", options: ["Access private members", "Inherit class", "Delete class", "None"], correct: 0, hint: "Special access.", explanation: "A friend function can access private and protected data of a class." },
+    { id: 2103, topic: "File I/O", type: "mcq", marks: 4, question: "Library for File I/O?", options: ["<fstream>", "<iostream>", "<stdio>", "<file>"], correct: 0, hint: "File Stream.", explanation: "fstream provides facilities for file input/output." },
+    { id: 2104, topic: "Constructors", type: "mcq", marks: 4, question: "Copy Constructor is called when?", options: ["Object initialized with another object", "Object created", "Object destroyed", "Never"], correct: 0, hint: "Clone.", explanation: "Initializes a new object as a copy of an existing object." },
+    { id: 2105, topic: "Polymorphism", type: "mcq", marks: 4, question: "Operator overloading is?", options: ["Compile-time Polymorphism", "Runtime Polymorphism", "Encapsulation", "Inheritance"], correct: 0, hint: "Static binding.", explanation: "Resolved at compile time." }
   ],
 
+  // ==================================================================================
+  // 3. DATA SCIENCE (NumPy, Pandas, SQL)
+  // ==================================================================================
   ds: [
-    // --- NUMPY (15 Questions) ---
-    { id: 301, topic: "NumPy", type: "mcq", marks: 3, question: "Advantage over List?", options: ["Memory Efficient", "Slower", "Dynamic Size", "None"], correct: 0, hint: "Memory.", explanation: "Memory efficient." },
-    { id: 302, topic: "NumPy", type: "mcq", marks: 4, question: "Dimensions attr?", options: [".shape", ".size", ".dim", ".len"], correct: 0, hint: "Shape.", explanation: ".shape" },
-    { id: 303, topic: "NumPy", type: "mcq", marks: 5, question: "3x3 zeros?", options: ["np.zeros((3,3))", "np.zeros(3,3)", "np.array(0, 3, 3)", "np.empty(3,3)"], correct: 0, hint: "Tuple.", explanation: "np.zeros((3,3))." },
-    { id: 304, topic: "NumPy", type: "mcq", marks: 4, question: "Range func?", options: ["np.arange()", "np.range()", "np.seq()", "np.list()"], correct: 0, hint: "arange.", explanation: "np.arange()." },
-    { id: 305, topic: "NumPy", type: "mcq", marks: 5, question: "Reshape array?", options: ["arr.reshape(2, 5)", "arr.shape(2, 5)", "arr.resize(2, 5)", "arr.change(2, 5)"], correct: 0, hint: "reshape.", explanation: "arr.reshape()." },
-    { id: 306, topic: "NumPy", type: "mcq", marks: 5, question: "Dot product?", options: ["np.dot(a, b)", "np.mult(a, b)", "np.prod(a, b)", "a.dot.b"], correct: 0, hint: "dot.", explanation: "np.dot()." },
-    { id: 307, topic: "NumPy", type: "mcq", marks: 4, question: "Plotting lib?", options: ["Matplotlib", "Seaborn", "Plotly", "All"], correct: 3, hint: "All.", explanation: "All are valid." },
-    { id: 308, topic: "NumPy", type: "mcq", marks: 5, question: "Mean func?", options: ["np.mean()", "np.avg()", "np.average()", "np.median()"], correct: 0, hint: "mean.", explanation: "np.mean()." },
-    { id: 309, topic: "NumPy", type: "mcq", marks: 4, question: "Array type?", options: ["ndarray", "array", "list", "tensor"], correct: 0, hint: "n-dim.", explanation: "ndarray." },
-    { id: 310, topic: "NumPy", type: "mcq", marks: 4, question: "Total elements?", options: [".size", ".count", ".length", ".num"], correct: 0, hint: "Size.", explanation: ".size" },
-    { id: 311, topic: "NumPy", type: "mcq", marks: 4, question: "Square root?", options: ["np.sqrt()", "np.root()", "np.sq()", "math.sqrt()"], correct: 0, hint: "sqrt.", explanation: "np.sqrt()." },
-    { id: 312, topic: "NumPy", type: "mcq", marks: 5, question: "Stack vertically?", options: ["np.vstack()", "np.hstack()", "np.stack_v()", "np.vert()"], correct: 0, hint: "v-stack.", explanation: "np.vstack()." },
-    { id: 313, topic: "NumPy", type: "mcq", marks: 5, question: "Random 0-1?", options: ["np.random.rand()", "np.rand()", "np.random()", "random()"], correct: 0, hint: "random.", explanation: "np.random.rand()." },
-    { id: 314, topic: "NumPy", type: "mcq", marks: 4, question: "Get max index?", options: ["np.argmax()", "np.max()", "np.idx()", "np.top()"], correct: 0, hint: "Arg.", explanation: "np.argmax()." },
-    { id: 315, topic: "NumPy", type: "mcq", marks: 4, question: "Identity matrix?", options: ["np.eye()", "np.identity()", "np.one()", "np.id()"], correct: 0, hint: "Eye.", explanation: "np.eye()." },
+    // --- FROM VOLUME 1 (IDs 3000+) ---
+    { id: 3001, topic: "NumPy", type: "mcq", marks: 3, question: "Array attribute for dimensions?", options: [".shape", ".size", ".ndim", ".len"], correct: 0, hint: "Rows, Cols.", explanation: "Returns tuple (rows, cols)." },
+    { id: 3002, topic: "NumPy", type: "mcq", marks: 4, question: "Create range of numbers?", options: ["np.arange()", "np.range()", "np.seq()", "np.list()"], correct: 0, hint: "Like range.", explanation: "Array version of range." },
+    { id: 3003, topic: "NumPy", type: "mcq", marks: 5, question: "Broadcasting rule?", options: ["Dims equal or one is 1", "Dims identical", "No rule", "Both 1D"], correct: 0, hint: "Stretch.", explanation: "Allows ops on different shaped arrays." },
+    { id: 3004, topic: "NumPy", type: "mcq", marks: 4, question: "Matrix Multiplication?", options: ["@", "*", "dot()", "x"], correct: 0, hint: "At.", explanation: "Infix operator for matmul." },
+    { id: 3005, topic: "NumPy", type: "mcq", marks: 4, question: "Reshape array?", options: ["reshape()", "shape()", "resize()", "change()"], correct: 0, hint: "Re.", explanation: "Returns new array with specified shape." },
+    { id: 3020, topic: "Pandas", type: "mcq", marks: 3, question: "Function to read CSV?", options: ["pd.read_csv()", "pd.import_csv()", "pd.open()", "pd.load()"], correct: 0, hint: "Read.", explanation: "Standard loader." },
+    { id: 3021, topic: "Pandas", type: "mcq", marks: 4, question: "Select column by name?", options: ["df['col']", "df.get('col')", "df.select('col')", "df.col()"], correct: 0, hint: "Brackets.", explanation: "Dict-like access." },
+    { id: 3022, topic: "Pandas", type: "mcq", marks: 4, question: "Select by integer position?", options: ["iloc", "loc", "ix", "at"], correct: 0, hint: "Index.", explanation: "Integer-location based indexing." },
+    { id: 3023, topic: "Pandas", type: "mcq", marks: 4, question: "Handle missing values?", options: ["fillna()", "replacena()", "add()", "fix()"], correct: 0, hint: "Fill.", explanation: "Fills NaN with value." },
+    { id: 3024, topic: "Pandas", type: "mcq", marks: 5, question: "Group by aggregation?", options: ["df.groupby().mean()", "df.group().avg()", "df.cluster()", "df.agg()"], correct: 0, hint: "Group.", explanation: "Split-Apply-Combine." },
+    { id: 3025, topic: "Pandas", type: "mcq", marks: 5, question: "Pivot table function?", options: ["pivot_table()", "crosstab()", "transpose()", "reshape()"], correct: 0, hint: "Excel style.", explanation: "Creates spreadsheet-style pivot table." },
+    { id: 3040, topic: "SQL", type: "mcq", marks: 3, question: "DDL Command?", options: ["CREATE", "SELECT", "INSERT", "UPDATE"], correct: 0, hint: "Definition.", explanation: "Defines structure." },
+    { id: 3041, topic: "SQL", type: "mcq", marks: 4, question: "Join returning all left rows?", options: ["LEFT JOIN", "INNER JOIN", "RIGHT JOIN", "OUTER JOIN"], correct: 0, hint: "Left.", explanation: "All from left, matching from right." },
+    { id: 3042, topic: "SQL", type: "mcq", marks: 4, question: "Remove duplicates?", options: ["DISTINCT", "UNIQUE", "DIFFERENT", "SINGLE"], correct: 0, hint: "Distinct.", explanation: "SELECT DISTINCT." },
+    { id: 3043, topic: "SQL", type: "mcq", marks: 5, question: "Pattern matching?", options: ["LIKE", "MATCH", "SAME", "IS"], correct: 0, hint: "Like.", explanation: "Used with wildcards % and _." },
+    { id: 3044, topic: "SQL", type: "mcq", marks: 5, question: "Filter Group By results?", options: ["HAVING", "WHERE", "FILTER", "WHEN"], correct: 0, hint: "Have.", explanation: "HAVING applies to aggregated groups." },
+    { id: 3045, topic: "SQL", type: "mcq", marks: 4, question: "Sort Order?", options: ["ORDER BY", "SORT BY", "ALIGN", "GROUP BY"], correct: 0, hint: "Order.", explanation: "Default is ASC." },
+    { id: 3046, topic: "SQL", type: "mcq", marks: 5, question: "Window function for ranking?", options: ["RANK()", "ORDER()", "GROUP()", "COUNT()"], correct: 0, hint: "Rank.", explanation: "Assigns rank within partition." },
 
-    // --- PANDAS (15 Questions) ---
-    { id: 316, topic: "Pandas", type: "mcq", marks: 3, question: "2D structure?", options: ["DataFrame", "Series", "Panel", "Table"], correct: 0, hint: "DF.", explanation: "DataFrame." },
-    { id: 317, topic: "Pandas", type: "mcq", marks: 4, question: "Read CSV?", options: ["read_csv", "load_csv", "open_csv", "get_csv"], correct: 0, hint: "read_csv.", explanation: "read_csv()." },
-    { id: 318, topic: "Pandas", type: "mcq", marks: 5, question: "Group by 'dept' mean?", options: ["df.groupby('dept').mean()", "df.group('dept').avg()", "df.sort('dept').mean()", "df.mean('dept')"], correct: 0, hint: "groupby.", explanation: "df.groupby().mean()." },
-    { id: 319, topic: "Pandas", type: "mcq", marks: 4, question: "Check nulls?", options: ["isnull()", "checknull()", "null()", "isnan()"], correct: 0, hint: "isnull.", explanation: "isnull()." },
-    { id: 320, topic: "Pandas", type: "mcq", marks: 4, question: "Drop missing?", options: ["dropna()", "fillna()", "delna()", "removena()"], correct: 0, hint: "drop.", explanation: "dropna()." },
-    { id: 321, topic: "Pandas", type: "mcq", marks: 4, question: "Summary stats?", options: ["describe()", "summary()", "stats()", "info()"], correct: 0, hint: "describe.", explanation: "describe()." },
-    { id: 322, topic: "Pandas", type: "mcq", marks: 5, question: "Select col 'A'?", options: ["df['A']", "df(A)", "df.select('A')", "df.get('A')"], correct: 0, hint: "Brackets.", explanation: "df['A']." },
-    { id: 323, topic: "Pandas", type: "mcq", marks: 6, question: "Merge inner?", options: ["pd.merge(d1, d2, how='inner')", "d1.join(d2)", "pd.concat([d1,d2])", "d1.merge(d2, inner=True)"], correct: 0, hint: "pd.merge.", explanation: "pd.merge(..., how='inner')." },
-    { id: 324, topic: "Pandas", type: "mcq", marks: 4, question: "Fill NaN?", options: ["fillna()", "replacena()", "fill()", "add()"], correct: 0, hint: "fillna.", explanation: "fillna()." },
-    { id: 325, topic: "Pandas", type: "mcq", marks: 4, question: "Head default?", options: ["5", "10", "1", "20"], correct: 0, hint: "5.", explanation: "5." },
-    { id: 326, topic: "Pandas", type: "mcq", marks: 4, question: "Get info?", options: ["df.info()", "df.meta()", "df.type()", "df.dtypes()"], correct: 0, hint: "Info.", explanation: "df.info()." },
-    { id: 327, topic: "Pandas", type: "mcq", marks: 4, question: "Unique values?", options: ["unique()", "distinct()", "uniq()", "single()"], correct: 0, hint: "Unique.", explanation: "Series.unique()." },
-    { id: 328, topic: "Pandas", type: "mcq", marks: 4, question: "Access row by label?", options: ["loc", "iloc", "ix", "at"], correct: 0, hint: "Location.", explanation: "loc." },
-    { id: 329, topic: "Pandas", type: "mcq", marks: 4, question: "Access row by index?", options: ["iloc", "loc", "idx", "at"], correct: 0, hint: "Integer loc.", explanation: "iloc." },
-    { id: 330, topic: "Pandas", type: "mcq", marks: 5, question: "Apply func to col?", options: ["apply()", "map()", "run()", "exec()"], correct: 0, hint: "Apply.", explanation: "apply()." },
+    // --- FROM EXTENDED DB (IDs 1500+) ---
+    { id: 1500, topic: "SQL Windows", type: "mcq", marks: 5, question: "Rank rows function?", options: ["RANK() OVER()", "ORDER()", "SORT()", "GROUP()"], correct: 0, hint: "Window.", explanation: "Assigns rank within partition." },
+    { id: 1501, topic: "SQL Joins", type: "mcq", marks: 4, question: "Left Join keeps?", options: ["All Left rows", "All Right rows", "Intersection", "Union"], correct: 0, hint: "Left.", explanation: "Preserves all records from left table." },
+    { id: 1502, topic: "SQL Agg", type: "mcq", marks: 3, question: "Filter groups condition?", options: ["HAVING", "WHERE", "FILTER", "WHEN"], correct: 0, hint: "Post-group.", explanation: "HAVING is used for conditions on aggregated data." },
+    { id: 1503, topic: "Pandas", type: "mcq", marks: 4, question: "Merge default type?", options: ["Inner", "Outer", "Left", "Right"], correct: 0, hint: "Intersection.", explanation: "Default is inner join." },
+    { id: 1504, topic: "Pandas", type: "mcq", marks: 5, question: "Wide to Long format?", options: ["melt()", "pivot()", "stack()", "unstack()"], correct: 0, hint: "Melting.", explanation: "Unpivots DataFrame." },
+    { id: 1505, topic: "Pandas", type: "mcq", marks: 5, question: "Long to Wide format?", options: ["pivot()", "melt()", "stack()", "flatten()"], correct: 0, hint: "Pivoting.", explanation: "Reshapes data (spreads rows to columns)." },
+    { id: 1506, topic: "NumPy", type: "mcq", marks: 5, question: "Broadcasting Condition?", options: ["Dimensions equal or one is 1", "Dimensions equal", "No condition", "Both > 1"], correct: 0, hint: "Stretch.", explanation: "Compatible if dimensions match or one is 1." },
+    { id: 1507, topic: "NumPy", type: "mcq", marks: 4, question: "Matrix Mult operator?", options: ["@", "*", "x", "dot"], correct: 0, hint: "At.", explanation: "@ or np.matmul." },
+    { id: 1508, topic: "Cleaning", type: "mcq", marks: 3, question: "Drop missing values?", options: ["dropna()", "fillna()", "remove()", "del()"], correct: 0, hint: "Drop.", explanation: "Removes rows/cols with NaNs." },
 
-    // --- SQL (20 Questions) ---
-    { id: 331, topic: "SQL", type: "mcq", marks: 3, question: "DDL Command?", options: ["CREATE", "SELECT", "INSERT", "DELETE"], correct: 0, hint: "Create.", explanation: "CREATE." },
-    { id: 332, topic: "SQL", type: "mcq", marks: 6, question: "Select > 25 order name?", options: ["SELECT * FROM U WHERE age > 25 ORDER BY name", "SELECT * FROM U ORDER BY name WHERE age > 25", "GET U WHERE age > 25", "FETCH * FROM U SORT name"], correct: 0, hint: "Order.", explanation: "Standard SQL." },
-    { id: 333, topic: "SQL", type: "mcq", marks: 4, question: "Filter groups?", options: ["HAVING", "WHERE", "GROUP", "FILTER"], correct: 0, hint: "Having.", explanation: "HAVING." },
-    { id: 334, topic: "SQL", type: "mcq", marks: 4, question: "Join all records?", options: ["FULL OUTER JOIN", "INNER JOIN", "LEFT JOIN", "RIGHT JOIN"], correct: 0, hint: "Full.", explanation: "FULL OUTER." },
-    { id: 335, topic: "SQL", type: "mcq", marks: 5, question: "Insert syntax?", options: ["INSERT INTO T VALUES (...)", "ADD TO T VALUES (...)", "PUT INTO T (...)", "UPDATE T ADD (...)"], correct: 0, hint: "Insert Into.", explanation: "INSERT INTO." },
-    { id: 336, topic: "SQL", type: "mcq", marks: 3, question: "Delete table?", options: ["DROP TABLE", "DELETE TABLE", "REMOVE TABLE", "ERASE TABLE"], correct: 0, hint: "Drop.", explanation: "DROP TABLE." },
-    { id: 337, topic: "SQL", type: "mcq", marks: 3, question: "Unique constraint?", options: ["UNIQUE", "DISTINCT", "SINGLE", "PRIMARY"], correct: 0, hint: "Unique.", explanation: "UNIQUE." },
-    { id: 338, topic: "SQL", type: "mcq", marks: 4, question: "Remove dupes?", options: ["DISTINCT", "UNIQUE", "DIFFERENT", "SINGLE"], correct: 0, hint: "Distinct.", explanation: "SELECT DISTINCT." },
-    { id: 339, topic: "SQL", type: "mcq", marks: 3, question: "Modify data?", options: ["UPDATE", "MODIFY", "CHANGE", "ALTER"], correct: 0, hint: "Update.", explanation: "UPDATE." },
-    { id: 340, topic: "SQL", type: "mcq", marks: 5, question: "Count rows?", options: ["COUNT(*)", "SUM(*)", "TOTAL(*)", "NUM(*)"], correct: 0, hint: "Count.", explanation: "COUNT(*)." },
-    { id: 341, topic: "SQL", type: "mcq", marks: 4, question: "Pattern match?", options: ["LIKE", "MATCH", "SIMILAR", "SAME"], correct: 0, hint: "Like.", explanation: "LIKE." },
-    { id: 342, topic: "SQL", type: "mcq", marks: 4, question: "Primary Key null?", options: ["No", "Yes", "Sometimes", "Depends"], correct: 0, hint: "Never.", explanation: "Cannot be NULL." },
-    { id: 343, topic: "SQL", type: "mcq", marks: 3, question: "DML Command?", options: ["INSERT", "CREATE", "ALTER", "DROP"], correct: 0, hint: "Data Manip.", explanation: "INSERT." },
-    { id: 344, topic: "SQL", type: "mcq", marks: 4, question: "Wildcard char?", options: ["%", "*", "?", "#"], correct: 0, hint: "Percent.", explanation: "% in LIKE." },
-    { id: 345, topic: "SQL", type: "mcq", marks: 4, question: "Sort descending?", options: ["DESC", "ASC", "DOWN", "REV"], correct: 0, hint: "Desc.", explanation: "DESC." },
-    { id: 346, topic: "SQL", type: "mcq", marks: 5, question: "Combine queries?", options: ["UNION", "JOIN", "ADD", "MERGE"], correct: 0, hint: "Union.", explanation: "UNION." },
-    { id: 347, topic: "SQL", type: "mcq", marks: 4, question: "Table alias?", options: ["AS", "IS", "BY", "TO"], correct: 0, hint: "As.", explanation: "AS." },
-    { id: 348, topic: "SQL", type: "mcq", marks: 5, question: "Select top 5?", options: ["LIMIT 5", "TOP 5", "HEAD 5", "FIRST 5"], correct: 0, hint: "Limit.", explanation: "LIMIT 5 (MySQL)." },
-    { id: 349, topic: "SQL", type: "mcq", marks: 3, question: "DCL Command?", options: ["GRANT", "SELECT", "INSERT", "CREATE"], correct: 0, hint: "Control.", explanation: "GRANT." },
-    { id: 350, topic: "SQL", type: "mcq", marks: 5, question: "Between range?", options: ["BETWEEN", "RANGE", "WITHIN", "INSIDE"], correct: 0, hint: "Between.", explanation: "BETWEEN." },
-
-    // --- NEW: ADVANCED DATA SCIENCE & SQL (25 Questions) ---
-    { id: 351, topic: "Pandas", type: "mcq", marks: 5, question: "Reshape: wide to long?", options: ["melt()", "pivot()", "stack()", "flatten()"], correct: 0, hint: "Melting.", explanation: "pd.melt() unpivots a DataFrame." },
-    { id: 352, topic: "Pandas", type: "mcq", marks: 5, question: "Reshape: long to wide?", options: ["pivot()", "melt()", "unstack()", "expand()"], correct: 0, hint: "Pivot.", explanation: "df.pivot() spreads rows to columns." },
-    { id: 353, topic: "NumPy", type: "mcq", marks: 5, question: "Evenly spaced numbers?", options: ["np.linspace()", "np.range()", "np.space()", "np.even()"], correct: 0, hint: "Linear space.", explanation: "np.linspace(start, stop, num)." },
-    { id: 354, topic: "SQL", type: "mcq", marks: 4, question: "Match single char wildcard?", options: ["_", "%", "?", "."], correct: 0, hint: "Underscore.", explanation: "_ matches exactly one char." },
-    { id: 355, topic: "SQL", type: "mcq", marks: 4, question: "Trim whitespace?", options: ["TRIM()", "STRIP()", "CUT()", "CLEAN()"], correct: 0, hint: "Trim.", explanation: "TRIM() removes spaces." },
-    { id: 356, topic: "Pandas", type: "mcq", marks: 4, question: "Delete column?", options: ["df.drop(col, axis=1)", "df.remove(col)", "del df[col]", "Both A and C"], correct: 3, hint: "Drop/Del.", explanation: "Both work." },
-    { id: 357, topic: "NumPy", type: "mcq", marks: 4, question: "Matrix multiplication?", options: ["@", "*", "dot()", "Both A and C"], correct: 3, hint: "At or dot.", explanation: "@ operator or .dot()." },
-    { id: 358, topic: "SQL", type: "mcq", marks: 5, question: "Filter after Group By?", options: ["HAVING", "WHERE", "FILTER", "WHEN"], correct: 0, hint: "Having.", explanation: "HAVING filters aggregates." },
-    { id: 359, topic: "SQL", type: "mcq", marks: 4, question: "Current date SQL?", options: ["CURDATE()", "NOW()", "TODAY()", "DATE()"], correct: 0, hint: "Current.", explanation: "CURDATE() or CURRENT_DATE." },
-    { id: 360, topic: "Pandas", type: "mcq", marks: 4, question: "Rename columns?", options: ["df.rename()", "df.columns()", "df.name()", "df.set_names()"], correct: 0, hint: "Rename.", explanation: "df.rename(columns={...})." },
-    { id: 361, topic: "NumPy", type: "mcq", marks: 5, question: "Flatten array?", options: ["arr.flatten()", "arr.flat()", "arr.1d()", "arr.ravel()"], correct: 0, hint: "Flat.", explanation: "flatten() returns copy." },
-    { id: 362, topic: "SQL", type: "mcq", marks: 5, question: "Outer Join support?", options: ["FULL JOIN", "OUTER JOIN", "Both A and B", "None"], correct: 2, hint: "Full.", explanation: "Syntax varies, both common." },
-    { id: 363, topic: "Pandas", type: "mcq", marks: 4, question: "Sort by index?", options: ["sort_index()", "sort_values()", "order_index()", "index_sort()"], correct: 0, hint: "Index.", explanation: "sort_index()." },
-    { id: 364, topic: "SQL", type: "mcq", marks: 3, question: "To upper case?", options: ["UPPER()", "UCASE()", "CAPS()", "Both A and B"], correct: 3, hint: "Upper.", explanation: "UPPER() is standard." },
-    { id: 365, topic: "NumPy", type: "mcq", marks: 4, question: "Standard deviation?", options: ["np.std()", "np.dev()", "np.var()", "np.sigma()"], correct: 0, hint: "Std.", explanation: "np.std()." },
-    { id: 366, topic: "Pandas", type: "mcq", marks: 5, question: "Frequency of values?", options: ["value_counts()", "count_values()", "freq()", "unique_counts()"], correct: 0, hint: "Value counts.", explanation: "Series.value_counts()." },
-    { id: 367, topic: "SQL", type: "mcq", marks: 5, question: "Get year from date?", options: ["YEAR()", "GETYEAR()", "EXTRACT(YEAR FROM...)", "Both A and C"], correct: 3, hint: "Extract.", explanation: "YEAR() or EXTRACT()." },
-    { id: 368, topic: "SQL", type: "mcq", marks: 4, question: "Concatenate strings?", options: ["CONCAT()", "JOIN()", "MERGE()", "ADD()"], correct: 0, hint: "Concat.", explanation: "CONCAT(str1, str2)." },
-    { id: 369, topic: "Pandas", type: "mcq", marks: 4, question: "Datatypes of DF?", options: ["df.dtypes", "df.types", "df.type", "df.info"], correct: 0, hint: "Dtypes.", explanation: "dtypes property." },
-    { id: 370, topic: "NumPy", type: "mcq", marks: 4, question: "Get specific indices?", options: ["np.where()", "np.index()", "np.find()", "np.loc()"], correct: 0, hint: "Where.", explanation: "np.where(condition)." },
-    { id: 371, topic: "SQL", type: "mcq", marks: 5, question: "Limit with offset?", options: ["LIMIT 5 OFFSET 10", "LIMIT 10, 5", "SKIP 10 TAKE 5", "Both A and B"], correct: 3, hint: "Offset.", explanation: "MySQL supports both syntax." },
-    { id: 372, topic: "Pandas", type: "mcq", marks: 4, question: "Save to Excel?", options: ["to_excel()", "save_excel()", "write_excel()", "export_excel()"], correct: 0, hint: "To.", explanation: "to_excel()." },
-    { id: 373, topic: "SQL", type: "mcq", marks: 3, question: "Cartesian product?", options: ["CROSS JOIN", "INNER JOIN", "OUTER JOIN", "SELF JOIN"], correct: 0, hint: "Cross.", explanation: "CROSS JOIN." },
-    { id: 374, topic: "NumPy", type: "mcq", marks: 4, question: "Identity matrix (int)?", options: ["np.eye(3, dtype=int)", "np.eye(3)", "np.identity(3)", "np.int_eye(3)"], correct: 0, hint: "Dtype.", explanation: "Specify dtype." },
-    { id: 375, topic: "SQL", type: "mcq", marks: 4, question: "Not equal operator?", options: ["<>", "!=", "Both A and B", "=="], correct: 2, hint: "Standard.", explanation: "<> is standard, != often supported." }
+    // --- NEWLY GENERATED (Based on Topics of SQL_NumPy_Pandas.txt) ---
+    { id: 3100, topic: "SQL", type: "mcq", marks: 4, question: "DELETE vs TRUNCATE?", options: ["DELETE logs, TRUNCATE doesn't (faster)", "TRUNCATE logs, DELETE doesn't", "Same", "None"], correct: 0, hint: "Speed.", explanation: "TRUNCATE is a DDL command and faster as it doesn't log individual row deletions." },
+    { id: 3101, topic: "SQL", type: "mcq", marks: 4, question: "Constraint for unique values?", options: ["UNIQUE", "DISTINCT", "PRIMARY", "FOREIGN"], correct: 0, hint: "One of a kind.", explanation: "UNIQUE constraint ensures all values in a column are different." },
+    { id: 3102, topic: "Pandas", type: "mcq", marks: 5, question: "Apply function to whole DataFrame?", options: ["df.apply()", "df.map()", "df.applymap()", "df.transform()"], correct: 2, hint: "Element-wise.", explanation: "applymap() applies a function to every element of a DataFrame." },
+    { id: 3103, topic: "NumPy", type: "mcq", marks: 4, question: "Create evenly spaced numbers?", options: ["np.linspace()", "np.arange()", "np.space()", "np.equal()"], correct: 0, hint: "Linear space.", explanation: "np.linspace(start, stop, num) returns evenly spaced numbers." },
+    { id: 3104, topic: "SQL", type: "mcq", marks: 5, question: "Normalization Goal?", options: ["Reduce Redundancy", "Increase Speed", "Add Data", "Backup"], correct: 0, hint: "No duplicates.", explanation: "Organizing data to minimize redundancy and dependency." }
   ],
 
+  // ==================================================================================
+  // 4. MACHINE LEARNING (Supervised & Unsupervised)
+  // ==================================================================================
   ml: [
-    // --- MACHINE LEARNING: SUPERVISED ---
-    { id: 401, topic: "ML Fundamentals", type: "mcq", marks: 3, question: "Difference between AI, ML, and DL?", options: ["DL is subset of ML is subset of AI", "ML is subset of DL is subset of AI", "AI, ML, DL are same", "No relation"], correct: 0, hint: "Hierarchy.", explanation: "Deep Learning is a subset of Machine Learning, which is a subset of Artificial Intelligence." },
-    { id: 402, topic: "Regression", type: "mcq", marks: 4, question: "Metric to penalize large errors?", options: ["MSE", "MAE", "R2", "Accuracy"], correct: 0, hint: "Square.", explanation: "Mean Squared Error penalizes large errors by squaring differences." },
-    { id: 403, topic: "Model Evaluation", type: "mcq", marks: 4, question: "Bias-Variance Tradeoff: High Bias leads to?", options: ["Underfitting", "Overfitting", "Perfect Fit", "Noise"], correct: 0, hint: "Simple model.", explanation: "High bias implies the model is too simple (underfitting)." },
-    { id: 404, topic: "Classification", type: "mcq", marks: 5, question: "Logistic Regression Output?", options: ["Probability (0 to 1)", "Continuous Value", "Integer Class", "Text"], correct: 0, hint: "Sigmoid.", explanation: "Sigmoid function outputs a probability between 0 and 1." },
-    { id: 405, topic: "Algorithms", type: "mcq", marks: 4, question: "K-NN: What does 'K' stand for?", options: ["Number of neighbors", "Number of clusters", "Number of features", "Kernel size"], correct: 0, hint: "Neighbors.", explanation: "K Nearest Neighbors." },
-    { id: 406, topic: "Tree Models", type: "mcq", marks: 5, question: "Decision Tree split criteria?", options: ["Gini Impurity / Entropy", "MSE / MAE", "Log Loss", "Accuracy"], correct: 0, hint: "Purity.", explanation: "Used to measure the quality of a split." },
-    { id: 407, topic: "Ensemble", type: "mcq", marks: 5, question: "Random Forest is an example of?", options: ["Bagging", "Boosting", "Stacking", "Clustering"], correct: 0, hint: "Bootstrap Agg.", explanation: "Bootstrap Aggregating (Bagging)." },
-    { id: 408, topic: "Regularization", type: "mcq", marks: 5, question: "Lasso Regression adds penalty?", options: ["L1 (Absolute value)", "L2 (Square value)", "L1 + L2", "None"], correct: 0, hint: "L1.", explanation: "Adds L1 penalty (absolute value of magnitude)." },
-    { id: 409, topic: "SVM", type: "mcq", marks: 4, question: "SVM Kernel Trick purpose?", options: ["Map low-dim to high-dim", "Reduce dimensions", "Normalize data", "Clustering"], correct: 0, hint: "High dim.", explanation: "Makes non-linear separation possible in higher dimensions." },
-    
-    // --- MACHINE LEARNING: UNSUPERVISED & DIM REDUCTION ---
-    { id: 410, topic: "Clustering", type: "mcq", marks: 4, question: "K-Means: How to choose K?", options: ["Elbow Method", "Cross Validation", "Gradient Descent", "Random"], correct: 0, hint: "Elbow.", explanation: "Plot WCSS vs K to find the elbow point." },
-    { id: 411, topic: "Clustering", type: "mcq", marks: 5, question: "DBSCAN main parameter?", options: ["Epsilon & MinPts", "K & Centroids", "Depth & Leaves", "Learning Rate"], correct: 0, hint: "Density.", explanation: "Radius (Epsilon) and minimum points." },
-    { id: 412, topic: "Dim Reduction", type: "mcq", marks: 5, question: "PCA goal?", options: ["Maximize Variance", "Minimize Bias", "Maximize Accuracy", "Clustering"], correct: 0, hint: "Variance.", explanation: "Projects data to directions of maximum variance." },
-    { id: 413, topic: "Association Rule", type: "mcq", marks: 5, question: "Apriori Algorithm usage?", options: ["Market Basket Analysis", "Image Rec", "Regression", "NLP"], correct: 0, hint: "Basket.", explanation: "Finds frequent itemsets (Association Rules)." },
-    { id: 414, topic: "Linear Regression", type: "mcq", marks: 4, question: "Assumption of Linear Reg?", options: ["Homoscedasticity", "Multicollinearity", "Non-linearity", "Outliers"], correct: 0, hint: "Variance.", explanation: "Constant variance of error terms (Homoscedasticity) is a key assumption." },
-    { id: 415, topic: "Metrics", type: "mcq", marks: 4, question: "Precision calculation?", options: ["TP / (TP + FP)", "TP / (TP + FN)", "TP / TN", "TP / All"], correct: 0, hint: "Positive pred.", explanation: "Accuracy of positive predictions." }
+    // --- FROM VOLUME 1 (IDs 4000+) ---
+    { id: 4001, topic: "ML Basics", type: "mcq", marks: 3, question: "Supervised Learning requires?", options: ["Labeled Data", "Unlabeled Data", "Reward Function", "No Data"], correct: 0, hint: "Teacher.", explanation: "Models learn mapping from input to label." },
+    { id: 4002, topic: "Lifecycle", type: "mcq", marks: 3, question: "EDA stands for?", options: ["Exploratory Data Analysis", "Engineering Data Algo", "Evaluation Data Assessment", "None"], correct: 0, hint: "Explore.", explanation: "Understanding data before modeling." },
+    { id: 4003, topic: "Evaluation", type: "mcq", marks: 5, question: "Confusion Matrix True Positive?", options: ["Predicted True, Actual True", "Predicted True, Actual False", "Predicted False, Actual True", "Predicted False, Actual False"], correct: 0, hint: "Correct Hit.", explanation: "Model correctly predicted the positive class." },
+    { id: 4010, topic: "Regression", type: "mcq", marks: 4, question: "Linear Regression Assumption?", options: ["Linearity & Homoscedasticity", "Non-linearity", "Multicollinearity", "Categorical Output"], correct: 0, hint: "Straight line.", explanation: "Assumes linear relationship and constant variance." },
+    { id: 4011, topic: "Regression", type: "mcq", marks: 4, question: "R-Squared range?", options: ["0 to 1", "-1 to 1", "-inf to inf", "0 to 100"], correct: 0, hint: "Fit.", explanation: "Proportion of variance explained." },
+    { id: 4012, topic: "Regression", type: "mcq", marks: 5, question: "Lasso Regression (L1) useful for?", options: ["Feature Selection", "Complex fitting", "All features", "High Variance"], correct: 0, hint: "Zero coeffs.", explanation: "Shrinks coefficients to zero." },
+    { id: 4020, topic: "Logistic", type: "mcq", marks: 4, question: "Logistic Regression Output?", options: ["Probability (0-1)", "Continuous", "Integer", "Vector"], correct: 0, hint: "Sigmoid.", explanation: "Uses sigmoid to squash output." },
+    { id: 4021, topic: "Trees", type: "mcq", marks: 4, question: "Decision Tree split metric?", options: ["Gini Impurity / Entropy", "MSE", "Log Loss", "R2"], correct: 0, hint: "Purity.", explanation: "Measures quality of split." },
+    { id: 4022, topic: "SVM", type: "mcq", marks: 5, question: "SVM Kernel Trick?", options: ["Maps to higher dimension", "Lowers dimension", "Removes outliers", "Sorts data"], correct: 0, hint: "Non-linear.", explanation: "Enables linear separation in high-dim space." },
+    { id: 4023, topic: "Ensemble", type: "mcq", marks: 5, question: "Bagging Example?", options: ["Random Forest", "AdaBoost", "XGBoost", "Decision Tree"], correct: 0, hint: "Parallel.", explanation: "Bootstrap Aggregating." },
+    { id: 4024, topic: "KNN", type: "mcq", marks: 3, question: "KNN 'K' stands for?", options: ["Neighbors", "Kernels", "Knots", "Keys"], correct: 0, hint: "Near.", explanation: "Number of nearest neighbors to vote." },
+    { id: 4030, topic: "Clustering", type: "mcq", marks: 4, question: "K-Means Step 1?", options: ["Initialize Centroids", "Assign Points", "Update Centroids", "Calc Error"], correct: 0, hint: "Start.", explanation: "Pick K random points." },
+    { id: 4031, topic: "Clustering", type: "mcq", marks: 4, question: "Elbow Method determines?", options: ["Optimal K", "Best features", "Outliers", "Speed"], correct: 0, hint: "Bend.", explanation: "Tradeoff between variance and K." },
+    { id: 4032, topic: "Dimensionality", type: "mcq", marks: 5, question: "PCA objective?", options: ["Maximize Variance", "Minimize Variance", "Preserve Mean", "Cluster"], correct: 0, hint: "Spread.", explanation: "Projects data to axis of max variance." },
+    { id: 4033, topic: "Association", type: "mcq", marks: 5, question: "Apriori Algorithm finding?", options: ["Frequent Itemsets", "Clusters", "Trends", "Images"], correct: 0, hint: "Basket.", explanation: "Market Basket Analysis." },
+
+    // --- FROM EXTENDED DB (IDs 800+) ---
+    { id: 800, topic: "ML Fundamentals", type: "mcq", marks: 3, question: "Which learning type uses labeled data?", options: ["Supervised", "Unsupervised", "Reinforcement", "Clustering"], correct: 0, hint: "Teacher provided.", explanation: "Supervised learning uses input-output pairs." },
+    { id: 801, topic: "ML Fundamentals", type: "mcq", marks: 3, question: "What is the primary goal of the Training Phase?", options: ["Minimize Loss", "Maximize Loss", "Test Accuracy", "Deploy Model"], correct: 0, hint: "Learn patterns.", explanation: "The model learns parameters to minimize the error (loss) on training data." },
+    { id: 802, topic: "Data Splitting", type: "mcq", marks: 4, question: "Why do we use a Validation Set?", options: ["Hyperparameter Tuning", "Final Evaluation", "Training Weights", "Data Augmentation"], correct: 0, hint: "Tuning.", explanation: "Validation data is used to tune hyperparameters and prevent overfitting before final testing." },
+    { id: 803, topic: "Bias-Variance", type: "mcq", marks: 5, question: "High Bias typically leads to?", options: ["Underfitting", "Overfitting", "Optimal Fit", "High Variance"], correct: 0, hint: "Too simple.", explanation: "High bias suggests the model is too simple to capture the underlying pattern (Underfitting)." },
+    { id: 804, topic: "Bias-Variance", type: "mcq", marks: 5, question: "High Variance typically indicates?", options: ["Overfitting", "Underfitting", "Perfect Fit", "Data Error"], correct: 0, hint: "Noise.", explanation: "High variance means the model captures noise and doesn't generalize (Overfitting)." },
+    { id: 805, topic: "Lifecycle", type: "mcq", marks: 4, question: "First step in ML Development Lifecycle?", options: ["Problem Definition", "Data Collection", "Modeling", "Deployment"], correct: 0, hint: "Goal.", explanation: "Understanding the business problem is the critical first step." },
+    { id: 820, topic: "Linear Regression", type: "mcq", marks: 4, question: "Goal of Ordinary Least Squares (OLS)?", options: ["Minimize Sum of Squared Residuals", "Maximize R2", "Minimize Absolute Error", "Maximize Coefficients"], correct: 0, hint: "Squared errors.", explanation: "OLS minimizes sum of squared vertical distances between data points and the line." },
+    { id: 821, topic: "Regression Assumptions", type: "mcq", marks: 5, question: "What is Homoscedasticity?", options: ["Constant variance of errors", "Normal distribution of Y", "Linear relationship", "No multicollinearity"], correct: 0, hint: "Equal spread.", explanation: "The variance of residual terms should be constant at all levels of x." },
+    { id: 822, topic: "Regression Assumptions", type: "mcq", marks: 5, question: "Multicollinearity refers to?", options: ["High correlation between independent variables", "Correlation between X and Y", "Non-linear data", "Missing values"], correct: 0, hint: "Multi-features.", explanation: "When independent variables are highly correlated, it destabilizes coefficient estimates." },
+    { id: 823, topic: "Metrics", type: "mcq", marks: 4, question: "Why use Adjusted R2 over R2?", options: ["Penalizes useless features", "Easier to calculate", "Always positive", "Ignores outliers"], correct: 0, hint: "Penalty.", explanation: "Adjusted R2 decreases if a new term improves the model less than expected by chance." },
+    { id: 824, topic: "Regularization", type: "mcq", marks: 5, question: "Lasso Regression (L1) unique capability?", options: ["Feature Selection", "Faster Training", "Non-linear fitting", "Handling Missing Data"], correct: 0, hint: "Zero coefficients.", explanation: "Lasso can shrink coefficients to exactly zero, effectively selecting features." },
+    { id: 825, topic: "Regularization", type: "mcq", marks: 5, question: "Ridge Regression (L2) adds what penalty?", options: ["Squared magnitude of coefficients", "Absolute magnitude", "Log magnitude", "None"], correct: 0, hint: "Square.", explanation: "Adds lambda * sum(beta^2)." },
+    { id: 826, topic: "Gradient Descent", type: "mcq", marks: 4, question: "Stochastic Gradient Descent updates weights:", options: ["After every sample", "After whole dataset", "After a mini-batch", "Randomly"], correct: 0, hint: "One by one.", explanation: "SGD updates parameters for each training example." },
+    { id: 827, topic: "Polynomial Regression", type: "mcq", marks: 4, question: "Risk of high-degree polynomial regression?", options: ["Overfitting", "Underfitting", "High Bias", "Convergence failure"], correct: 0, hint: "Wiggles.", explanation: "High degrees cause the model to fit noise perfectly." },
+    { id: 828, topic: "SVR", type: "mcq", marks: 5, question: "What is the 'epsilon-tube' in SVR?", options: ["Insensitive region", "Kernel function", "Learning rate", "Regularization"], correct: 0, hint: "Ignore errors.", explanation: "Errors within the epsilon-tube are not penalized." },
+    { id: 850, topic: "Logistic Regression", type: "mcq", marks: 3, question: "Range of Sigmoid function?", options: ["0 to 1", "-1 to 1", "0 to infinity", "-inf to inf"], correct: 0, hint: "Probability.", explanation: "Sigmoid maps inputs to (0, 1)." },
+    { id: 851, topic: "Metrics", type: "mcq", marks: 4, question: "Formula for Precision?", options: ["TP / (TP + FP)", "TP / (TP + FN)", "TP / Total", "TN / (TN + FP)"], correct: 0, hint: "True Positives / Predicted Positives.", explanation: "Precision measures accuracy of positive predictions." },
+    { id: 852, topic: "Metrics", type: "mcq", marks: 4, question: "Recall is also known as?", options: ["Sensitivity", "Specificity", "Precision", "Accuracy"], correct: 0, hint: "True Positive Rate.", explanation: "Recall = TP / (TP + FN)." },
+    { id: 853, topic: "Metrics", type: "mcq", marks: 5, question: "F1 Score is?", options: ["Harmonic mean of Precision and Recall", "Arithmetic mean", "Average", "Sum"], correct: 0, hint: "Harmonic.", explanation: "2 * (P*R)/(P+R)." },
+    { id: 854, topic: "Decision Trees", type: "mcq", marks: 4, question: "Criterion to split nodes in Classification?", options: ["Gini Impurity", "MSE", "R-Squared", "Euclidean Distance"], correct: 0, hint: "Purity.", explanation: "Gini Impurity or Entropy." },
+    { id: 855, topic: "Ensemble", type: "mcq", marks: 5, question: "Bagging mainly reduces?", options: ["Variance", "Bias", "Noise", "Training Time"], correct: 0, hint: "Bootstrap.", explanation: "Bagging (Bootstrap Aggregating) reduces variance (overfitting)." },
+    { id: 856, topic: "Ensemble", type: "mcq", marks: 5, question: "Random Forest is an example of?", options: ["Bagging", "Boosting", "Stacking", "Clustering"], correct: 0, hint: "Parallel trees.", explanation: "It uses Bagging with feature randomness." },
+    { id: 857, topic: "Ensemble", type: "mcq", marks: 5, question: "Boosting works by?", options: ["Sequential correction of errors", "Parallel training", "Random subspaces", "Clustering"], correct: 0, hint: "Sequential.", explanation: "Trains models sequentially to correct previous errors (e.g., AdaBoost, XGBoost)." },
+    { id: 858, topic: "SVM", type: "mcq", marks: 5, question: "Role of C parameter in SVM?", options: ["Margin hardness", "Kernel width", "Polynomial degree", "Learning rate"], correct: 0, hint: "Strictness.", explanation: "High C = Hard Margin (less misclassification allowed), Low C = Soft Margin." },
+    { id: 859, topic: "SVM", type: "mcq", marks: 4, question: "Kernel Trick allows SVM to?", options: ["Solve non-linear problems", "Run faster", "Reduce dimensions", "Use less memory"], correct: 0, hint: "High dim.", explanation: "Maps data to higher dimensions to find a linear separator." },
+    { id: 860, topic: "KNN", type: "mcq", marks: 3, question: "Is KNN parametric or non-parametric?", options: ["Non-parametric", "Parametric", "Semi-parametric", "Linear"], correct: 0, hint: "Lazy.", explanation: "Makes no assumptions about data distribution." },
+    { id: 861, topic: "Naive Bayes", type: "mcq", marks: 4, question: "Key assumption of Naive Bayes?", options: ["Feature independence", "Data normality", "Linearity", "Homoscedasticity"], correct: 0, hint: "Naive.", explanation: "Assumes features are independent given the class." },
+    { id: 900, topic: "Clustering", type: "mcq", marks: 4, question: "K-Means++ initialization helps to?", options: ["Avoid local optima", "Reduce K", "Increase clusters", "Use density"], correct: 0, hint: "Better start.", explanation: "Spreads out initial centroids." },
+    { id: 901, topic: "Clustering", type: "mcq", marks: 5, question: "DBSCAN advantage over K-Means?", options: ["Handles arbitrary shapes & noise", "Faster", "Needs specific K", "Works on high dims"], correct: 0, hint: "Density.", explanation: "Finds non-spherical clusters and outliers." },
+    { id: 902, topic: "PCA", type: "mcq", marks: 5, question: "First Principal Component captures?", options: ["Maximum Variance", "Minimum Variance", "Mean", "Median"], correct: 0, hint: "Spread.", explanation: "Direction of greatest variance in data." },
+    { id: 903, topic: "PCA", type: "mcq", marks: 4, question: "Is PCA supervised or unsupervised?", options: ["Unsupervised", "Supervised", "Reinforcement", "Semi-supervised"], correct: 0, hint: "No labels.", explanation: "Does not use target labels." },
+    { id: 904, topic: "LDA", type: "mcq", marks: 5, question: "LDA differs from PCA by being?", options: ["Supervised", "Unsupervised", "Linear", "Non-linear"], correct: 0, hint: "Labels.", explanation: "LDA uses class labels to maximize class separability." },
+    { id: 905, topic: "Association Rules", type: "mcq", marks: 4, question: "Support in Apriori implies?", options: ["Frequency of itemset", "Confidence", "Lift", "Total Sales"], correct: 0, hint: "Popularity.", explanation: "Fraction of transactions containing the itemset." },
+
+    // --- NEWLY GENERATED (Based on other_topic.txt ML Section) ---
+    { id: 4100, topic: "Dim Reduction", type: "mcq", marks: 5, question: "t-SNE primary use?", options: ["Visualization of high-dim data", "Compression", "Noise Reduction", "Classification"], correct: 0, hint: "Plots.", explanation: "t-SNE is excellent for 2D/3D visualization of high-dimensional data." },
+    { id: 4101, topic: "Evaluation", type: "mcq", marks: 4, question: "ROC Curve plots?", options: ["TPR vs FPR", "Precision vs Recall", "Accuracy vs Loss", "TP vs TN"], correct: 0, hint: "Rates.", explanation: "Receiver Operating Characteristic curve plots True Positive Rate vs False Positive Rate." },
+    { id: 4102, topic: "Ensemble", type: "mcq", marks: 5, question: "Hard Voting in Ensemble?", options: ["Majority Class wins", "Average Probabilities", "Weighted Average", "Min Probability"], correct: 0, hint: "Votes.", explanation: "Hard voting predicts the class that gets the most votes from base models." },
+    { id: 4103, topic: "Algorithms", type: "mcq", marks: 4, question: "Assumption of Naive Bayes?", options: ["Feature Independence", "Linearity", "Normal Distribution", "None"], correct: 0, hint: "Naive.", explanation: "It assumes all features are independent of each other." },
+    { id: 4104, topic: "Optimization", type: "mcq", marks: 5, question: "Mini-Batch Gradient Descent?", options: ["Update after small batch", "Update after 1 sample", "Update after full dataset", "Random update"], correct: 0, hint: "Middle ground.", explanation: "Combines benefits of SGD and Batch GD by using small batches." },
+    { id: 4105, topic: "Unsupervised", type: "mcq", marks: 4, question: "Hierarchical Clustering Type?", options: ["Agglomerative", "Density-based", "Centroid-based", "Probabilistic"], correct: 0, hint: "Bottom-up.", explanation: "Agglomerative is a bottom-up approach." }
   ],
 
+  // ==================================================================================
+  // 5. DEEP LEARNING (DL)
+  // ==================================================================================
   dl: [
-    // --- DEEP LEARNING: CV & ANN ---
-    { id: 501, topic: "OpenCV", type: "mcq", marks: 3, question: "Read image in grayscale?", options: ["cv2.imread(img, 0)", "cv2.read(img, gray)", "cv2.load(img)", "cv2.gray(img)"], correct: 0, hint: "Flag 0.", explanation: "Flag 0 or cv2.IMREAD_GRAYSCALE." },
-    { id: 502, topic: "OpenCV", type: "mcq", marks: 4, question: "Edge detection algo?", options: ["Canny", "Sobel", "Laplacian", "All of above"], correct: 3, hint: "All.", explanation: "All are edge detection methods." },
-    { id: 503, topic: "ANN", type: "mcq", marks: 4, question: "Activation function for hidden layers?", options: ["ReLU", "Sigmoid", "Softmax", "Linear"], correct: 0, hint: "Non-linear.", explanation: "ReLU is standard to avoid vanishing gradients." },
-    { id: 504, topic: "ANN", type: "mcq", marks: 5, question: "Problem with Sigmoid?", options: ["Vanishing Gradient", "Exploding Gradient", "Dead Neurons", "None"], correct: 0, hint: "Small deriv.", explanation: "Gradients become very small during backprop." },
-    { id: 505, topic: "Optimization", type: "mcq", marks: 4, question: "Popular optimizer?", options: ["Adam", "SGD", "RMSProp", "All"], correct: 3, hint: "Adaptive.", explanation: "Adam is widely used, but all are valid." },
-    { id: 506, topic: "Regularization", type: "mcq", marks: 4, question: "Dropout layer purpose?", options: ["Prevent Overfitting", "Speed up training", "Normalize inputs", "Increase accuracy"], correct: 0, hint: "Drop nodes.", explanation: "Randomly disables neurons to improve generalization." },
+    // --- FROM VOLUME 1 (IDs 5000+) ---
+    { id: 5001, topic: "ANN", type: "mcq", marks: 3, question: "Perceptron Limitation?", options: ["Cannot solve XOR (Linear)", "Too slow", "Too deep", "Complex"], correct: 0, hint: "Linear.", explanation: "Can only separate linearly separable data." },
+    { id: 5002, topic: "Activation", type: "mcq", marks: 4, question: "ReLU Function?", options: ["max(0, x)", "1/(1+e^-x)", "tanh(x)", "x"], correct: 0, hint: "Positive.", explanation: "Standard for hidden layers." },
+    { id: 5003, topic: "Activation", type: "mcq", marks: 4, question: "Softmax usage?", options: ["Multi-class output probability", "Binary output", "Regression", "Hidden layer"], correct: 0, hint: "Sum to 1.", explanation: "Converts logits to prob dist." },
+    { id: 5004, topic: "Training", type: "mcq", marks: 4, question: "Backpropagation purpose?", options: ["Calculate Gradients", "Initialize Weights", "Forward Pass", "Predict"], correct: 0, hint: "Chain rule.", explanation: "Propagates error backward." },
+    { id: 5005, topic: "Optimization", type: "mcq", marks: 5, question: "Momentum helps SGD?", options: ["Accelerate in relevant direction", "Slow down", "Stop overfitting", "Reduce size"], correct: 0, hint: "Velocity.", explanation: "Dampens oscillations." },
+    { id: 5010, topic: "CNN", type: "mcq", marks: 4, question: "Convolution Filter learns?", options: ["Features (Edges/Textures)", "Classes", "Probabilities", "Nothing"], correct: 0, hint: "Pattern.", explanation: "Extracts local spatial features." },
+    { id: 5011, topic: "CNN Ops", type: "mcq", marks: 4, question: "Padding 'Same'?", options: ["Output size = Input size", "Reduced size", "No padding", "Double size"], correct: 0, hint: "Equal.", explanation: "Maintains spatial dimensions." },
+    { id: 5012, topic: "CNN Ops", type: "mcq", marks: 4, question: "Max Pooling?", options: ["Downsamples (Reduces dim)", "Upsamples", "Adds noise", "Classifies"], correct: 0, hint: "Shrink.", explanation: "Takes max value in window." },
+    { id: 5013, topic: "Architecture", type: "mcq", marks: 5, question: "Transfer Learning?", options: ["Use pre-trained weights on new task", "Train from scratch", "Unsupervised", "Reinforcement"], correct: 0, hint: "Transfer.", explanation: "Fine-tune existing models (e.g., VGG, ResNet)." },
+    { id: 5020, topic: "RNN", type: "mcq", marks: 4, question: "RNN limitation?", options: ["Vanishing Gradient (Short memory)", "Too fast", "Images only", "No weights"], correct: 0, hint: "Forgets.", explanation: "Struggles with long dependencies." },
+    { id: 5021, topic: "LSTM", type: "mcq", marks: 5, question: "LSTM Forget Gate?", options: ["Decides what info to discard", "Adds info", "Outputs info", "Initializes"], correct: 0, hint: "Remove.", explanation: "Controls memory retention." },
+    { id: 5022, topic: "GRU", type: "mcq", marks: 5, question: "GRU vs LSTM?", options: ["GRU has fewer gates (No output gate)", "GRU is slower", "GRU has more gates", "Same"], correct: 0, hint: "Simplified.", explanation: "GRU merges cell/hidden state." },
+    { id: 5030, topic: "Transformers", type: "mcq", marks: 6, question: "Self-Attention Mechanism?", options: ["Weighted importance of all tokens", "Convolution", "Recurrence", "Pooling"], correct: 0, hint: "Context.", explanation: "Relates every word to every word." },
+    { id: 5031, topic: "Transformers", type: "mcq", marks: 5, question: "Positional Encoding?", options: ["Injects order information", "Encodes values", "Compresses", "Encrypts"], correct: 0, hint: "Sequence.", explanation: "Transformers process in parallel, need order info." },
+    { id: 5032, topic: "BERT", type: "mcq", marks: 5, question: "BERT is?", options: ["Encoder-only / Bidirectional", "Decoder-only", "RNN", "CNN"], correct: 0, hint: "Understanding.", explanation: "Bidirectional Encoder Representations." },
+    { id: 5033, topic: "GPT", type: "mcq", marks: 5, question: "GPT is?", options: ["Decoder-only / Autoregressive", "Encoder-only", "Bi-directional", "Stateless"], correct: 0, hint: "Generation.", explanation: "Generates next token." },
 
-    // --- DEEP LEARNING: CNN, RNN, TRANSFORMERS ---
-    { id: 507, topic: "CNN", type: "mcq", marks: 5, question: "Convolution operation purpose?", options: ["Feature Extraction", "Classification", "Reduction", "Normalization"], correct: 0, hint: "Filters.", explanation: "Extracts features like edges, textures." },
-    { id: 508, topic: "CNN", type: "mcq", marks: 4, question: "Pooling layer purpose?", options: ["Reduce dimensions", "Increase params", "Activation", "None"], correct: 0, hint: "Downsample.", explanation: "Reduces spatial dimensions and computation." },
-    { id: 509, topic: "CNN", type: "mcq", marks: 5, question: "Pretrained Model usage?", options: ["Transfer Learning", "Unsupervised Learning", "Reinforcement Learning", "None"], correct: 0, hint: "Transfer.", explanation: "Using learned weights on new tasks." },
-    { id: 510, topic: "RNN", type: "mcq", marks: 4, question: "RNN main issue?", options: ["Vanishing Gradient", "High Bias", "Low Variance", "Overfitting"], correct: 0, hint: "Long term.", explanation: "Difficulty learning long-term dependencies." },
-    { id: 511, topic: "RNN", type: "mcq", marks: 5, question: "LSTM component?", options: ["Gates (Input, Forget, Output)", "Convolution", "Pooling", "Attention"], correct: 0, hint: "Control flow.", explanation: "Gates control information flow." },
-    { id: 512, topic: "Transformers", type: "mcq", marks: 5, question: "Key Transformer mechanism?", options: ["Self-Attention", "Convolution", "Recurrence", "Pooling"], correct: 0, hint: "Attention.", explanation: "Allows model to weigh importance of different words." },
-    { id: 513, topic: "Transformers", type: "mcq", marks: 5, question: "BERT architecture?", options: ["Encoder only", "Decoder only", "Encoder-Decoder", "RNN"], correct: 0, hint: "Bidirectional.", explanation: "Encoder stack of Transformer." },
-    { id: 514, topic: "Deep Learning", type: "mcq", marks: 4, question: "Softmax output sum?", options: ["1.0", "0.0", "100", "Variable"], correct: 0, hint: "Prob dist.", explanation: "Outputs a probability distribution summing to 1." },
-    { id: 515, topic: "OpenCV", type: "mcq", marks: 4, question: "Morphological Ops: Erosion?", options: ["Shrinks bright regions", "Expands bright regions", "Blurs", "Sharpens"], correct: 0, hint: "Erode.", explanation: "Removes pixels at boundaries." }
+    // --- FROM EXTENDED DB (IDs 1000+) ---
+    { id: 1000, topic: "Perceptron", type: "mcq", marks: 3, question: "A Perceptron is?", options: ["A single layer binary classifier", "A deep network", "An RNN", "A transformer"], correct: 0, hint: "Basic unit.", explanation: "The simplest form of ANN." },
+    { id: 1001, topic: "Activation", type: "mcq", marks: 4, question: "ReLU equation?", options: ["max(0, x)", "1/(1+e^-x)", "tanh(x)", "x"], correct: 0, hint: "Rectified.", explanation: "Zero for negative, identity for positive." },
+    { id: 1002, topic: "Activation", type: "mcq", marks: 4, question: "Why use Softmax in output?", options: ["Probabilities sum to 1", "To predict real values", "To allow negative outputs", "Faster calc"], correct: 0, hint: "Multi-class.", explanation: "Converts logits to probability distribution." },
+    { id: 1003, topic: "Training", type: "mcq", marks: 4, question: "One Epoch means?", options: ["One pass of full dataset", "One batch", "One update", "One validation"], correct: 0, hint: "Full cycle.", explanation: "Entire dataset passed forward and backward once." },
+    { id: 1004, topic: "Optimization", type: "mcq", marks: 5, question: "Vanishing Gradient affects?", options: ["Sigmoid/Tanh deep networks", "ReLU networks", "Shallow networks", "Trees"], correct: 0, hint: "Small deriv.", explanation: "Sigmoid gradients are < 0.25, causing decay in deep layers." },
+    { id: 1005, topic: "Optimization", type: "mcq", marks: 4, question: "Adam optimizer combines?", options: ["Momentum + RMSProp", "SGD + Momentum", "Adagrad + SGD", "None"], correct: 0, hint: "Best of both.", explanation: "Combines momentum and adaptive learning rates." },
+    { id: 1006, topic: "Regularization", type: "mcq", marks: 4, question: "Dropout prevents overfitting by?", options: ["Randomly disabling neurons", "Adding L1 penalty", "Normalizing inputs", "Stopping early"], correct: 0, hint: "Switch off.", explanation: "Prevents co-adaptation of features." },
+    { id: 1007, topic: "Backpropagation", type: "mcq", marks: 5, question: "Backprop relies on?", options: ["Chain Rule", "Product Rule", "Sum Rule", "Bayes Rule"], correct: 0, hint: "Calculus.", explanation: "Chain rule is used to compute gradients." },
+    { id: 1030, topic: "CNN Basics", type: "mcq", marks: 4, question: "Convolution main purpose?", options: ["Feature Extraction", "Classification", "Regularization", "Flattening"], correct: 0, hint: "Filters.", explanation: "Extracts local features like edges and textures." },
+    { id: 1031, topic: "CNN Ops", type: "mcq", marks: 4, question: "Stride of 2 results in?", options: ["Downsampling by half", "Upsampling by 2", "Same size", "Double depth"], correct: 0, hint: "Skip.", explanation: "Reduces spatial dimensions." },
+    { id: 1032, topic: "CNN Ops", type: "mcq", marks: 4, question: "Padding 'Same' ensures?", options: ["Output size = Input size", "No padding", "Output = 0", "Double padding"], correct: 0, hint: "Preserve.", explanation: "Keeps spatial dimensions constant." },
+    { id: 1033, topic: "Pooling", type: "mcq", marks: 3, question: "Max Pooling does what?", options: ["Takes largest value in window", "Averages window", "Sums window", "Multiplies"], correct: 0, hint: "Max.", explanation: "Downsamples by taking max value." },
+    { id: 1034, topic: "Architectures", type: "mcq", marks: 5, question: "LeNet-5 was designed for?", options: ["Handwritten digits (MNIST)", "Face Rec", "Object Det", "Translation"], correct: 0, hint: "Postal.", explanation: "Early CNN for digit recognition." },
+    { id: 1035, topic: "Transfer Learning", type: "mcq", marks: 5, question: "Fine-tuning means?", options: ["Training last layers of pre-trained model", "Training from scratch", "Freezing all layers", "Random weights"], correct: 0, hint: "Adjust.", explanation: " adapting a pre-trained model to a new task." },
+    { id: 1036, topic: "Augmentation", type: "mcq", marks: 4, question: "Data Augmentation purpose?", options: ["Increase generalization", "Decrease data size", "Faster training", "Reduce noise"], correct: 0, hint: "Variations.", explanation: "Creates modified copies of data to reduce overfitting." },
+    { id: 1060, topic: "RNN", type: "mcq", marks: 4, question: "Vanilla RNN limitation?", options: ["Short-term memory / Vanishing Gradient", "Too fast", "Binary only", "Cannot process text"], correct: 0, hint: "Forgets.", explanation: "Struggles with long dependencies." },
+    { id: 1061, topic: "LSTM", type: "mcq", marks: 5, question: "Role of Forget Gate in LSTM?", options: ["Decide what info to discard", "Decide input", "Decide output", "Initialize weights"], correct: 0, hint: "Discard.", explanation: "Controls information retention." },
+    { id: 1062, topic: "Transformers", type: "mcq", marks: 6, question: "Self-Attention computes?", options: ["Relevance of tokens to each other", "Convolution", "Recurrence", "Pooling"], correct: 0, hint: "Focus.", explanation: "Weights importance of all words relative to current word." },
+    { id: 1063, topic: "Transformers", type: "mcq", marks: 5, question: "Positional Encoding needed because?", options: ["No recurrence/order awareness", "Images needed", "Outputs are probs", "Faster"], correct: 0, hint: "Parallel.", explanation: "Transformers process in parallel, so order must be injected." },
+    { id: 1064, topic: "BERT", type: "mcq", marks: 5, question: "BERT uses which training?", options: ["Masked LM (MLM)", "Causal LM", "Translation", "Regression"], correct: 0, hint: "Blanks.", explanation: "Predicts masked words in a sentence." },
+    { id: 1100, topic: "OpenCV", type: "mcq", marks: 3, question: "OpenCV reads images as?", options: ["BGR", "RGB", "HSV", "CMYK"], correct: 0, hint: "Blue first.", explanation: "Standard OpenCV format is BGR." },
+    { id: 1101, topic: "Processing", type: "mcq", marks: 4, question: "Gaussian Blur used for?", options: ["Noise Reduction", "Edge Detection", "Sharpening", "Inverting"], correct: 0, hint: "Smooth.", explanation: "Smoothes image to remove high-freq noise." },
+    { id: 1102, topic: "Thresholding", type: "mcq", marks: 5, question: "Otsu's method finds?", options: ["Optimal global threshold", "Adaptive threshold", "Gradient", "Edges"], correct: 0, hint: "Auto.", explanation: "Minimizes intra-class variance." },
+    { id: 1103, topic: "Morphology", type: "mcq", marks: 4, question: "Erosion operation?", options: ["Shrinks bright regions", "Expands bright regions", "Blurs", "Sharpens"], correct: 0, hint: "Erode.", explanation: "Removes pixels from object boundaries." },
+
+    // --- NEWLY GENERATED (Based on other_topic.txt DL Section) ---
+    { id: 5100, topic: "Optimizers", type: "mcq", marks: 4, question: "RMSProp main feature?", options: ["Adaptive Learning Rate", "Momentum", "Second Order", "None"], correct: 0, hint: "Adapt.", explanation: "Maintains a moving average of squared gradients." },
+    { id: 5101, topic: "Regularization", type: "mcq", marks: 4, question: "Batch Normalization benefit?", options: ["Faster training & Stability", "Reduced Model Size", "Feature Selection", "None"], correct: 0, hint: "Normalize.", explanation: "Normalizes layer inputs, reducing internal covariate shift." },
+    { id: 5102, topic: "Activation", type: "mcq", marks: 3, question: "Leaky ReLU solves?", options: ["Dying ReLU problem", "Exploding Gradients", "Overfitting", "Slow calc"], correct: 0, hint: "Leak.", explanation: "Allows small negative values to pass through." },
+    { id: 5103, topic: "Initialization", type: "mcq", marks: 5, question: "Xavier Initialization use?", options: ["Sigmoid/Tanh activations", "ReLU", "Output layer", "RNN"], correct: 0, hint: "Symmetric.", explanation: "Best for symmetric activation functions." },
+    { id: 5104, topic: "Architecture", type: "mcq", marks: 5, question: "ResNet Innovation?", options: ["Skip Connections", "Inception Modules", "Dense Blocks", "Attention"], correct: 0, hint: "Skip.", explanation: "Residual connections solve vanishing gradient in deep nets." }
   ],
 
+  // ==================================================================================
+  // 6. NATURAL LANGUAGE PROCESSING (NLP)
+  // ==================================================================================
   nlp: [
-    // --- NLP FUNDAMENTALS & TECHNIQUES ---
-    { id: 601, topic: "Preprocessing", type: "mcq", marks: 3, question: "Tokenization is?", options: ["Splitting text into units", "Removing stopwords", "Finding root word", "Vectorization"], correct: 0, hint: "Tokens.", explanation: "Breaking text into words/sentences." },
-    { id: 602, topic: "Preprocessing", type: "mcq", marks: 4, question: "Stemming vs Lemmatization?", options: ["Stemming chops, Lemma uses dict", "Lemma chops, Stemming uses dict", "Same", "None"], correct: 0, hint: "Root.", explanation: "Lemmatization returns actual dictionary root word." },
-    { id: 603, topic: "Feature Extraction", type: "mcq", marks: 5, question: "TF-IDF stands for?", options: ["Term Frequency-Inverse Document Frequency", "Total Frequency-Inverse Data Frequency", "Text Frequency-Index Data Frequency", "None"], correct: 0, hint: "Importance.", explanation: "Measures word importance in document vs corpus." },
-    { id: 604, topic: "Embeddings", type: "mcq", marks: 5, question: "Word2Vec goal?", options: ["Capture semantic meaning", "Count words", "Sort words", "Spell check"], correct: 0, hint: "Context.", explanation: "Maps words to vectors where similar words are close." },
-    { id: 605, topic: "Embeddings", type: "mcq", marks: 5, question: "CBOW model predicts?", options: ["Target word from context", "Context from target", "Next sentence", "Sentiment"], correct: 0, hint: "Bag of words.", explanation: "Continuous Bag of Words predicts target from context." },
-    { id: 606, topic: "Tasks", type: "mcq", marks: 4, question: "POS Tagging identifies?", options: ["Parts of Speech", "Position of Sentence", "Positive Sentiment", "Possible Options"], correct: 0, hint: "Grammar.", explanation: "Noun, Verb, Adjective, etc." },
-    { id: 607, topic: "Techniques", type: "mcq", marks: 4, question: "N-gram with N=2?", options: ["Bigram", "Unigram", "Trigram", "Quadgram"], correct: 0, hint: "Bi.", explanation: "Sequence of 2 items." },
-    { id: 608, topic: "Preprocessing", type: "mcq", marks: 3, question: "Stop words example?", options: ["'the', 'is', 'at'", "'apple', 'run'", "'good', 'bad'", "None"], correct: 0, hint: "Common.", explanation: "High frequency words with little meaning." },
-    { id: 609, topic: "Feature Extraction", type: "mcq", marks: 4, question: "Bag of Words ignores?", options: ["Word order", "Word frequency", "Word presence", "None"], correct: 0, hint: "Bag.", explanation: "Only counts frequency, loses context/order." },
-    { id: 610, topic: "Pipeline", type: "mcq", marks: 4, question: "First step in NLP pipeline?", options: ["Data Acquisition/Cleaning", "Modelling", "Deployment", "Feature Engineering"], correct: 0, hint: "Start.", explanation: "Getting and cleaning data." }
+    // --- FROM VOLUME 1 (IDs 6000+) ---
+    { id: 6001, topic: "Preprocessing", type: "mcq", marks: 3, question: "Tokenization?", options: ["Splitting text into units", "Stemming", "Vectorizing", "Cleaning"], correct: 0, hint: "Break.", explanation: "Segments text into words/subwords." },
+    { id: 6002, topic: "Preprocessing", type: "mcq", marks: 4, question: "Lemmatization vs Stemming?", options: ["Lemma finds root (dictionary), Stem chops", "Stem finds root", "Same", "None"], correct: 0, hint: "Meaning.", explanation: "Lemmatization uses morphological analysis." },
+    { id: 6003, topic: "Preprocessing", type: "mcq", marks: 3, question: "Stop words?", options: ["Common words (the, is)", "Rare words", "Nouns", "Verbs"], correct: 0, hint: "Noise.", explanation: "Filtered out to reduce noise." },
+    { id: 6004, topic: "Features", type: "mcq", marks: 5, question: "TF-IDF purpose?", options: ["Weigh terms by rarity/importance", "Count frequency only", "Sort words", "Embed"], correct: 0, hint: "Inverse.", explanation: "High weight for rare terms in docs." },
+    { id: 6005, topic: "Embeddings", type: "mcq", marks: 5, question: "Word2Vec Skip-gram?", options: ["Predict Context from Target", "Predict Target from Context", "Predict Sentiment", "None"], correct: 0, hint: "Skip out.", explanation: "Uses center word to predict neighbors." },
+    { id: 6006, topic: "Embeddings", type: "mcq", marks: 5, question: "GloVe method?", options: ["Matrix Factorization (Co-occurrence)", "Neural Net", "Decision Tree", "Rule"], correct: 0, hint: "Global.", explanation: "Global Vectors." },
+    { id: 6007, topic: "Tasks", type: "mcq", marks: 4, question: "NER identifies?", options: ["Entities (Person, Org, Loc)", "Verbs", "Adjectives", "Topics"], correct: 0, hint: "Names.", explanation: "Named Entity Recognition." },
+    { id: 6008, topic: "Tasks", type: "mcq", marks: 4, question: "POS Tagging?", options: ["Grammatical labeling (Noun, Verb)", "Sentiment", "Translation", "Summary"], correct: 0, hint: "Speech.", explanation: "Part-Of-Speech tagging." },
+
+    // --- FROM EXTENDED DB (IDs 1200+) ---
+    { id: 1200, topic: "Preprocessing", type: "mcq", marks: 3, question: "Tokenization is?", options: ["Splitting text into units", "Removing stopwords", "Finding root", "Vectorizing"], correct: 0, hint: "Split.", explanation: "Breaking text into words/sentences." },
+    { id: 1201, topic: "Preprocessing", type: "mcq", marks: 4, question: "Stemming vs Lemmatization?", options: ["Stemming chops, Lemma uses dict", "Lemma chops", "Same", "None"], correct: 0, hint: "Root.", explanation: "Lemmatization finds the morphological root." },
+    { id: 1202, topic: "Stopwords", type: "mcq", marks: 3, question: "Stop words are?", options: ["High freq, low meaning", "Low freq, high meaning", "Nouns", "Verbs"], correct: 0, hint: "The, Is.", explanation: "Common words filtered out." },
+    { id: 1203, topic: "N-grams", type: "mcq", marks: 4, question: "Bigram is?", options: ["Sequence of 2 words", "1 word", "3 words", "Sentence"], correct: 0, hint: "Bi.", explanation: "Two consecutive items." },
+    { id: 1230, topic: "TF-IDF", type: "mcq", marks: 5, question: "High IDF value means?", options: ["Word is rare across corpus", "Word is common", "Word is short", "Word is stopword"], correct: 0, hint: "Inverse.", explanation: "Rare words carry more information." },
+    { id: 1231, topic: "Word2Vec", type: "mcq", marks: 5, question: "Skip-gram predicts?", options: ["Context from Target", "Target from Context", "Next sentence", "Sentiment"], correct: 0, hint: "Skip out.", explanation: "Predicts surrounding words given center word." },
+    { id: 1232, topic: "Word2Vec", type: "mcq", marks: 5, question: "CBOW predicts?", options: ["Target from Context", "Context from Target", "Next sentence", "Topic"], correct: 0, hint: "Bag.", explanation: "Continuous Bag of Words predicts center word from context." },
+    { id: 1233, topic: "Embeddings", type: "mcq", marks: 5, question: "Vector Arithmetic: King - Man + Woman = ?", options: ["Queen", "Princess", "Prince", "Monarch"], correct: 0, hint: "Analogy.", explanation: "Captures semantic gender relationship." },
+    { id: 1234, topic: "Tasks", type: "mcq", marks: 4, question: "NER stands for?", options: ["Named Entity Recognition", "Neural Entity Rec", "Noun Entity Rule", "None"], correct: 0, hint: "Entities.", explanation: "Identifying real-world objects in text." },
+    { id: 1235, topic: "Tasks", type: "mcq", marks: 4, question: "POS Tagging identifies?", options: ["Grammatical parts of speech", "Sentiment", "Entities", "Topics"], correct: 0, hint: "Noun/Verb.", explanation: "Labels words as Noun, Verb, Adj, etc." },
+    { id: 1236, topic: "Models", type: "mcq", marks: 5, question: "Seq2Seq models are used for?", options: ["Translation", "Classification", "Clustering", "Regression"], correct: 0, hint: "Encoder-Decoder.", explanation: "Mapping input sequence to output sequence." },
+
+    // --- NEWLY GENERATED (Based on other_topic.txt NLP Section) ---
+    { id: 6100, topic: "Text Cleaning", type: "mcq", marks: 3, question: "Purpose of Lowercasing?", options: ["Standardize vocabulary", "Reduce file size", "Increase speed", "None"], correct: 0, hint: "Match.", explanation: "Helps treat 'The' and 'the' as the same word." },
+    { id: 6101, topic: "Feature Extraction", type: "mcq", marks: 4, question: "Bag of Words ignores?", options: ["Word Order", "Word Count", "Word Existence", "Vocabulary"], correct: 0, hint: "Sequence.", explanation: "BoW captures frequency but loses context and order." },
+    { id: 6102, topic: "N-Grams", type: "mcq", marks: 4, question: "Disadvantage of N-grams?", options: ["High Dimensionality/Sparsity", "Low accuracy", "Fast training", "Simple"], correct: 0, hint: "Too many.", explanation: "Vocabulary size explodes as N increases." },
+    { id: 6103, topic: "Encoding", type: "mcq", marks: 4, question: "One Hot Encoding issue in NLP?", options: ["Sparse & High Dim", "Low Dim", "Complex", "Slow"], correct: 0, hint: "Zeros.", explanation: "Creates massive vectors with mostly zeros." }
   ],
 
+  // ==================================================================================
+  // 7. MATHEMATICS & STATISTICS
+  // ==================================================================================
   math: [
-    // --- MATHEMATICS & STATISTICS ---
-    { id: 701, topic: "Stats", type: "mcq", marks: 3, question: "Measure robust to outliers?", options: ["Median", "Mean", "Range", "Variance"], correct: 0, hint: "Middle.", explanation: "Median is not skewed by extreme values." },
-    { id: 702, topic: "Probability", type: "mcq", marks: 5, question: "Bayes Theorem calculates?", options: ["Conditional Probability", "Joint Probability", "Marginal Probability", "Independent Probability"], correct: 0, hint: "Posterior.", explanation: "P(A|B) = P(B|A) * P(A) / P(B)." },
-    { id: 703, topic: "Hypothesis Testing", type: "mcq", marks: 4, question: "P-value < 0.05 implies?", options: ["Reject Null Hypothesis", "Accept Null Hypothesis", "Test Failed", "No relation"], correct: 0, hint: "Significant.", explanation: "Statistically significant result." },
-    { id: 704, topic: "Hypothesis Testing", type: "mcq", marks: 5, question: "Type I Error?", options: ["False Positive", "False Negative", "True Positive", "True Negative"], correct: 0, hint: "False Alarm.", explanation: "Rejecting a true null hypothesis." },
-    { id: 705, topic: "Linear Algebra", type: "mcq", marks: 4, question: "Dot product of orthogonal vectors?", options: ["0", "1", "-1", "Infinity"], correct: 0, hint: "Perpendicular.", explanation: "Vectors at 90 degrees have 0 dot product." },
-    { id: 706, topic: "Linear Algebra", type: "mcq", marks: 5, question: "Eigenvalues associated with?", options: ["Eigenvectors", "Matrix Inverse", "Determinant", "Trace"], correct: 0, hint: "Scale.", explanation: "Scalars scaling the eigenvectors." },
-    { id: 707, topic: "Distributions", type: "mcq", marks: 4, question: "Normal Distribution shape?", options: ["Bell curve", "Uniform", "Exponential", "Skewed"], correct: 0, hint: "Gaussian.", explanation: "Symmetric bell curve." },
-    { id: 708, topic: "Stats", type: "mcq", marks: 4, question: "Correlation coefficient range?", options: ["-1 to 1", "0 to 1", "-inf to inf", "0 to 100"], correct: 0, hint: "Pearson.", explanation: "-1 (neg) to 1 (pos)." },
-    { id: 709, topic: "Advanced Stats", type: "mcq", marks: 5, question: "Central Limit Theorem?", options: ["Sampling dist approaches Normal", "Data is always Normal", "Mean equals Median", "None"], correct: 0, hint: "Large N.", explanation: "Regardless of population dist, sample means approximate Normal." },
-    { id: 710, topic: "Probability", type: "mcq", marks: 4, question: "Mutually Exclusive events?", options: ["Cannot happen together", "Independent", "Dependent", "Sequential"], correct: 0, hint: "Disjoint.", explanation: "P(A and B) = 0." }
+    // --- FROM VOLUME 1 (IDs 7000+) ---
+    { id: 7001, topic: "Stats", type: "mcq", marks: 3, question: "Median characteristic?", options: ["Robust to outliers", "Affected by outliers", "Sum of values", "Max value"], correct: 0, hint: "Middle.", explanation: "Splits data, ignores extremes." },
+    { id: 7002, topic: "Stats", type: "mcq", marks: 4, question: "Standard Deviation?", options: ["Square root of Variance", "Variance squared", "Mean absolute dev", "Range"], correct: 0, hint: "Root.", explanation: "Measure of spread." },
+    { id: 7003, topic: "Distributions", type: "mcq", marks: 4, question: "Normal Distribution shape?", options: ["Bell Curve", "Uniform", "Exponential", "Skewed"], correct: 0, hint: "Gaussian.", explanation: "Symmetric." },
+    { id: 7004, topic: "Hypothesis", type: "mcq", marks: 5, question: "P-value < 0.05?", options: ["Reject Null Hypothesis (Significant)", "Accept Null", "Fail", "No result"], correct: 0, hint: "Rare.", explanation: "Evidence against Null." },
+    { id: 7005, topic: "Hypothesis", type: "mcq", marks: 5, question: "Type II Error?", options: ["False Negative (Fail to reject false Null)", "False Positive", "True Positive", "True Negative"], correct: 0, hint: "Miss.", explanation: "Missing a real effect." },
+    { id: 7010, topic: "Probability", type: "mcq", marks: 5, question: "Bayes Theorem?", options: ["P(A|B) = P(B|A)P(A)/P(B)", "P(A)P(B)", "P(A|B) = P(A)", "None"], correct: 0, hint: "Posterior.", explanation: "Update belief." },
+    { id: 7011, topic: "Probability", type: "mcq", marks: 4, question: "Mutually Exclusive?", options: ["P(A and B) = 0", "Independent", "Dependent", "Sum is 1"], correct: 0, hint: "Disjoint.", explanation: "Cannot happen together." },
+    { id: 7020, topic: "Vectors", type: "mcq", marks: 4, question: "Dot Product of orthogonal vectors?", options: ["0", "1", "-1", "Inf"], correct: 0, hint: "Perpendicular.", explanation: "No projection." },
+    { id: 7021, topic: "Eigen", type: "mcq", marks: 5, question: "Eigenvalue represents?", options: ["Scaling factor", "Rotation angle", "Position", "Shear"], correct: 0, hint: "Stretch.", explanation: "Amount vector is stretched." },
+    { id: 7022, topic: "Matrix", type: "mcq", marks: 5, question: "Determinant = 0?", options: ["Singular (No inverse)", "Identity", "Invertible", "Orthogonal"], correct: 0, hint: "Collapse.", explanation: "Volume becomes zero." },
+
+    // --- FROM EXTENDED DB (IDs 1300+) ---
+    { id: 1300, topic: "Central Tendency", type: "mcq", marks: 3, question: "Which is robust to outliers?", options: ["Median", "Mean", "Range", "Variance"], correct: 0, hint: "Middle.", explanation: "Median splits data, unaffected by extreme values." },
+    { id: 1301, topic: "Dispersion", type: "mcq", marks: 4, question: "Standard Deviation is?", options: ["Square root of Variance", "Square of Variance", "Mean absolute error", "Range"], correct: 0, hint: "Root.", explanation: "Sqrt(Variance)." },
+    { id: 1302, topic: "Distributions", type: "mcq", marks: 4, question: "Normal Distribution shape?", options: ["Bell Curve", "Uniform", "Exponential", "Skewed"], correct: 0, hint: "Gaussian.", explanation: "Symmetric bell curve." },
+    { id: 1303, topic: "Distributions", type: "mcq", marks: 5, question: "Poisson Distribution models?", options: ["Events in fixed time", "Coin flips", "Heights", "Test scores"], correct: 0, hint: "Rate.", explanation: "Count of events in an interval." },
+    { id: 1304, topic: "Hypothesis", type: "mcq", marks: 5, question: "Type I Error is?", options: ["False Positive", "False Negative", "True Positive", "True Negative"], correct: 0, hint: "False Alarm.", explanation: "Rejecting a true Null Hypothesis." },
+    { id: 1305, topic: "Hypothesis", type: "mcq", marks: 5, question: "P-value < 0.05 means?", options: ["Reject Null Hypothesis", "Accept Null", "Test Failed", "No relation"], correct: 0, hint: "Significant.", explanation: "Statistically significant evidence against Null." },
+    { id: 1306, topic: "Correlation", type: "mcq", marks: 4, question: "Pearson Corr = -1 means?", options: ["Perfect negative linear relationship", "No relation", "Positive relation", "Weak relation"], correct: 0, hint: "Opposite.", explanation: "As one increases, other decreases perfectly." },
+    { id: 1340, topic: "Probability", type: "mcq", marks: 5, question: "Bayes Theorem Formula?", options: ["P(A|B) = P(B|A)P(A)/P(B)", "P(A)P(B)", "P(A)+P(B)", "P(B)/P(A)"], correct: 0, hint: "Posterior.", explanation: "Standard Bayes formula." },
+    { id: 1341, topic: "Probability", type: "mcq", marks: 4, question: "Mutually Exclusive events?", options: ["P(A and B) = 0", "Independent", "P(A)=P(B)", "Dependent"], correct: 0, hint: "Disjoint.", explanation: "Cannot happen at same time." },
+    { id: 1342, topic: "Vectors", type: "mcq", marks: 3, question: "Dot Product of orthogonal vectors?", options: ["0", "1", "-1", "Infinity"], correct: 0, hint: "Perpendicular.", explanation: "Vectors at 90 deg have 0 dot product." },
+    { id: 1343, topic: "Matrix", type: "mcq", marks: 4, question: "Matrix Mult: (2x3) * (3x2) result?", options: ["2x2", "3x3", "2x3", "Error"], correct: 0, hint: "Outer dims.", explanation: "Result has rows of first and cols of second." },
+    { id: 1344, topic: "Eigen", type: "mcq", marks: 5, question: "Eigenvalue represents?", options: ["Scaling factor", "Rotation", "Translation", "Shear"], correct: 0, hint: "Scale.", explanation: "Amount by which eigenvector is stretched." },
+    { id: 1345, topic: "Decomposition", type: "mcq", marks: 5, question: "PCA uses which decomp?", options: ["Eigendecomposition / SVD", "LU", "Cholesky", "QR"], correct: 0, hint: "Singular.", explanation: "Usually computed via SVD or Covariance Matrix Eigendecomposition." },
+
+    // --- NEWLY GENERATED (Based on other_topic.txt Math Section) ---
+    { id: 7100, topic: "Distributions", type: "mcq", marks: 4, question: "Bernoulli Distribution?", options: ["Single trial with 2 outcomes", "Multiple trials", "Continuous", "Counts"], correct: 0, hint: "Coin flip.", explanation: "Models a single experiment with success/failure." },
+    { id: 7101, topic: "Hypothesis", type: "mcq", marks: 5, question: "ANOVA test purpose?", options: ["Compare means of 3+ groups", "Compare 2 means", "Correlation", "Variance only"], correct: 0, hint: "Analysis of Variance.", explanation: "Tests if at least one group mean is different." },
+    { id: 7102, topic: "Correlation", type: "mcq", marks: 4, question: "Spearman Correlation?", options: ["Rank-based (Non-linear)", "Linear only", "Categorical", "None"], correct: 0, hint: "Ranks.", explanation: "Measures monotonic relationship using ranks." },
+    { id: 7103, topic: "Linear Algebra", type: "mcq", marks: 4, question: "Unit Vector magnitude?", options: ["1", "0", "Infinity", "Variable"], correct: 0, hint: "Unity.", explanation: "A vector with a length of exactly 1." },
+    { id: 7104, topic: "Statistics", type: "mcq", marks: 4, question: "Central Limit Theorem states?", options: ["Sample means -> Normal Dist", "Data is Normal", "Mean = Median", "None"], correct: 0, hint: "Sample size.", explanation: "As sample size increases, the distribution of sample means approaches a normal distribution." }
   ]
 };
 
@@ -449,10 +447,24 @@ class MockBackendService {
       maxMarks += q.marks;
       if (answers[idx] === q.correct) score += q.marks;
     });
-    const result = { sessionId, score, maxMarks, percentage: (score/maxMarks)*100, passed: (score/maxMarks) >= 0.65, subjectId, date: new Date().toISOString() };
+    const result = { 
+        id: sessionId,
+        sessionId, 
+        score, 
+        maxMarks, 
+        percentage: (score/maxMarks)*100, 
+        passed: (score/maxMarks) >= 0.65, 
+        subjectId, 
+        date: new Date().toISOString() 
+    };
     if (!USER_HISTORY[userId]) USER_HISTORY[userId] = [];
-    USER_HISTORY[userId].push(result);
+    USER_HISTORY[userId].unshift(result); // Add new result to the beginning
     return result;
+  }
+
+  static async getHistory(userId) {
+      await this.delay(400);
+      return USER_HISTORY[userId] || [];
   }
 }
 
@@ -620,7 +632,7 @@ const AuthView = () => {
   );
 };
 
-const DashboardView = ({ onSelectSubject, user, logout }) => {
+const DashboardView = ({ onSelectSubject, user, logout, onViewHistory }) => {
   return (
     <div className="min-h-screen bg-[#0f172a] text-white p-6 relative">
        {/* Ambient Background */}
@@ -638,6 +650,10 @@ const DashboardView = ({ onSelectSubject, user, logout }) => {
           <span className="text-xl font-bold tracking-tight">SkillMatrix<span className="text-blue-400">Exam</span></span>
         </div>
         <div className="flex items-center gap-4">
+          <button onClick={onViewHistory} className="flex items-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full border border-white/10 transition-colors text-sm">
+            <History size={16} className="text-blue-400" />
+            <span className="hidden sm:inline text-slate-300">History</span>
+          </button>
           <div className="flex items-center gap-3 bg-white/5 px-4 py-2 rounded-full border border-white/10">
             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-orange-400 flex items-center justify-center text-sm font-bold">
               {(user.name?.[0] || 'U').toUpperCase()}
@@ -682,6 +698,56 @@ const DashboardView = ({ onSelectSubject, user, logout }) => {
             );
           })}
         </div>
+      </main>
+    </div>
+  );
+};
+
+// --- History View ---
+const HistoryView = ({ history, onBack }) => {
+  return (
+    <div className="min-h-screen bg-[#0f172a] text-white p-6 relative">
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px]" />
+      </div>
+
+      <nav className="flex items-center gap-4 mb-10 relative z-10 max-w-4xl mx-auto">
+        <button onClick={onBack} className="p-2 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors">
+          <ArrowLeft size={24} />
+        </button>
+        <h1 className="text-2xl font-bold">Exam History</h1>
+      </nav>
+
+      <main className="max-w-4xl mx-auto relative z-10 space-y-4">
+        {history.length === 0 ? (
+          <GlassCard className="p-10 text-center">
+            <History className="w-12 h-12 text-slate-600 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-slate-300">No Exams Taken Yet</h3>
+            <p className="text-slate-500 mt-2">Complete a certification track to see your history.</p>
+          </GlassCard>
+        ) : (
+          history.map((item) => (
+            <GlassCard key={item.id} className="p-6 flex items-center justify-between group hover:bg-white/5 transition-colors">
+              <div className="flex items-center gap-4">
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg ${item.passed ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                  {item.percentage.toFixed(0)}%
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg text-white">{SUBJECTS_METADATA[item.subjectId]?.title || item.subjectId}</h3>
+                  <div className="flex items-center gap-3 text-sm text-slate-400 mt-1">
+                    <span className="flex items-center gap-1"><Clock size={12} /> {new Date(item.date).toLocaleDateString()}</span>
+                    <span>•</span>
+                    <span className={item.passed ? "text-green-400" : "text-red-400"}>{item.passed ? "Passed" : "Failed"}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-white">{item.score}<span className="text-sm text-slate-500">/{item.maxMarks}</span></div>
+                <div className="text-xs text-slate-500 uppercase font-bold tracking-wider">Score</div>
+              </div>
+            </GlassCard>
+          ))
+        )}
       </main>
     </div>
   );
@@ -827,43 +893,86 @@ const ResultsView = ({ results, questions, answers, onHome }) => {
   const subject = SUBJECTS_METADATA[results.subjectId] || { title: "Unknown Subject" };
   
   return (
-    <div className="min-h-screen bg-[#0f172a] p-6 flex items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen bg-[#0f172a] p-6 flex flex-col items-center relative overflow-hidden overflow-y-auto">
        {/* Fireworks / Glow effect based on result */}
-       <div className={`absolute inset-0 opacity-20 ${results.passed ? 'bg-green-500/20' : 'bg-red-500/20'}`} />
+       <div className={`fixed inset-0 pointer-events-none opacity-20 ${results.passed ? 'bg-green-500/20' : 'bg-red-500/20'}`} />
 
-       <GlassCard className="w-full max-w-2xl p-10 relative z-10 text-center">
-          <div className="mb-8">
-             <ResultGauge percentage={results.percentage} />
-          </div>
+       <div className="w-full max-w-4xl relative z-10 space-y-6 pb-10">
+         <GlassCard className="p-10 text-center">
+            <div className="mb-8">
+               <ResultGauge percentage={results.percentage} />
+            </div>
 
-          <h1 className="text-4xl font-bold text-white mb-2">
-             {results.passed ? "Certification Granted" : "Assessment Failed"}
-          </h1>
-          <p className="text-slate-400 mb-8 text-lg">
-             {results.passed 
-               ? `You have successfully demonstrated competency in ${subject.title}.` 
-               : "You did not meet the passing criteria. Keep practicing!"}
-          </p>
+            <h1 className="text-4xl font-bold text-white mb-2">
+               {results.passed ? "Certification Granted" : "Assessment Failed"}
+            </h1>
+            <p className="text-slate-400 mb-8 text-lg">
+               {results.passed 
+                 ? `You have successfully demonstrated competency in ${subject.title}.` 
+                 : "You did not meet the passing criteria. Keep practicing!"}
+            </p>
 
-          <div className="grid grid-cols-3 gap-4 mb-10">
-             <div className="bg-slate-800/50 p-4 rounded-xl border border-white/5">
-                <div className="text-slate-400 text-xs uppercase font-bold">Score</div>
-                <div className="text-2xl font-bold text-white">{results.score}</div>
-             </div>
-             <div className="bg-slate-800/50 p-4 rounded-xl border border-white/5">
-                <div className="text-slate-400 text-xs uppercase font-bold">Questions</div>
-                <div className="text-2xl font-bold text-white">{questions.length}</div>
-             </div>
-             <div className="bg-slate-800/50 p-4 rounded-xl border border-white/5">
-                <div className="text-slate-400 text-xs uppercase font-bold">Correct</div>
-                <div className="text-2xl font-bold text-green-400">
-                   {Object.keys(answers).filter(k => answers[k] === questions[k].correct).length}
-                </div>
-             </div>
-          </div>
+            <div className="grid grid-cols-3 gap-4 mb-10">
+               <div className="bg-slate-800/50 p-4 rounded-xl border border-white/5">
+                  <div className="text-slate-400 text-xs uppercase font-bold">Score</div>
+                  <div className="text-2xl font-bold text-white">{results.score}</div>
+               </div>
+               <div className="bg-slate-800/50 p-4 rounded-xl border border-white/5">
+                  <div className="text-slate-400 text-xs uppercase font-bold">Questions</div>
+                  <div className="text-2xl font-bold text-white">{questions.length}</div>
+               </div>
+               <div className="bg-slate-800/50 p-4 rounded-xl border border-white/5">
+                  <div className="text-slate-400 text-xs uppercase font-bold">Correct</div>
+                  <div className="text-2xl font-bold text-green-400">
+                     {Object.keys(answers).filter(k => answers[k] === questions[k].correct).length}
+                  </div>
+               </div>
+            </div>
 
-          <NeonButton onClick={onHome} className="w-full">Return to Dashboard</NeonButton>
-       </GlassCard>
+            <NeonButton onClick={onHome} className="w-full">Return to Dashboard</NeonButton>
+         </GlassCard>
+
+         <div className="space-y-4">
+            <h2 className="text-2xl font-bold text-white px-2">Detailed Review</h2>
+            {questions.map((q, idx) => {
+               const userAnswer = answers[idx];
+               const isCorrect = userAnswer === q.correct;
+               const isSkipped = userAnswer === undefined;
+
+               return (
+                 <GlassCard key={idx} className={`p-6 border-l-4 ${isCorrect ? 'border-l-green-500' : 'border-l-red-500'}`}>
+                    <div className="flex items-start justify-between mb-4">
+                       <span className="text-slate-400 font-mono text-sm">Question {idx + 1}</span>
+                       <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${isCorrect ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                          {isCorrect ? 'Correct' : isSkipped ? 'Skipped' : 'Incorrect'}
+                       </span>
+                    </div>
+                    <h3 className="text-lg font-bold text-white mb-4"><CodeBlock text={q.question} /></h3>
+                    
+                    <div className="space-y-2 mb-4">
+                       {/* Show User Answer if incorrect */}
+                       {!isCorrect && !isSkipped && (
+                          <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30">
+                             <div className="text-xs text-red-400 uppercase font-bold mb-1">Your Answer</div>
+                             <div className="text-red-200">{q.options[userAnswer]}</div>
+                          </div>
+                       )}
+                       
+                       {/* Always Show Correct Answer */}
+                       <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/30">
+                          <div className="text-xs text-green-400 uppercase font-bold mb-1">Correct Answer</div>
+                          <div className="text-green-200">{q.options[q.correct]}</div>
+                       </div>
+                    </div>
+
+                    <div className="text-sm text-slate-400 bg-slate-800/50 p-3 rounded-lg">
+                       <span className="font-bold text-slate-300">Explanation:</span> {q.explanation}
+                    </div>
+                 </GlassCard>
+               );
+            })}
+         </div>
+       </div>
     </div>
   );
 };
@@ -879,12 +988,19 @@ const MainController = () => {
   const [session, setSession] = useState(null);
   const [results, setResults] = useState(null);
   const [examData, setExamData] = useState(null);
+  const [history, setHistory] = useState([]);
 
   // Simple Router Logic
   useEffect(() => {
     if(user && view === 'auth') setView('dash');
     if(!user) setView('auth');
   }, [user]);
+
+  const fetchHistory = async () => {
+    const data = await MockBackendService.getHistory(user.id);
+    setHistory(data);
+    setView('history');
+  };
 
   const startSession = async (subjectId) => {
      // FIXED: Pass subjectId directly instead of relying on async state 'activeSubject'
@@ -900,10 +1016,11 @@ const MainController = () => {
   };
 
   if (!user) return <AuthView />;
+  if (view === 'history') return <HistoryView history={history} onBack={() => setView('dash')} />;
   if (view === 'exam' && session) return <ExamInterface session={session} user={user} onFinish={finishExam} />;
   if (view === 'results') return <ResultsView results={results} questions={examData.q} answers={examData.a} onHome={() => setView('dash')} />;
   
-  return <DashboardView user={user} logout={logout} onSelectSubject={(id) => { setActiveSubject(id); startSession(id); }} />;
+  return <DashboardView user={user} logout={logout} onViewHistory={fetchHistory} onSelectSubject={(id) => { setActiveSubject(id); startSession(id); }} />;
 };
 
 const App = () => {
