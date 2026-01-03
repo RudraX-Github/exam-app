@@ -365,9 +365,11 @@ class MockBackendService {
     await this.delay(600);
     const allQuestions = QUESTIONS_DB[subjectId] || [];
     
+    // Check if it is a full exam ("ALL" topics)
+    const isFullExam = selectedTopics.includes("ALL") || selectedTopics.length === 0;
+
     // Filter questions based on selected topics
-    // If "ALL" is in the list, or no topics selected (fallback), use all questions
-    let pool = (selectedTopics.includes("ALL") || selectedTopics.length === 0)
+    let pool = isFullExam
       ? allQuestions 
       : allQuestions.filter(q => selectedTopics.includes(q.topic));
     
@@ -376,8 +378,10 @@ class MockBackendService {
     // 1. Shuffle the question pool first
     const shuffledPool = this.shuffleArray([...pool]);
     
-    // 2. Select top 5 questions
-    const selectedQuestions = shuffledPool.slice(0, 5);
+    // 2. Select questions based on mode
+    // Full Exam -> 50 questions | Topic Wise -> 5 questions
+    const limit = isFullExam ? 50 : 5;
+    const selectedQuestions = shuffledPool.slice(0, limit);
 
     // 3. Shuffle options for each selected question
     const questions = selectedQuestions.map(q => {
@@ -830,7 +834,8 @@ const HistoryView = ({ history, onBack }) => {
 const ExamInterface = ({ session, user, onFinish }) => {
   const [idx, setIdx] = useState(0);
   const [answers, setAnswers] = useState({});
-  const [timeLeft, setTimeLeft] = useState(1800); // 30 mins
+  // Dynamic timer: 1.5 minutes (90 seconds) per question
+  const [timeLeft, setTimeLeft] = useState(session.questions.length * 90);
   
   // Safe navigation for questions
   const q = session.questions && session.questions.length > 0 ? session.questions[idx] : null;
