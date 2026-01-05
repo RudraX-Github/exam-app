@@ -6,16 +6,15 @@ import {
   Cpu, Database, Code, LogOut, BarChart2,
   Loader2, User, CheckSquare, Square,
   ShieldAlert, Eye, Lock, History, Brain, Globe, Sigma, Network, MessageSquare, Mail, UserPlus, LogIn, ArrowLeft, Filter, Layers, ListFilter,
-  Users, EyeOff, FileText, TrendingUp, Shield
+  Users, EyeOff, FileText, TrendingUp, Shield, Trash2, Edit3, Save, X, KeyRound
 } from 'lucide-react';
 
 /**
- * 🚀 ENTERPRISE EXAM PLATFORM v10.0 - "Precision & Review"
+ * 🚀 ENTERPRISE EXAM PLATFORM v10.1 - "Admin Controls"
  * Updates:
- * - Topic Selection Module: Select specific topics before starting
- * - Enhanced History: Persisted session tracking
- * - Detailed Answer Review: Compare user answers vs correct answers
- * - MASTER ADMIN DASHBOARD: Added user management and exam oversight
+ * - Admin: Added capability to DELETE users
+ * - Admin: Added capability to UPDATE user passwords
+ * - UI: Added edit modes and confirmation modals
  */
 
 // ==========================================
@@ -370,7 +369,7 @@ class MockBackendService {
     return { user: newUser };
   }
 
-  // --- NEW ADMIN METHOD ---
+  // --- NEW ADMIN METHODS ---
   static async getAdminData() {
     await this.delay(600);
     // Combine Users with their History
@@ -378,6 +377,22 @@ class MockBackendService {
         ...user,
         history: USER_HISTORY[user.id] || []
     }));
+  }
+
+  static async deleteUser(targetUserId) {
+    await this.delay(600);
+    if (targetUserId === 'admin') throw new Error("Cannot delete Master Admin.");
+    USERS_DB = USERS_DB.filter(u => u.id !== targetUserId);
+    // Optional: Clean up history if needed, but keeping it for records is also valid
+    return true;
+  }
+
+  static async updateUserPassword(targetUserId, newPassword) {
+    await this.delay(600);
+    const user = USERS_DB.find(u => u.id === targetUserId);
+    if (!user) throw new Error("User not found.");
+    user.password = newPassword;
+    return true;
   }
 
   static async startExamSession(subjectId, selectedTopics) {
@@ -623,12 +638,23 @@ const AdminDashboardView = ({ onLogout, onSwitchToStudentMode }) => {
   const [loading, setLoading] = useState(true);
   const [visiblePasswords, setVisiblePasswords] = useState({});
   const [expandedUser, setExpandedUser] = useState(null);
+  
+  // New States for Edit/Delete
+  const [editingPasswordId, setEditingPasswordId] = useState(null);
+  const [newPasswordValue, setNewPasswordValue] = useState("");
+  const [deletingUser, setDeletingUser] = useState(null); // id of user to delete
+  const [actionLoading, setActionLoading] = useState(false);
 
-  useEffect(() => {
+  const fetchUsers = () => {
+    setLoading(true);
     MockBackendService.getAdminData().then(data => {
         setUsers(data);
         setLoading(false);
     });
+  };
+
+  useEffect(() => {
+    fetchUsers();
   }, []);
 
   const togglePassword = (userId) => {
@@ -639,7 +665,40 @@ const AdminDashboardView = ({ onLogout, onSwitchToStudentMode }) => {
     setExpandedUser(expandedUser === userId ? null : userId);
   };
 
-  if (loading) return (
+  const startEditingPassword = (user) => {
+      setEditingPasswordId(user.id);
+      setNewPasswordValue(user.password);
+  };
+
+  const saveNewPassword = async () => {
+      if(!newPasswordValue) return;
+      setActionLoading(true);
+      try {
+        await MockBackendService.updateUserPassword(editingPasswordId, newPasswordValue);
+        setEditingPasswordId(null);
+        fetchUsers();
+      } catch(e) {
+          alert(e.message);
+      } finally {
+          setActionLoading(false);
+      }
+  };
+
+  const confirmDeleteUser = async () => {
+      if(!deletingUser) return;
+      setActionLoading(true);
+      try {
+          await MockBackendService.deleteUser(deletingUser);
+          setDeletingUser(null);
+          fetchUsers();
+      } catch(e) {
+          alert(e.message);
+      } finally {
+          setActionLoading(false);
+      }
+  }
+
+  if (loading && users.length === 0) return (
     <div className="min-h-screen bg-[#0f172a] flex items-center justify-center">
         <Loader2 className="text-blue-500 animate-spin w-10 h-10" />
     </div>
@@ -654,6 +713,27 @@ const AdminDashboardView = ({ onLogout, onSwitchToStudentMode }) => {
             <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-900/20 rounded-full blur-[120px]" />
             <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-blue-900/20 rounded-full blur-[120px]" />
         </div>
+
+        {/* Delete Confirmation Modal */}
+        {deletingUser && (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <GlassCard className="p-8 max-w-sm w-full border-red-500/30">
+                    <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
+                        <Trash2 size={32} />
+                    </div>
+                    <h3 className="text-xl font-bold text-center mb-2">Delete User?</h3>
+                    <p className="text-slate-400 text-center text-sm mb-6">
+                        This action cannot be undone. The user and their exam history will be permanently removed.
+                    </p>
+                    <div className="flex gap-3">
+                        <button onClick={() => setDeletingUser(null)} className="flex-1 py-3 rounded-xl bg-slate-700 hover:bg-slate-600 transition-colors font-bold text-sm">Cancel</button>
+                        <button onClick={confirmDeleteUser} disabled={actionLoading} className="flex-1 py-3 rounded-xl bg-gradient-to-r from-red-600 to-pink-600 text-white font-bold text-sm hover:shadow-lg hover:shadow-red-500/30">
+                            {actionLoading ? <Loader2 className="animate-spin mx-auto" /> : "Confirm Delete"}
+                        </button>
+                    </div>
+                </GlassCard>
+            </div>
+        )}
 
         <nav className="flex justify-between items-center mb-8 relative z-10 max-w-7xl mx-auto">
             <div className="flex items-center gap-3">
@@ -740,20 +820,48 @@ const AdminDashboardView = ({ onLogout, onSwitchToStudentMode }) => {
                                             </div>
                                         </td>
                                         <td className="p-4">
-                                            <div className="space-y-1">
-                                                <div className="flex items-center gap-2 text-sm text-slate-300">
-                                                    <Mail size={14} className="text-blue-400" /> {u.email}
-                                                </div>
-                                                <div className="flex items-center gap-2 text-sm font-mono bg-black/20 px-2 py-1 rounded w-fit border border-white/5">
-                                                    <Lock size={12} className="text-red-400" /> 
-                                                    <span className={visiblePasswords[u.id] ? "text-red-200" : "text-slate-500 tracking-widest"}>
-                                                        {visiblePasswords[u.id] ? u.password : "••••••••"}
-                                                    </span>
-                                                    <button onClick={() => togglePassword(u.id)} className="ml-2 hover:text-white text-slate-500">
-                                                        {visiblePasswords[u.id] ? <EyeOff size={14} /> : <Eye size={14} />}
+                                            {editingPasswordId === u.id ? (
+                                                <div className="flex items-center gap-2">
+                                                    <div className="relative">
+                                                        <KeyRound size={14} className="absolute left-2 top-2.5 text-blue-400" />
+                                                        <input 
+                                                            type="text" 
+                                                            value={newPasswordValue}
+                                                            onChange={(e) => setNewPasswordValue(e.target.value)}
+                                                            className="pl-7 pr-2 py-1.5 rounded bg-black/40 border border-blue-500/50 text-sm text-white w-32 outline-none focus:ring-1 focus:ring-blue-500"
+                                                            autoFocus
+                                                        />
+                                                    </div>
+                                                    <button onClick={saveNewPassword} className="p-1.5 bg-green-500/20 text-green-400 rounded hover:bg-green-500/30">
+                                                        {actionLoading ? <Loader2 size={16} className="animate-spin"/> : <Save size={16} />}
+                                                    </button>
+                                                    <button onClick={() => setEditingPasswordId(null)} className="p-1.5 bg-red-500/20 text-red-400 rounded hover:bg-red-500/30">
+                                                        <X size={16} />
                                                     </button>
                                                 </div>
-                                            </div>
+                                            ) : (
+                                                <div className="space-y-1">
+                                                    <div className="flex items-center gap-2 text-sm text-slate-300">
+                                                        <Mail size={14} className="text-blue-400" /> {u.email}
+                                                    </div>
+                                                    <div className="flex items-center gap-2 text-sm font-mono bg-black/20 px-2 py-1 rounded w-fit border border-white/5 group">
+                                                        <Lock size={12} className="text-red-400" /> 
+                                                        <span className={visiblePasswords[u.id] ? "text-red-200" : "text-slate-500 tracking-widest"}>
+                                                            {visiblePasswords[u.id] ? u.password : "••••••••"}
+                                                        </span>
+                                                        <div className="flex opacity-0 group-hover:opacity-100 transition-opacity ml-2 border-l border-white/10 pl-2 gap-1">
+                                                            <button onClick={() => togglePassword(u.id)} className="hover:text-white text-slate-500" title="Toggle Visibility">
+                                                                {visiblePasswords[u.id] ? <EyeOff size={14} /> : <Eye size={14} />}
+                                                            </button>
+                                                            {u.role !== 'admin' && (
+                                                                <button onClick={() => startEditingPassword(u)} className="hover:text-blue-400 text-slate-500" title="Change Password">
+                                                                    <Edit3 size={14} />
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </td>
                                         <td className="p-4">
                                             <div className="flex items-center gap-4">
@@ -772,12 +880,24 @@ const AdminDashboardView = ({ onLogout, onSwitchToStudentMode }) => {
                                             </div>
                                         </td>
                                         <td className="p-4 text-right">
-                                            <button 
-                                                onClick={() => toggleExpand(u.id)}
-                                                className={`p-2 rounded-lg border transition-all ${expandedUser === u.id ? 'bg-blue-600 text-white border-blue-500' : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'}`}
-                                            >
-                                                {expandedUser === u.id ? <ChevronRight className="rotate-90" size={20} /> : <History size={20} />}
-                                            </button>
+                                            <div className="flex items-center justify-end gap-2">
+                                                <button 
+                                                    onClick={() => toggleExpand(u.id)}
+                                                    className={`p-2 rounded-lg border transition-all ${expandedUser === u.id ? 'bg-blue-600 text-white border-blue-500' : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'}`}
+                                                    title="View History"
+                                                >
+                                                    {expandedUser === u.id ? <ChevronRight className="rotate-90" size={18} /> : <History size={18} />}
+                                                </button>
+                                                {u.role !== 'admin' && (
+                                                    <button 
+                                                        onClick={() => setDeletingUser(u.id)}
+                                                        className="p-2 rounded-lg border border-red-900/30 bg-red-900/10 text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all"
+                                                        title="Delete User"
+                                                    >
+                                                        <Trash2 size={18} />
+                                                    </button>
+                                                )}
+                                            </div>
                                         </td>
                                     </tr>
                                     {/* Expanded History View */}
