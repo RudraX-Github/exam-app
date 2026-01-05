@@ -5,7 +5,8 @@ import {
   LayoutGrid, Award, Terminal, 
   Cpu, Database, Code, LogOut, BarChart2,
   Loader2, User, CheckSquare, Square,
-  ShieldAlert, Eye, Lock, History, Brain, Globe, Sigma, Network, MessageSquare, Mail, UserPlus, LogIn, ArrowLeft, Filter, Layers, ListFilter
+  ShieldAlert, Eye, Lock, History, Brain, Globe, Sigma, Network, MessageSquare, Mail, UserPlus, LogIn, ArrowLeft, Filter, Layers, ListFilter,
+  Users, EyeOff, FileText, TrendingUp, Shield
 } from 'lucide-react';
 
 /**
@@ -14,6 +15,7 @@ import {
  * - Topic Selection Module: Select specific topics before starting
  * - Enhanced History: Persisted session tracking
  * - Detailed Answer Review: Compare user answers vs correct answers
+ * - MASTER ADMIN DASHBOARD: Added user management and exam oversight
  */
 
 // ==========================================
@@ -329,10 +331,17 @@ const SUBJECTS_METADATA = {
 
 // --- BACKEND SIMULATION ---
 const INITIAL_USERS = [
-  { id: "admin", name: "Master Admin", email: "admin", password: "admin", role: "admin" }
+  { id: "admin", name: "Master Admin", email: "admin", password: "admin", role: "admin" },
+  { id: "u_demo1", name: "Alice Developer", email: "alice@tech.com", password: "pass", role: "candidate" },
+  { id: "u_demo2", name: "Bob Data", email: "bob@data.io", password: "pass", role: "candidate" }
 ];
 let USERS_DB = [...INITIAL_USERS]; // mutable db for session
-const USER_HISTORY = {};
+const USER_HISTORY = {
+    "u_demo1": [
+        { id: "s_1", score: 45, maxMarks: 50, percentage: 90, passed: true, subjectId: "python", date: new Date().toISOString() },
+        { id: "s_2", score: 20, maxMarks: 50, percentage: 40, passed: false, subjectId: "cpp", date: new Date(Date.now() - 86400000).toISOString() }
+    ]
+};
 
 class MockBackendService {
   static async delay(ms = 400) { return new Promise(r => setTimeout(r, ms)); }
@@ -359,6 +368,16 @@ class MockBackendService {
     const newUser = { id: `u_${Date.now()}`, name, email, password, role: 'candidate' };
     USERS_DB.push(newUser);
     return { user: newUser };
+  }
+
+  // --- NEW ADMIN METHOD ---
+  static async getAdminData() {
+    await this.delay(600);
+    // Combine Users with their History
+    return USERS_DB.map(user => ({
+        ...user,
+        history: USER_HISTORY[user.id] || []
+    }));
   }
 
   static async startExamSession(subjectId, selectedTopics) {
@@ -598,6 +617,220 @@ const AuthView = () => {
   );
 };
 
+// --- Admin Dashboard View ---
+const AdminDashboardView = ({ onLogout, onSwitchToStudentMode }) => {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [visiblePasswords, setVisiblePasswords] = useState({});
+  const [expandedUser, setExpandedUser] = useState(null);
+
+  useEffect(() => {
+    MockBackendService.getAdminData().then(data => {
+        setUsers(data);
+        setLoading(false);
+    });
+  }, []);
+
+  const togglePassword = (userId) => {
+    setVisiblePasswords(prev => ({...prev, [userId]: !prev[userId]}));
+  };
+
+  const toggleExpand = (userId) => {
+    setExpandedUser(expandedUser === userId ? null : userId);
+  };
+
+  if (loading) return (
+    <div className="min-h-screen bg-[#0f172a] flex items-center justify-center">
+        <Loader2 className="text-blue-500 animate-spin w-10 h-10" />
+    </div>
+  );
+
+  const totalExams = users.reduce((acc, u) => acc + u.history.length, 0);
+  const totalUsers = users.length;
+
+  return (
+    <div className="min-h-screen bg-[#0f172a] text-white p-6 relative">
+        <div className="fixed inset-0 pointer-events-none">
+            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-900/20 rounded-full blur-[120px]" />
+            <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-blue-900/20 rounded-full blur-[120px]" />
+        </div>
+
+        <nav className="flex justify-between items-center mb-8 relative z-10 max-w-7xl mx-auto">
+            <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center shadow-lg shadow-red-500/30">
+                    <ShieldAlert className="text-white w-6 h-6" />
+                </div>
+                <div>
+                    <h1 className="text-xl font-bold tracking-tight">Master<span className="text-red-500">Admin</span></h1>
+                    <p className="text-xs text-slate-500 uppercase tracking-widest">Access Level 5</p>
+                </div>
+            </div>
+            <div className="flex gap-4">
+                 <button onClick={onSwitchToStudentMode} className="flex items-center gap-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-4 py-2 rounded-lg transition-colors border border-blue-500/20">
+                    <Eye size={18} /> Student View
+                </button>
+                <button onClick={onLogout} className="flex items-center gap-2 bg-white/5 hover:bg-red-500/20 hover:text-red-400 text-slate-400 px-4 py-2 rounded-lg transition-colors border border-white/10">
+                    <LogOut size={18} /> Logout
+                </button>
+            </div>
+        </nav>
+
+        <main className="max-w-7xl mx-auto relative z-10 space-y-6">
+            {/* Stats Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <GlassCard className="p-6 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
+                        <Users size={24} />
+                    </div>
+                    <div>
+                        <div className="text-2xl font-bold">{totalUsers}</div>
+                        <div className="text-slate-400 text-sm">Registered Users</div>
+                    </div>
+                </GlassCard>
+                <GlassCard className="p-6 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
+                        <FileText size={24} />
+                    </div>
+                    <div>
+                        <div className="text-2xl font-bold">{totalExams}</div>
+                        <div className="text-slate-400 text-sm">Total Exams Taken</div>
+                    </div>
+                </GlassCard>
+                <GlassCard className="p-6 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center text-green-400">
+                        <TrendingUp size={24} />
+                    </div>
+                    <div>
+                        <div className="text-2xl font-bold">Active</div>
+                        <div className="text-slate-400 text-sm">Platform Status</div>
+                    </div>
+                </GlassCard>
+            </div>
+
+            {/* User Registry Table */}
+            <GlassCard className="overflow-hidden">
+                <div className="p-6 border-b border-white/10">
+                    <h2 className="text-xl font-bold flex items-center gap-2">
+                        <Database size={20} className="text-slate-400" /> User Database & Credentials
+                    </h2>
+                </div>
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="bg-white/5 text-slate-400 text-sm uppercase tracking-wider">
+                                <th className="p-4 font-semibold">User Identity</th>
+                                <th className="p-4 font-semibold">Credentials (Admin Eyes Only)</th>
+                                <th className="p-4 font-semibold">Performance</th>
+                                <th className="p-4 font-semibold text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-white/5">
+                            {users.map(u => (
+                                <React.Fragment key={u.id}>
+                                    <tr className={`hover:bg-white/5 transition-colors ${expandedUser === u.id ? 'bg-white/5' : ''}`}>
+                                        <td className="p-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-600 flex items-center justify-center font-bold text-white shadow-lg">
+                                                    {u.name[0].toUpperCase()}
+                                                </div>
+                                                <div>
+                                                    <div className="font-bold text-white">{u.name}</div>
+                                                    <div className="text-xs text-slate-400">{u.id} • {u.role}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="p-4">
+                                            <div className="space-y-1">
+                                                <div className="flex items-center gap-2 text-sm text-slate-300">
+                                                    <Mail size={14} className="text-blue-400" /> {u.email}
+                                                </div>
+                                                <div className="flex items-center gap-2 text-sm font-mono bg-black/20 px-2 py-1 rounded w-fit border border-white/5">
+                                                    <Lock size={12} className="text-red-400" /> 
+                                                    <span className={visiblePasswords[u.id] ? "text-red-200" : "text-slate-500 tracking-widest"}>
+                                                        {visiblePasswords[u.id] ? u.password : "••••••••"}
+                                                    </span>
+                                                    <button onClick={() => togglePassword(u.id)} className="ml-2 hover:text-white text-slate-500">
+                                                        {visiblePasswords[u.id] ? <EyeOff size={14} /> : <Eye size={14} />}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="p-4">
+                                            <div className="flex items-center gap-4">
+                                                <div className="text-center">
+                                                    <div className="text-lg font-bold">{u.history.length}</div>
+                                                    <div className="text-[10px] uppercase text-slate-500">Exams</div>
+                                                </div>
+                                                {u.history.length > 0 && (
+                                                    <div className="text-center">
+                                                        <div className="text-lg font-bold text-green-400">
+                                                            {Math.round(u.history.reduce((a,b)=>a+b.percentage,0)/u.history.length)}%
+                                                        </div>
+                                                        <div className="text-[10px] uppercase text-slate-500">Avg Score</div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="p-4 text-right">
+                                            <button 
+                                                onClick={() => toggleExpand(u.id)}
+                                                className={`p-2 rounded-lg border transition-all ${expandedUser === u.id ? 'bg-blue-600 text-white border-blue-500' : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'}`}
+                                            >
+                                                {expandedUser === u.id ? <ChevronRight className="rotate-90" size={20} /> : <History size={20} />}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {/* Expanded History View */}
+                                    {expandedUser === u.id && (
+                                        <tr>
+                                            <td colSpan={4} className="bg-black/20 p-6 shadow-inner">
+                                                <div className="mb-2 text-xs font-bold uppercase text-slate-500 flex items-center gap-2">
+                                                    <ActivityLogIcon /> Examination History Log for {u.name}
+                                                </div>
+                                                {u.history.length === 0 ? (
+                                                    <div className="text-slate-500 italic py-2">No examination records found for this user.</div>
+                                                ) : (
+                                                    <div className="grid gap-3">
+                                                        {u.history.map((exam, i) => (
+                                                            <div key={i} className="flex items-center justify-between bg-slate-800/50 p-3 rounded border border-white/5">
+                                                                <div className="flex items-center gap-3">
+                                                                    <div className={`w-2 h-10 rounded-full ${exam.passed ? 'bg-green-500' : 'bg-red-500'}`} />
+                                                                    <div>
+                                                                        <div className="font-bold text-white">{SUBJECTS_METADATA[exam.subjectId]?.title || exam.subjectId}</div>
+                                                                        <div className="text-xs text-slate-400">{new Date(exam.date).toLocaleString()}</div>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="flex items-center gap-6">
+                                                                    <div className="text-right">
+                                                                        <div className="font-mono text-white">{exam.score}/{exam.maxMarks}</div>
+                                                                        <div className="text-[10px] text-slate-500 uppercase">Points</div>
+                                                                    </div>
+                                                                    <div className={`px-3 py-1 rounded text-sm font-bold w-20 text-center ${exam.passed ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                                                                        {exam.percentage.toFixed(0)}%
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    )}
+                                </React.Fragment>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </GlassCard>
+        </main>
+    </div>
+  );
+};
+
+const ActivityLogIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+);
+
 // --- Topic Selection View ---
 const TopicSelectionView = ({ subject, onStart, onBack }) => {
     const [selectedTopics, setSelectedTopics] = useState([]);
@@ -706,7 +939,7 @@ const TopicSelectionView = ({ subject, onStart, onBack }) => {
     );
 };
 
-const DashboardView = ({ onSelectSubject, user, logout, onViewHistory }) => {
+const DashboardView = ({ onSelectSubject, user, logout, onViewHistory, onOpenAdmin }) => {
   return (
     <div className="min-h-screen bg-[#0f172a] text-white p-6 relative">
        {/* Ambient Background */}
@@ -724,6 +957,11 @@ const DashboardView = ({ onSelectSubject, user, logout, onViewHistory }) => {
           <span className="text-xl font-bold tracking-tight">SkillMatrix<span className="text-blue-400">Exam</span></span>
         </div>
         <div className="flex items-center gap-4">
+          {user.role === 'admin' && (
+              <button onClick={onOpenAdmin} className="flex items-center gap-2 bg-red-600/10 hover:bg-red-600/20 text-red-400 px-4 py-2 rounded-full border border-red-500/20 transition-all font-bold text-sm">
+                  <Shield size={16} /> Admin Panel
+              </button>
+          )}
           <button onClick={onViewHistory} className="flex items-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full border border-white/10 transition-colors text-sm">
             <History size={16} className="text-blue-400" />
             <span className="hidden sm:inline text-slate-300">History</span>
@@ -1069,9 +1307,16 @@ const MainController = () => {
   const [examData, setExamData] = useState(null);
   const [history, setHistory] = useState([]);
 
-  // Simple Router Logic
+  // Routing Logic
   useEffect(() => {
-    if(user && view === 'auth') setView('dash');
+    if(user && view === 'auth') {
+        // If admin, go to Admin Dashboard by default
+        if (user.role === 'admin') {
+            setView('admin-dash');
+        } else {
+            setView('dash');
+        }
+    }
     if(!user) setView('auth');
   }, [user]);
 
@@ -1099,12 +1344,13 @@ const MainController = () => {
   };
 
   if (!user) return <AuthView />;
+  if (view === 'admin-dash') return <AdminDashboardView onLogout={logout} onSwitchToStudentMode={() => setView('dash')} />;
   if (view === 'history') return <HistoryView history={history} onBack={() => setView('dash')} />;
   if (view === 'topic-select') return <TopicSelectionView subject={activeSubject} onStart={startSession} onBack={() => setView('dash')} />;
   if (view === 'exam' && session) return <ExamInterface session={session} user={user} onFinish={finishExam} />;
   if (view === 'results') return <ResultsView results={results} questions={examData.q} answers={examData.a} onHome={() => setView('dash')} />;
   
-  return <DashboardView user={user} logout={logout} onViewHistory={fetchHistory} onSelectSubject={handleSubjectSelect} />;
+  return <DashboardView user={user} logout={logout} onViewHistory={fetchHistory} onSelectSubject={handleSubjectSelect} onOpenAdmin={() => setView('admin-dash')} />;
 };
 
 const App = () => {
