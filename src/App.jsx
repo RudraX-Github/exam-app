@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+import React, { useState, useEffect, createContext, useContext, useMemo } from 'react';
 import { 
   Play, CheckCircle, XCircle, AlertCircle, 
   ChevronRight, ChevronLeft, Clock, HelpCircle, 
@@ -6,15 +6,17 @@ import {
   Cpu, Database, Code, LogOut, BarChart2,
   Loader2, User, CheckSquare, Square,
   ShieldAlert, Eye, Lock, History, Brain, Globe, Sigma, Network, MessageSquare, Mail, UserPlus, LogIn, ArrowLeft, Filter, Layers, ListFilter,
-  Users, EyeOff, FileText, TrendingUp, Shield, Trash2, Edit3, Save, X, KeyRound
+  Users, EyeOff, FileText, TrendingUp, Shield, Trash2, Edit3, Save, X, KeyRound, Cloud,
+  UploadCloud, BookOpen, RefreshCcw, Tag
 } from 'lucide-react';
 
 /**
- * 🚀 ENTERPRISE EXAM PLATFORM v10.1 - "Admin Controls"
+ * 🚀 ENTERPRISE EXAM PLATFORM v10.2 - "Admin Controls & GenAI Update"
  * Updates:
- * - Admin: Added capability to DELETE users
- * - Admin: Added capability to UPDATE user passwords
+ * - Module: Added brand new 'GenAI & LLM' module parsed from CSV.
+ * - Admin: Admin capability to DELETE users & UPDATE user passwords
  * - UI: Added edit modes and confirmation modals
+ * - Data: Restored Full Enterprise Database while retaining updates
  */
 
 // ==========================================
@@ -22,10 +24,9 @@ import {
 // ==========================================
 
 const QUESTIONS_DB = {
-  
-  // ==================================================================================
-  // 1. PYTHON (Fundamentals to Advanced Automation)
-  // ==================================================================================
+  // ==========================================
+  // 1. PYTHON
+  // ==========================================
   python: [
     { id: 1001, topic: "Fundamentals", type: "mcq", marks: 3, question: "What does print(type([]) is list) output?", options: ["True", "False", "Error", "None"], correct: 0, hint: "Check type.", explanation: "[] creates a list, so type([]) is list." },
     { id: 1002, topic: "Operators", type: "mcq", marks: 3, question: "Result of 3 // 2?", options: ["1.5", "1", "2", "3"], correct: 1, hint: "Floor.", explanation: "// is floor division." },
@@ -314,1211 +315,1359 @@ const QUESTIONS_DB = {
     { id: 7102, topic: "Correlation", type: "mcq", marks: 4, question: "Spearman Correlation?", options: ["Rank-based (Non-linear)", "Linear only", "Categorical", "None"], correct: 0, hint: "Ranks.", explanation: "Measures monotonic relationship using ranks." },
     { id: 7103, topic: "Vectors", type: "mcq", marks: 4, question: "Unit Vector magnitude?", options: ["1", "0", "Infinity", "Variable"], correct: 0, hint: "Unity.", explanation: "A vector with a length of exactly 1." },
     { id: 7104, topic: "Stats", type: "mcq", marks: 4, question: "Central Limit Theorem states?", options: ["Sample means -> Normal Dist", "Data is Normal", "Mean = Median", "None"], correct: 0, hint: "Sample size.", explanation: "As sample size increases, the distribution of sample means approaches a normal distribution." }
-  ]
+  ],
+
+  // ==========================================
+  // 8. GENAI & LLM (NEWLY ADDED FROM CSV)
+  // ==========================================
+  genai_llm: [
+  { id: 6001, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "Which layer of the GenAI Roadmap focuses on core model development and fundamental breakthroughs?", options: ["Research Layer", "Application Layer", "Operation Layer", "User Layer"], correct: 0, hint: "Focuses on exploring the unknown.", explanation: "The Research Layer is dedicated to core model development and fundamental breakthroughs in AI algorithms." },
+  { id: 6002, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "The 'Foundation Layer' in GenAI primarily involves:", options: ["End-user interfaces", "Large-scale pre-trained models", "Customer support", "Hardware manufacturing"], correct: 1, hint: "Think of GPT-4 or Claude 3.", explanation: "The Foundation Layer primarily involves the large-scale pre-trained foundational models." },
+  { id: 6003, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "Which layer provides the APIs and environments for developers to access foundation models?", options: ["Builder Layer", "Platform Layer", "Research Layer", "Distribution Layer"], correct: 1, hint: "Provides the ecosystem/infrastructure.", explanation: "The Platform Layer provides APIs and managed environments for developers to access foundation models easily." },
+  { id: 6004, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "The layer where developers create specific tools or agents using foundation models is the:", options: ["Builder Layer", "Foundation Layer", "Data Dimension", "Infrastructure Dimension"], correct: 0, hint: "The ones doing the construction.", explanation: "The Builder Layer is where developers create specific AI tools, apps, or agents using underlying foundation models." },
+  { id: 6005, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "Which layer represents the final software or service that end-users interact with?", options: ["Application Layer", "Research Layer", "Platform Layer", "Operation Layer"], correct: 0, hint: "The end product.", explanation: "The Application Layer represents the final, polished software or service that end-users interact with." },
+  { id: 6006, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "The 'Operation Layer' is responsible for:", options: ["Writing research papers", "Monitoring, scaling, and maintaining AI systems", "Designing new chip architectures", "Marketing the product"], correct: 1, hint: "Similar to DevOps.", explanation: "The Operation (or MLOps) Layer is responsible for monitoring, scaling, maintaining, and securing live AI systems." },
+  { id: 6007, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "Which layer deals with the channels through which the AI application reaches the market?", options: ["Distribution Layer", "Foundation Layer", "Data Dimension", "User Layer"], correct: 0, hint: "", explanation: "" },
+  { id: 6008, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "The 'User Layer' focuses on:", options: ["How humans interact with and benefit from the AI", "Training the model", "Cleaning data", "Server maintenance"], correct: 0, hint: "", explanation: "" },
+  { id: 6009, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "What does the 'Feedback Loop' in the GenAI Roadmap connect?", options: ["User to Research", "Foundation to Platform", "Data to Infrastructure", "People to Tools"], correct: 0, hint: "", explanation: "" },
+  { id: 6010, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "Which dimension covers the physical compute resources like GPUs and TPUs?", options: ["Infrastructure Dimension", "Data Dimension", "Tools Dimension", "People Dimension"], correct: 0, hint: "", explanation: "" },
+  { id: 6011, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "The 'Data Dimension' in the GenAI Roadmap is concerned with:", options: ["Data collection, curation, and governance", "Building web servers", "Hiring employees", "Designing UI layouts"], correct: 0, hint: "", explanation: "" },
+  { id: 6012, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "Which dimension includes the frameworks and libraries used by developers?", options: ["Tools Dimension", "Infrastructure Dimension", "People Dimension", "Data Dimension"], correct: 0, hint: "", explanation: "" },
+  { id: 6013, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "The 'People Dimension' emphasizes:", options: ["The expertise, ethics, and talent required for GenAI", "The number of servers in a data center", "The speed of the internet connection", "The price of the subscription"], correct: 0, hint: "", explanation: "" },
+  { id: 6014, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "What is the primary goal of the 'Infrastructure Dimension'?", options: ["To provide scalable compute and storage", "To write code for mobile apps", "To design logos", "To conduct user surveys"], correct: 0, hint: "", explanation: "" },
+  { id: 6015, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "In the GenAI Roadmap, 'Dimensions' represent:", options: ["The supporting pillars across all layers", "Specific user groups", "The timeline of development", "Marketing strategies"], correct: 0, hint: "", explanation: "" },
+  { id: 6016, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "What is Gemini in the context of Google's AI models?", options: ["A multimodal AI model family", "A search engine optimization tool", "A hardware processor", "A mobile operating system"], correct: 0, hint: "", explanation: "" },
+  { id: 6017, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "Which Gemini model is optimized for high-volume, high-speed tasks with lower latency?", options: ["Gemini Flash", "Gemini Ultra", "Gemini Pro", "Gemini Nano"], correct: 0, hint: "", explanation: "" },
+  { id: 6018, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "Which version of Gemini is the most capable model for highly complex tasks?", options: ["Gemini Ultra", "Gemini Pro", "Gemini Flash", "Gemini Lite"], correct: 0, hint: "", explanation: "" },
+  { id: 6019, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "Gemini Pro is designed to be:", options: ["The best model for scaling across a wide range of tasks", "A small model for mobile devices only", "Only for image generation", "A basic text editor"], correct: 0, hint: "", explanation: "" },
+  { id: 6020, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "What does 'multimodality' mean in the context of Gemini?", options: ["It can process and reason across text, images, video, and audio", "It can run on multiple computers at once", "It supports multiple languages only", "It can be used by multiple users simultaneously"], correct: 0, hint: "", explanation: "" },
+  { id: 6021, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "Which Google AI model preceded Gemini and was based on the Transformer architecture?", options: ["PaLM 2", "BERT", "T5", "All of the above"], correct: 3, hint: "", explanation: "" },
+  { id: 6022, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "Googles 'Responsible AI Principles' include which of the following?", options: ["Be socially beneficial", "Avoid creating or reinforcing unfair bias", "Be built and tested for safety", "All of the above"], correct: 3, hint: "", explanation: "" },
+  { id: 6023, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "Gemini's 'Generation Capability' includes:", options: ["Text, image, and speech generation", "Only text generation", "Only image generation", "Only code generation"], correct: 0, hint: "", explanation: "" },
+  { id: 6024, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "The 'Thinking Capability' of Gemini allows it to:", options: ["Generate structured output and reason through logic", "Think like a human being emotionally", "Predict the future with 100% accuracy", "Operate without any electrical power"], correct: 0, hint: "", explanation: "" },
+  { id: 6025, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "Gemini's 'Understanding Capability' extends to which formats?", options: ["Images, documents, audio, and video", "Text only", "Spreadsheets only", "YouTube comments only"], correct: 0, hint: "", explanation: "" },
+  { id: 6026, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "What is 'Function Calling' in Gemini?", options: ["The ability to interact with external tools and APIs", "The ability to make phone calls to users", "A feature to rename functions in Python code", "A method to call customer support"], correct: 0, hint: "", explanation: "" },
+  { id: 6027, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "How does Gemini handle structured output generation?", options: ["By using reasoning to format data into JSON or other schemas", "By randomly guessing the format", "By only providing raw text", "By requiring a human to format it"], correct: 0, hint: "", explanation: "" },
+  { id: 6028, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "One of the key evolutions of Google's models leading to Gemini was:", options: ["Transitioning from LaMDA and PaLM to a natively multimodal architecture", "Removing the neural network component", "Switching to a purely rule-based system", "Focusing only on 1-bit processors"], correct: 0, hint: "", explanation: "" },
+  { id: 6029, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "In Gemini's multimodal processing, 'Understanding' refers to:", options: ["Extracting insights from diverse media types", "Translating words into different fonts", "Storing data in a database", "Optimizing internet speed"], correct: 0, hint: "", explanation: "" },
+  { id: 6030, topic: "LLM - Foundation", type: "mcq", marks: 1, question: "The 'Feedback Loop' is essential for:", options: ["Continuous improvement based on real-world usage", "Reducing the cost of electricity", "Making the model run slower", "Hiring more managers"], correct: 0, hint: "", explanation: "" },
+  { id: 6031, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What is a workflow in the context of automation?", options: ["A set of manual tasks", "A sequence of industrial, administrative, or other processes through which a piece of work passes from initiation to completion", "A single line of code", "A computer hardware component"], correct: 1, hint: "", explanation: "" },
+  { id: 6032, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What is the primary goal of business process automation?", options: ["To increase manual labor", "To replace all human employees", "To improve efficiency, consistency, and speed of tasks", "To make software more complex"], correct: 2, hint: "", explanation: "" },
+  { id: 6033, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "Which of the following is a problem solved by automation?", options: ["High risk of human error in repetitive tasks", "Decreased data processing speed", "Increased operational costs for simple tasks", "All of the above"], correct: 3, hint: "", explanation: "" },
+  { id: 6034, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "Automation is most effective for tasks that are:", options: ["Creative and unpredictable", "Repetitive and rule-based", "One-time occurrences", "Highly emotional"], correct: 1, hint: "", explanation: "" },
+  { id: 6035, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What does 'workflow orchestration' refer to?", options: ["Writing a single script", "Managing and coordinating multiple automated tasks or workflows", "Playing music during work", "Designing a user interface"], correct: 1, hint: "", explanation: "" },
+  { id: 6036, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What is n8n?", options: ["A programming language", "A fair-code licensed workflow automation tool", "A database management system", "An operating system"], correct: 1, hint: "", explanation: "" },
+  { id: 6037, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "Where does n8n fit in the automation ecosystem?", options: ["It is an alternative to Zapier and Make", "It is only for frontend development", "It is a hardware driver", "It is a social media platform"], correct: 0, hint: "", explanation: "" },
+  { id: 6038, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "Which licensing model does n8n primarily use?", options: ["Proprietary", "Fair-code", "GPL only", "MIT only"], correct: 1, hint: "", explanation: "" },
+  { id: 6039, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What makes n8n unique compared to many other automation tools?", options: ["It can be self-hosted", "It has no GUI", "It only supports 5 integrations", "It requires 100GB of RAM"], correct: 0, hint: "", explanation: "" },
+  { id: 6040, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "n8n is often referred to as a _____ automation tool.", options: ["Low-code", "No-code only", "High-code only", "Hardware-based"], correct: 0, hint: "", explanation: "" },
+  { id: 6041, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What is the main workspace area in n8n where you build workflows?", options: ["The Canvas", "The Dashboard", "The Code Editor", "The Terminal"], correct: 0, hint: "", explanation: "" },
+  { id: 6042, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "In n8n, what do you call the individual building blocks of a workflow?", options: ["Blocks", "Nodes", "Links", "Functions"], correct: 1, hint: "", explanation: "" },
+  { id: 6043, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "How do you connect two nodes in n8n?", options: ["By writing a connection script", "By dragging a line from the output of one node to the input of another", "By clicking a 'Connect' button in the settings", "By using a physical cable"], correct: 1, hint: "", explanation: "" },
+  { id: 6044, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What is the purpose of the 'Execute Workflow' button?", options: ["To delete the workflow", "To run the entire workflow from start to finish", "To save the workflow", "To export the workflow to JSON"], correct: 1, hint: "", explanation: "" },
+  { id: 6045, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "Where can you see the execution history in n8n?", options: ["In the 'Settings' tab", "In the 'Executions' sidebar", "In the 'Nodes' panel", "In the 'Credentials' section"], correct: 1, hint: "", explanation: "" },
+  { id: 6046, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What are 'Trigger' nodes in n8n?", options: ["Nodes that delete data", "Nodes that start a workflow based on an event", "Nodes that only work with databases", "Nodes that end a workflow"], correct: 1, hint: "", explanation: "" },
+  { id: 6047, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "Which type of node is used to fetch data from an external API?", options: ["Trigger Node", "Action/Regular Node", "Sticky Note", "Logic Node"], correct: 1, hint: "", explanation: "" },
+  { id: 6048, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What does 'Integration' mean in n8n?", options: ["Connecting n8n with third-party apps like Google Sheets, Slack, etc.", "Merging two n8n instances", "Installing n8n on Linux", "Using only internal nodes"], correct: 0, hint: "", explanation: "" },
+  { id: 6049, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "Which node would you use to wait for a specific amount of time?", options: ["The Stop Node", "The Wait Node", "The Pause Node", "The Delay Node"], correct: 1, hint: "", explanation: "" },
+  { id: 6050, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "How do you handle credentials for an integration in n8n?", options: ["By hardcoding them in the node", "By creating a 'Credential' object and linking it to the node", "By sharing them in the public forum", "By disabling security"], correct: 1, hint: "", explanation: "" },
+  { id: 6051, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What is a 'self-hosted' n8n instance?", options: ["n8n running on your own server or local machine", "n8n running on n8n.cloud", "n8n running on a public website", "n8n running inside a browser only"], correct: 0, hint: "", explanation: "" },
+  { id: 6052, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What is 'n8n Cloud'?", options: ["A managed hosting service provided by n8n", "A weather forecasting tool", "A version of n8n that doesn't use nodes", "A desktop application"], correct: 0, hint: "", explanation: "" },
+  { id: 6053, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What is a major advantage of self-hosting n8n?", options: ["No internet required ever", "Full control over data and lower costs for high-volume tasks", "It is easier to set up than the cloud version", "It automatically updates every hour"], correct: 1, hint: "", explanation: "" },
+  { id: 6054, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "Which technology is commonly used to install self-hosted n8n easily?", options: ["Docker", "Java Applets", "Adobe Flash", "VirtualBox only"], correct: 0, hint: "", explanation: "" },
+  { id: 6055, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "To run n8n using Docker, which command is typically used first?", options: ["docker pull n8nio/n8n", "docker stop n8n", "docker delete n8n", "docker start chrome"], correct: 0, hint: "", explanation: "" },
+  { id: 6056, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What is the default port for n8n?", options: ["8080", "5678", "3000", "80"], correct: 1, hint: "", explanation: "" },
+  { id: 6057, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "Which environment variable is used to set the encryption key in n8n?", options: ["N8N_ENCRYPTION_KEY", "SECRET_KEY", "PASSWORD", "KEY_ENCRYPT"], correct: 0, hint: "", explanation: "" },
+  { id: 6058, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "How long is the standard free trial for n8n Cloud?", options: ["7 days", "15 days", "30 days", "60 days"], correct: 1, hint: "", explanation: "" },
+  { id: 6059, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "In a Docker setup, what is the purpose of a 'volume' for n8n?", options: ["To make the container louder", "To persist data like workflows and credentials between restarts", "To increase the RAM", "To store the operating system"], correct: 1, hint: "", explanation: "" },
+  { id: 6060, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "Which command starts an n8n container in the background (detached mode)?", options: ["docker run -d", "docker run -it", "docker run -stop", "docker run -f"], correct: 0, hint: "", explanation: "" },
+  { id: 6061, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "How does data flow between nodes in n8n?", options: ["From right to left", "From left to right", "In a circular motion only", "Randomly"], correct: 1, hint: "", explanation: "" },
+  { id: 6062, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What format is data typically represented in within n8n?", options: ["XML", "JSON", "Plain Text", "Binary only"], correct: 1, hint: "", explanation: "" },
+  { id: 6063, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What is an 'Expression' in n8n?", options: ["A way to dynamically calculate or reference data using JavaScript", "A facial expression of the user", "A static text string", "A node type"], correct: 0, hint: "", explanation: "" },
+  { id: 6064, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "How do you reference data from a previous node in an expression?", options: ["Using the syntax {{ $node['NodeName'].json['property'] }}", "By typing the property name directly", "By using SQL", "It is impossible to reference previous data"], correct: 0, hint: "", explanation: "" },
+  { id: 6065, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What is the purpose of the 'Set' node (or 'Edit Fields' node)?", options: ["To delete all data", "To create, update, or remove fields in the data stream", "To change the n8n theme", "To set the server time"], correct: 1, hint: "", explanation: "" },
+  { id: 6066, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What does '$json' represent in an expression?", options: ["The input JSON data of the current node", "A currency symbol", "The global configuration", "The output of the last node only"], correct: 0, hint: "", explanation: "" },
+  { id: 6067, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "How can you access the current date in an n8n expression?", options: ["Using $today", "Using {{ $now }} or {{ new Date() }}", "By manually typing it", "Using a 'Date' node only"], correct: 1, hint: "", explanation: "" },
+  { id: 6068, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "In n8n, data is processed as an _____ of items.", options: ["Object", "Array", "String", "Number"], correct: 1, hint: "", explanation: "" },
+  { id: 6069, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What happens if a node receives multiple items?", options: ["It only processes the first one", "It processes each item individually (for most nodes)", "It crashes", "It ignores all items"], correct: 1, hint: "", explanation: "" },
+  { id: 6070, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "Which variable allows you to access data from the 'Trigger' node specifically?", options: ["By typing the property name directly", "$node['TriggerNodeName']", "$start", "$first"], correct: 1, hint: "", explanation: "" },
+  { id: 6071, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What is the purpose of the 'If' node?", options: ["To repeat a task", "To branch the workflow based on a true/false condition", "To merge two datasets", "To wait for 5 minutes"], correct: 1, hint: "", explanation: "" },
+  { id: 6072, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What is the 'Merge' node used for?", options: ["To combine data from two or more input branches", "To delete duplicate nodes", "To stop the workflow", "To split one item into many"], correct: 0, hint: "", explanation: "" },
+  { id: 6073, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "Which node is used to divide a single array of items into multiple individual items?", options: ["The Join Node", "The Split In Batches Node", "The Filter Node", "The Combine Node"], correct: 1, hint: "", explanation: "" },
+  { id: 6074, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What is the main difference between 'If' and 'Switch' nodes?", options: ["If' is for binary conditions; 'Switch' is for multiple possible routes", "If' is faster", "Switch' only works with numbers", "There is no difference"], correct: 0, hint: "", explanation: "" },
+  { id: 6075, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What is a 'Linear' workflow?", options: ["A workflow where nodes are connected in a single straight line", "A workflow that loops forever", "A workflow with many branches", "A workflow that uses AI"], correct: 0, hint: "", explanation: "" },
+  { id: 6076, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What characterizes a 'Parallel' workflow?", options: ["Tasks are executed one after another", "Multiple branches execute tasks simultaneously or independently", "The workflow only runs at night", "The workflow uses two n8n instances"], correct: 1, hint: "Side-by-side execution.", explanation: "Parallel workflows branch out to execute multiple tasks simultaneously, speeding up the process." },
+  { id: 6077, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What is a 'Conditional' workflow?", options: ["A workflow that always follows the same path", "A workflow that makes decisions based on data inputs", "A workflow that requires a subscription", "A workflow with no trigger"], correct: 1, hint: "Uses IF/ELSE logic.", explanation: "Conditional workflows evaluate data inputs and branch out dynamically based on logical conditions." },
+  { id: 6078, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "What is a 'Looping' workflow?", options: ["A workflow that runs once and stops", "A workflow that repeats a set of actions multiple times", "A workflow that never starts", "A workflow that only uses the 'Wait' node"], correct: 1, hint: "Iteration.", explanation: "Looping workflows iterate over arrays of data or repeat actions until a specific condition is met." },
+  { id: 6079, topic: "Agentic Workflows", type: "mcq", marks: 1, question: "Can you integrate all workflow types (Linear, Parallel, Conditional, Looping) into a single flow?", options: ["No, it's too complex", "Yes, n8n allows combining these patterns in a single workflow", "Only in the Enterprise version", "Only if using Docker"], correct: 1, hint: "Modern tools are highly flexible.", explanation: "Yes, advanced automation platforms allow you to combine all workflow patterns seamlessly within a single architecture." }
+]
 };
 
-// Metadata expanded with gradients and icons
-const SUBJECTS_METADATA = {
-  python: { title: "Python Master", icon: "Terminal", color: "from-blue-500 to-cyan-400", bg: "bg-blue-900/20" },
-  cpp: { title: "C++ Architect", icon: "Cpu", color: "from-indigo-500 to-purple-400", bg: "bg-indigo-900/20" },
-  ds: { title: "Data Science", icon: "Database", color: "from-emerald-500 to-teal-400", bg: "bg-emerald-900/20" },
-  ml: { title: "Machine Learning", icon: "Brain", color: "from-orange-500 to-amber-400", bg: "bg-orange-900/20" },
-  dl: { title: "Deep Learning", icon: "Network", color: "from-rose-500 to-pink-400", bg: "bg-rose-900/20" },
-  nlp: { title: "NLP Specialist", icon: "MessageSquare", color: "from-violet-500 to-fuchsia-400", bg: "bg-violet-900/20" },
-  math: { title: "Mathematics", icon: "Sigma", color: "from-slate-500 to-gray-400", bg: "bg-slate-900/20" }
-};
-
-// --- BACKEND SIMULATION ---
-const INITIAL_USERS = [
-  { id: "admin", name: "Master Admin", email: "admin", password: "admin", role: "admin" },
-  { id: "u_demo1", name: "Alice Developer", email: "alice@tech.com", password: "pass", role: "candidate" },
-  { id: "u_demo2", name: "Bob Data", email: "bob@data.io", password: "pass", role: "candidate" }
+const EXAM_MODULES = [
+  { id: 'python', title: 'Python Programming', description: 'Core Python, scripting, and data handling.', icon: Terminal, color: 'text-green-400', bg: 'bg-green-500/10', total: QUESTIONS_DB.python.length, time: 30 },
+  { id: 'cpp', title: 'C++ Programming', description: 'OOP, Memory Management, and STL.', icon: Code, color: 'text-blue-400', bg: 'bg-blue-500/10', total: QUESTIONS_DB.cpp.length, time: 35 },
+  { id: 'ds', title: 'Data Science', description: 'NumPy, Pandas, and SQL basics.', icon: BarChart2, color: 'text-yellow-400', bg: 'bg-yellow-500/10', total: QUESTIONS_DB.ds.length, time: 40 },
+  { id: 'ml', title: 'Machine Learning', description: 'Supervised & Unsupervised Learning.', icon: Cpu, color: 'text-orange-400', bg: 'bg-orange-500/10', total: QUESTIONS_DB.ml.length, time: 45 },
+  { id: 'dl', title: 'Deep Learning', description: 'ANNs, CNNs, RNNs, and Transformers.', icon: Network, color: 'text-red-400', bg: 'bg-red-500/10', total: QUESTIONS_DB.dl.length, time: 45 },
+  { id: 'nlp', title: 'NLP', description: 'Text processing and language models.', icon: MessageSquare, color: 'text-cyan-400', bg: 'bg-cyan-500/10', total: QUESTIONS_DB.nlp.length, time: 40 },
+  { id: 'math', title: 'Math & Stats', description: 'Probability, Linear Algebra, and Stats.', icon: Sigma, color: 'text-pink-400', bg: 'bg-pink-500/10', total: QUESTIONS_DB.math.length, time: 35 },
+  { id: 'genai_llm', title: 'GenAI & LLMs', description: 'Foundation models, AI workflows, & Agents.', icon: Brain, color: 'text-purple-400', bg: 'bg-purple-500/10', total: QUESTIONS_DB.genai_llm.length, time: 25 }
 ];
-let USERS_DB = [...INITIAL_USERS]; // mutable db for session
-const USER_HISTORY = {
-    "u_demo1": [
-        { id: "s_1", score: 45, maxMarks: 50, percentage: 90, passed: true, subjectId: "python", date: new Date().toISOString() },
-        { id: "s_2", score: 20, maxMarks: 50, percentage: 40, passed: false, subjectId: "cpp", date: new Date(Date.now() - 86400000).toISOString() }
-    ]
-};
+
+// ==========================================
+// 2. MOCK BACKEND SERVICE
+// ==========================================
 
 class MockBackendService {
-  static async delay(ms = 400) { return new Promise(r => setTimeout(r, ms)); }
-  
-  // Fisher-Yates Shuffle Algorithm for better randomness
-  static shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
+  static users = [
+    { id: 'admin-1', name: 'System Admin', email: 'admin@system.com', password: 'admin', role: 'admin', joined: '2023-01-15', scores: { python: 100, ds: 100, genai_llm: 100 } },
+    { id: 'user-1', name: 'Alice Smith', email: 'alice@test.com', password: 'test', role: 'student', joined: '2023-10-05', scores: { python: 85, ds: 70, genai_llm: 90 } },
+    { id: 'user-2', name: 'Bob Jones', email: 'bob@test.com', password: 'test', role: 'student', joined: '2023-11-20', scores: { ml: 92, cpp: 60, genai_llm: 75 } }
+  ];
+
+  static async delay(ms = 800) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   static async login(email, password) {
-    await this.delay(800);
-    const user = USERS_DB.find(u => u.email === email && u.password === password);
-    if (!user) throw new Error("Invalid credentials. Please register if you are new.");
-    return { user };
+    await this.delay();
+    const user = this.users.find(u => u.email === email && u.password === password);
+    if (!user) throw new Error("Invalid credentials");
+    const { password: _, ...safeUser } = user;
+    return { token: 'mock-jwt-token-123', user: safeUser };
   }
 
   static async register(name, email, password) {
-    await this.delay(800);
-    if (USERS_DB.find(u => u.email === email)) throw new Error("User already exists.");
-    const newUser = { id: `u_${Date.now()}`, name, email, password, role: 'candidate' };
-    USERS_DB.push(newUser);
-    return { user: newUser };
+    await this.delay();
+    if (this.users.some(u => u.email === email)) throw new Error("Email already registered");
+    const newUser = {
+      id: `user-${Date.now()}`,
+      name, email, password, role: 'student', joined: new Date().toISOString().split('T')[0], scores: {}
+    };
+    this.users.push(newUser);
+    const { password: _, ...safeUser } = newUser;
+    return { token: 'mock-jwt-token-new', user: safeUser };
   }
 
-  // --- NEW ADMIN METHODS ---
-  static async getAdminData() {
-    await this.delay(600);
-    // Combine Users with their History
-    return USERS_DB.map(user => ({
-        ...user,
-        history: USER_HISTORY[user.id] || []
-    }));
+  static async updateScore(userId, moduleId, score) {
+    await this.delay(400);
+    const user = this.users.find(u => u.id === userId);
+    if (user) {
+      if (!user.scores[moduleId] || score > user.scores[moduleId]) {
+        user.scores[moduleId] = score;
+      }
+    }
+    return user;
   }
 
-  static async deleteUser(targetUserId) {
-    await this.delay(600);
-    if (targetUserId === 'admin') throw new Error("Cannot delete Master Admin.");
-    USERS_DB = USERS_DB.filter(u => u.id !== targetUserId);
-    // Optional: Clean up history if needed, but keeping it for records is also valid
+  static async getAllUsers() {
+    await this.delay();
+    return this.users.map(({ password, ...u }) => u);
+  }
+
+  static async deleteUser(userId) {
+    await this.delay(500);
+    const index = this.users.findIndex(u => u.id === userId);
+    if (index === -1) throw new Error("User not found");
+    this.users.splice(index, 1);
     return true;
   }
 
-  static async updateUserPassword(targetUserId, newPassword) {
-    await this.delay(600);
-    const user = USERS_DB.find(u => u.id === targetUserId);
-    if (!user) throw new Error("User not found.");
+  static async updateUserPassword(userId, newPassword) {
+    await this.delay(500);
+    const user = this.users.find(u => u.id === userId);
+    if (!user) throw new Error("User not found");
     user.password = newPassword;
     return true;
-  }
-
-  static async startExamSession(subjectId, selectedTopics) {
-    await this.delay(600);
-    const allQuestions = QUESTIONS_DB[subjectId] || [];
-    
-    // Check if it is a full exam ("ALL" topics)
-    const isFullExam = selectedTopics.includes("ALL") || selectedTopics.length === 0;
-
-    // Filter questions based on selected topics
-    let pool = isFullExam
-      ? allQuestions 
-      : allQuestions.filter(q => selectedTopics.includes(q.topic));
-    
-    if(pool.length === 0) pool = allQuestions; 
-    
-    // 1. Shuffle the question pool first
-    const shuffledPool = this.shuffleArray([...pool]);
-    
-    // 2. Select questions based on mode
-    // Full Exam -> 50 questions | Topic Wise -> 5 questions
-    const limit = isFullExam ? 50 : 5;
-    const selectedQuestions = shuffledPool.slice(0, limit);
-
-    // 3. Shuffle options for each selected question
-    const questions = selectedQuestions.map(q => {
-        // Create objects to track original correct answer position
-        const optionsWithIndex = q.options.map((opt, index) => ({
-            text: opt,
-            isCorrect: index === q.correct
-        }));
-
-        // Shuffle these option objects
-        const shuffledOptions = this.shuffleArray(optionsWithIndex);
-
-        // Map back to simple string array and find new correct index
-        return {
-            ...q,
-            options: shuffledOptions.map(o => o.text),
-            correct: shuffledOptions.findIndex(o => o.isCorrect)
-        };
-    });
-
-    return { sessionId: `sess_${Date.now()}`, subjectId, questions, startTime: Date.now() };
-  }
-
-  static async submitExam(userId, sessionId, answers, questions, subjectId) {
-    await this.delay(800);
-    let score = 0;
-    let maxMarks = 0;
-    questions.forEach((q, idx) => {
-      maxMarks += q.marks;
-      if (answers[idx] === q.correct) score += q.marks;
-    });
-    const result = { 
-        id: sessionId,
-        sessionId, 
-        score, 
-        maxMarks, 
-        percentage: maxMarks > 0 ? (score/maxMarks)*100 : 0, 
-        passed: maxMarks > 0 ? (score/maxMarks) >= 0.65 : false, 
-        subjectId, 
-        date: new Date().toISOString() 
-    };
-    if (!USER_HISTORY[userId]) USER_HISTORY[userId] = [];
-    USER_HISTORY[userId].unshift(result); // Add new result to the beginning
-    return result;
-  }
-
-  static async getHistory(userId) {
-      await this.delay(400);
-      return USER_HISTORY[userId] || [];
   }
 }
 
 // ==========================================
-// 2. CONTEXTS & HOOKS
+// 2.5 CSV PARSER & REVISION MODULE
 // ==========================================
 
-const ToastContext = createContext();
-const useToast = () => useContext(ToastContext);
+// --- Robust CSV Parser (Handles quotes and newlines) ---
+function parseCSV(text) {
+  let p = '', row = [''], ret = [row], i = 0, r = 0, s = !0, l;
+  for (l of text) {
+    if ('"' === l) {
+      if (s && l === p) row[i] += l;
+      s = !s;
+    } else if (',' === l && s) l = row[++i] = '';
+    else if ('\n' === l && s) {
+      if ('\r' === p) row[i] = row[i].slice(0, -1);
+      row = ret[++r] = ['']; i = 0;
+    } else row[i] += l;
+    p = l;
+  }
+  return ret.filter(r => r.join('').trim() !== '');
+}
 
-const AuthContext = createContext();
-const useAuth = () => useContext(AuthContext);
+const RevisionModule = ({ onExit }) => {
+  const [data, setData] = useState(null);
+  const [view, setView] = useState('upload'); // 'upload', 'eda', 'revision'
+  const [error, setError] = useState('');
 
-// ==========================================
-// 3. UI COMPONENTS (GLASSMORPHISM)
-// ==========================================
+  // Revision State
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedTag, setSelectedTag] = useState('All');
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [score, setScore] = useState(0);
+  const [answeredQs, setAnsweredQs] = useState(new Set());
 
-const GlassCard = ({ children, className = "" }) => (
-  <div className={`backdrop-blur-xl bg-white/10 border border-white/20 shadow-xl rounded-2xl ${className}`}>
-    {children}
-  </div>
-);
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-const NeonButton = ({ children, onClick, variant = 'primary', className = "", disabled }) => {
-  const baseStyle = "px-6 py-3 rounded-xl font-bold transition-all active:scale-95 flex items-center justify-center gap-2 relative overflow-hidden group";
-  const variants = {
-    primary: "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:shadow-lg hover:shadow-blue-500/30",
-    secondary: "bg-white/10 text-white border border-white/20 hover:bg-white/20",
-    danger: "bg-gradient-to-r from-red-500 to-pink-600 text-white"
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const rawText = event.target.result;
+        const parsedData = parseCSV(rawText);
+        
+        const headers = parsedData[0].map(h => h.trim());
+        const rows = parsedData.slice(1);
+        
+        const formattedData = rows.map(row => {
+          let obj = {};
+          headers.forEach((header, index) => {
+            obj[header] = row[index] ? row[index].trim() : '';
+          });
+          return obj;
+        }).filter(item => item.Question && item.Question.trim() !== '');
+
+        setData(formattedData);
+        setView('eda');
+        setError('');
+      } catch (err) {
+        setError('Failed to parse CSV file. Ensure it is formatted correctly.');
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const edaMetrics = useMemo(() => {
+    if (!data) return null;
+    const total = data.length;
+    const severityCount = {};
+    const tagsCount = {};
+
+    data.forEach(item => {
+      const sev = item['Severity Type'] || 'Unknown';
+      severityCount[sev] = (severityCount[sev] || 0) + 1;
+
+      let tags = item['Tags'] || 'Untagged';
+      tags = tags.replace(/[\n\t]/g, '').trim(); 
+      tagsCount[tags] = (tagsCount[tags] || 0) + 1;
+    });
+    return { total, severityCount, tagsCount };
+  }, [data]);
+
+  const filteredData = useMemo(() => {
+    if (!data) return [];
+    if (selectedTag === 'All') return data;
+    return data.filter(item => {
+      const tag = (item['Tags'] || 'Untagged').replace(/[\n\t]/g, '').trim();
+      return tag === selectedTag;
+    });
+  }, [data, selectedTag]);
+
+  const displayQuestions = useMemo(() => {
+    let prevCorrectIndex = -1;
+    
+    return filteredData.map(item => {
+      const options = ['Option-1', 'Option-2', 'Option-3', 'Option-4']
+        .map(k => item[k])
+        .filter(Boolean);
+        
+      let shuffled, correctIdx, attempts = 0;
+      do {
+        shuffled = [...options];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        correctIdx = shuffled.indexOf(item.Answer);
+        attempts++;
+      } while (
+        correctIdx !== -1 && 
+        correctIdx === prevCorrectIndex && 
+        attempts < 20 && 
+        options.length > 1
+      );
+      
+      if (correctIdx !== -1) prevCorrectIndex = correctIdx;
+      return { ...item, displayOptions: shuffled };
+    });
+  }, [filteredData]);
+
+  const currentQuestion = displayQuestions[currentIndex];
+
+  const handleOptionSelect = (selectedOption) => {
+    if (showAnswer) return;
+    setShowAnswer(true);
+    const isCorrect = selectedOption === currentQuestion.Answer;
+    
+    if (isCorrect && !answeredQs.has(currentIndex)) {
+      setScore(prev => prev + 1);
+    }
+    
+    const newAnswered = new Set(answeredQs);
+    newAnswered.add(currentIndex);
+    setAnsweredQs(newAnswered);
+  };
+
+  const nextQuestion = () => {
+    if (currentIndex < displayQuestions.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+      setShowAnswer(false);
+    }
+  };
+
+  const prevQuestion = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(prev => prev - 1);
+      setShowAnswer(false);
+    }
+  };
+
+  const resetRevision = () => {
+    setCurrentIndex(0);
+    setShowAnswer(false);
+    setScore(0);
+    setAnsweredQs(new Set());
   };
 
   return (
-    <button onClick={onClick} disabled={disabled} className={`${baseStyle} ${variants[variant]} ${className} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
-      <span className="relative z-10 flex items-center gap-2">{children}</span>
-      {variant === 'primary' && <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 opacity-0 group-hover:opacity-20 transition-opacity" />}
+    <div className="min-h-screen bg-[#0A0F1C] flex flex-col text-slate-200 font-sans pb-20">
+      {/* Navbar */}
+      <nav className="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800 px-4 h-16 flex justify-between items-center">
+        <div className="flex items-center space-x-4">
+          <button onClick={onExit} className="p-2 -ml-2 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition-colors">
+            <X className="w-5 h-5" />
+          </button>
+          <div className="flex items-center space-x-2">
+            <BookOpen className="text-blue-400" size={20} />
+            <h1 className="text-lg font-bold text-white hidden sm:block">Custom Revision Hub</h1>
+          </div>
+        </div>
+        <div className="flex space-x-2">
+          {data && (
+            <>
+              <button 
+                onClick={() => setView('eda')}
+                className={`px-3 py-1.5 rounded-lg font-medium text-sm transition-colors flex items-center space-x-2 ${view === 'eda' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'text-slate-400 hover:bg-slate-800'}`}
+              >
+                <BarChart2 size={16} />
+                <span className="hidden sm:inline">Dashboard</span>
+              </button>
+              <button 
+                onClick={() => { setView('revision'); resetRevision(); }}
+                className={`px-3 py-1.5 rounded-lg font-medium text-sm transition-colors flex items-center space-x-2 ${view === 'revision' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'text-slate-400 hover:bg-slate-800'}`}
+              >
+                <CheckCircle size={16} />
+                <span className="hidden sm:inline">Study Module</span>
+              </button>
+              <button 
+                onClick={() => { setData(null); setView('upload'); }}
+                className="px-3 py-1.5 rounded-lg font-medium text-sm text-slate-400 hover:bg-slate-800 transition-colors ml-2 border border-slate-700"
+              >
+                New Upload
+              </button>
+            </>
+          )}
+        </div>
+      </nav>
+
+      {/* Main Content Area */}
+      <main className="flex-1 p-4 max-w-6xl w-full mx-auto mt-4">
+        
+        {view === 'upload' && (
+          <div className="min-h-[60vh] flex flex-col items-center justify-center animate-slide-up">
+            <div className="max-w-xl w-full bg-slate-900/50 backdrop-blur-md rounded-3xl border border-slate-800 p-12 text-center shadow-xl">
+              <div className="w-20 h-20 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <UploadCloud size={40} />
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-3">Upload Question Bank</h2>
+              <p className="text-slate-400 mb-8 leading-relaxed">
+                Upload your structured CSV file to instantly generate an interactive study module and exploratory data dashboard.
+              </p>
+              
+              <label className="cursor-pointer bg-gradient-to-r from-blue-600 to-indigo-600 hover:shadow-lg hover:shadow-blue-500/25 text-white font-medium py-3 px-8 rounded-xl transition-all duration-200 inline-flex items-center gap-2 hover:-translate-y-0.5">
+                <UploadCloud size={18} />
+                <span>Browse CSV File</span>
+                <input type="file" accept=".csv" className="hidden" onChange={handleFileUpload} />
+              </label>
+              
+              {error && <div className="mt-6 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm flex items-center justify-center gap-2"><AlertCircle size={16}/>{error}</div>}
+            </div>
+          </div>
+        )}
+
+        {view === 'eda' && edaMetrics && (
+          <div className="space-y-6 animate-slide-up">
+            <h2 className="text-2xl font-bold text-white">Exploratory Data Analysis</h2>
+            
+            {/* KPI Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800 shadow-sm">
+                <p className="text-sm text-slate-400 font-medium mb-1">Total Questions</p>
+                <p className="text-3xl font-bold text-white">{edaMetrics.total}</p>
+              </div>
+              <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800 shadow-sm">
+                <p className="text-sm text-slate-400 font-medium mb-1">Total Tags/Topics</p>
+                <p className="text-3xl font-bold text-white">{Object.keys(edaMetrics.tagsCount).length}</p>
+              </div>
+              <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800 shadow-sm">
+                <p className="text-sm text-slate-400 font-medium mb-3">Difficulty Levels</p>
+                <div className="flex flex-wrap gap-2">
+                  {Object.entries(edaMetrics.severityCount).map(([sev, count]) => (
+                    <span key={sev} className="px-2.5 py-1 bg-slate-800 text-xs font-medium rounded-lg text-slate-300 border border-slate-700">
+                      {sev}: {count}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Tags Distribution */}
+              <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800 shadow-sm">
+                <h3 className="text-lg font-semibold text-white mb-6 flex items-center"><Tag size={18} className="mr-2 text-blue-400"/> Topic Distribution</h3>
+                <div className="space-y-5">
+                  {Object.entries(edaMetrics.tagsCount).sort((a,b)=>b[1]-a[1]).map(([tag, count]) => (
+                    <div key={tag}>
+                      <div className="flex justify-between text-sm mb-2">
+                        <span className="font-medium text-slate-300 truncate pr-4">{tag}</span>
+                        <span className="text-slate-500">{count} Qs</span>
+                      </div>
+                      <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                        <div className="bg-blue-500 h-2 rounded-full transition-all duration-1000" style={{ width: `${(count / edaMetrics.total) * 100}%` }}></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Ready to Study Card */}
+              <div className="bg-gradient-to-br from-indigo-900/80 to-purple-900/80 p-8 rounded-2xl border border-indigo-500/20 shadow-lg text-white flex flex-col justify-center items-center text-center relative overflow-hidden">
+                <div className="absolute right-0 top-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+                <BookOpen size={48} className="mb-4 text-indigo-300" />
+                <h3 className="text-3xl font-bold mb-3 relative z-10">Ready to Revise?</h3>
+                <p className="text-indigo-200/80 mb-8 max-w-sm relative z-10">Your data is parsed and ready. Dive into the interactive study module to test your knowledge.</p>
+                <button 
+                  onClick={() => { setView('revision'); resetRevision(); }}
+                  className="bg-white text-indigo-900 font-bold py-3 px-8 rounded-xl shadow-lg hover:shadow-indigo-500/25 hover:-translate-y-0.5 transition-all relative z-10"
+                >
+                  Start Revision Session
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {view === 'revision' && currentQuestion && (
+          <div className="flex flex-col lg:flex-row gap-6 lg:h-[calc(100vh-140px)] animate-slide-up">
+            
+            {/* Sidebar Filters */}
+            <div className="w-full lg:w-72 bg-slate-900/50 rounded-2xl border border-slate-800 p-5 flex flex-col">
+              <h3 className="font-semibold text-white mb-3">Filter by Topic</h3>
+              <select 
+                className="w-full p-2.5 border border-slate-700 rounded-xl bg-slate-950 text-slate-200 mb-6 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                value={selectedTag}
+                onChange={(e) => {
+                  setSelectedTag(e.target.value);
+                  resetRevision();
+                }}
+              >
+                <option value="All">All Topics ({data.length})</option>
+                {Object.entries(edaMetrics.tagsCount).map(([tag, count]) => (
+                  <option key={tag} value={tag}>{tag} ({count})</option>
+                ))}
+              </select>
+
+              <div className="mt-auto bg-slate-800/50 p-5 rounded-xl border border-slate-700/50 text-center">
+                <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-2">Your Score</p>
+                <p className="text-4xl font-bold text-blue-400 mb-4">{score} <span className="text-xl text-slate-600">/ {displayQuestions.length}</span></p>
+                <button 
+                  onClick={resetRevision} 
+                  className="flex items-center justify-center w-full py-2.5 text-sm font-medium text-slate-300 hover:text-white bg-slate-700/50 hover:bg-slate-700 rounded-lg transition-colors border border-slate-600"
+                >
+                  <RefreshCcw size={16} className="mr-2" /> Reset Progress
+                </button>
+              </div>
+            </div>
+
+            {/* Flashcard Area */}
+            <div className="flex-1 flex flex-col h-full">
+              <div className="bg-slate-900/50 flex-1 rounded-2xl border border-slate-800 p-6 md:p-10 flex flex-col relative overflow-y-auto custom-scrollbar">
+                
+                {/* Meta info */}
+                <div className="flex justify-between items-center mb-6 pb-6 border-b border-slate-800">
+                  <span className="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs px-3 py-1.5 rounded-full font-medium">
+                    {currentQuestion['Topic Type'] || 'General'}
+                  </span>
+                  <span className={`text-xs px-3 py-1.5 rounded-full font-medium border
+                    ${currentQuestion['Severity Type'] === 'EASY' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 
+                      currentQuestion['Severity Type'] === 'MEDIUM' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 
+                      'bg-red-500/10 text-red-400 border-red-500/20'}`}
+                  >
+                    {currentQuestion['Severity Type'] || 'N/A'}
+                  </span>
+                </div>
+
+                {/* Question Text */}
+                <h2 className="text-xl md:text-2xl font-medium text-white mb-10 leading-relaxed">
+                  {currentQuestion.Question}
+                </h2>
+
+                {/* Options */}
+                <div className="space-y-3 mt-auto">
+                  {currentQuestion.displayOptions.map((optionText, idx) => {
+                    const isCorrectAnswer = optionText === currentQuestion.Answer;
+                    
+                    let btnClass = "w-full text-left p-4 rounded-xl border-2 transition-all duration-200 flex items-center justify-between ";
+                    
+                    if (!showAnswer) {
+                      btnClass += "border-slate-800 hover:border-blue-500 hover:bg-blue-500/10 text-slate-300 bg-slate-950/50";
+                    } else {
+                      if (isCorrectAnswer) {
+                        btnClass += "border-emerald-500 bg-emerald-500/10 text-emerald-300 font-medium shadow-lg shadow-emerald-500/10";
+                      } else {
+                        btnClass += "border-slate-800 bg-slate-950/50 text-slate-500 opacity-50";
+                      }
+                    }
+
+                    return (
+                      <button 
+                        key={idx} 
+                        disabled={showAnswer}
+                        onClick={() => handleOptionSelect(optionText)}
+                        className={btnClass}
+                      >
+                        <span className="text-lg">{optionText}</span>
+                        {showAnswer && isCorrectAnswer && <CheckCircle size={22} className="text-emerald-500 shrink-0 ml-4" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Controls */}
+              <div className="flex items-center justify-between mt-4 bg-slate-900/80 backdrop-blur-md p-4 rounded-2xl border border-slate-800 shadow-lg">
+                <button 
+                  onClick={prevQuestion} 
+                  disabled={currentIndex === 0}
+                  className="flex items-center px-4 py-2.5 text-slate-300 hover:bg-slate-800 rounded-xl disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-medium"
+                >
+                  <ChevronLeft size={20} className="mr-1" /> Prev
+                </button>
+                
+                <span className="text-sm font-medium text-slate-400">
+                  {currentIndex + 1} / {displayQuestions.length}
+                </span>
+
+                <button 
+                  onClick={nextQuestion}
+                  disabled={currentIndex === displayQuestions.length - 1}
+                  className="flex items-center px-5 py-2.5 bg-blue-600 text-white hover:bg-blue-500 rounded-xl disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-medium"
+                >
+                  Next <ChevronRight size={20} className="ml-1" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
+
+// ==========================================
+// 3. CONTEXTS (AUTH & TOAST)
+// ==========================================
+
+const AuthContext = createContext(null);
+const ToastContext = createContext(null);
+
+// ==========================================
+// 4. COMPONENTS
+// ==========================================
+
+const Button = ({ children, onClick, variant = 'primary', className = '', icon: Icon, disabled = false, fullWidth = false }) => {
+  const base = "inline-flex items-center justify-center px-4 py-2.5 rounded-xl font-medium transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed";
+  const variants = {
+    primary: "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5",
+    secondary: "bg-slate-800 text-slate-200 hover:bg-slate-700 border border-slate-700",
+    danger: "bg-red-500/10 text-red-500 hover:bg-red-500/20",
+    ghost: "bg-transparent text-slate-400 hover:text-white hover:bg-slate-800",
+    success: "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20"
+  };
+  
+  return (
+    <button 
+      onClick={onClick} 
+      disabled={disabled}
+      className={`${base} ${variants[variant]} ${fullWidth ? 'w-full' : ''} ${className}`}
+    >
+      {Icon && <Icon className={`w-4 h-4 ${children ? 'mr-2' : ''}`} />}
+      {children}
     </button>
   );
 };
 
-const CodeBlock = ({ text }) => {
-  if (typeof text !== 'string') return null; 
-  if (!text.includes('`')) return <span className="font-sans">{text}</span>;
-  const parts = text.split('`');
-  return (
-    <span>
-      {parts.map((part, i) => i % 2 === 1 
-        ? <span key={i} className="font-mono text-blue-400 bg-blue-900/30 px-1.5 py-0.5 rounded text-sm border border-blue-500/30">{part}</span> 
-        : part
-      )}
-    </span>
-  );
-};
+// --- AUTH SCREENS ---
 
-// ==========================================
-// 4. VIEWS
-// ==========================================
-
-const AuthView = () => {
-  const { login, register, loading, error, clearError } = useAuth();
+const AuthScreen = () => {
+  const { login, register, loading, error, clearError } = useContext(AuthContext);
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
 
-  const handleSubmit = async () => {
-    if (!formData.email || !formData.password) return;
-    if (!isLogin && !formData.name) return;
-    
-    if (isLogin) {
-      await login(formData.email, formData.password);
-    } else {
-      await register(formData.name, formData.email, formData.password);
-    }
-  };
-
-  const toggleMode = () => {
-    setIsLogin(!isLogin);
-    clearError();
-    setFormData({ name: '', email: '', password: '' });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (isLogin) login(formData.email, formData.password);
+    else register(formData.name, formData.email, formData.password);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0f172a] relative overflow-hidden">
-      {/* Background Blobs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-600/30 rounded-full blur-[100px]" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-600/30 rounded-full blur-[100px]" />
-
-      <GlassCard className="w-full max-w-md p-10 relative z-10 transition-all duration-300">
+    <div className="min-h-screen bg-[#0A0F1C] flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-blue-500/5 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-[#0A0F1C] to-[#0A0F1C]"></div>
+      
+      <div className="w-full max-w-md bg-slate-900/50 backdrop-blur-xl border border-slate-800 rounded-3xl p-8 relative z-10 shadow-2xl animate-slide-up">
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-gradient-to-tr from-blue-500 to-cyan-400 rounded-2xl mx-auto flex items-center justify-center mb-6 shadow-lg shadow-blue-500/40">
-            <Award className="text-white w-10 h-10" />
+          <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-blue-500/20">
+            <Brain className="w-8 h-8 text-blue-400" />
           </div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">SkillMatrix</h1>
-          <p className="text-slate-400 mt-2">{isLogin ? "Secure Enterprise Login" : "Create New Account"}</p>
+          <h1 className="text-2xl font-bold text-white mb-2">{isLogin ? 'Welcome Back' : 'Create Account'}</h1>
+          <p className="text-slate-400 text-sm">Enterprise Exam Platform v10</p>
         </div>
 
         {error && (
-          <div className="bg-red-500/20 border border-red-500/50 p-4 rounded-xl mb-6 flex items-center gap-3 text-red-200 text-sm">
-            <AlertCircle size={18} />
-            {error}
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-start gap-3 text-red-400 animate-slide-up">
+            <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+            <div className="text-sm">{error}</div>
+            <button onClick={clearError} className="ml-auto hover:text-red-300"><X className="w-4 h-4" /></button>
           </div>
         )}
 
-        <div className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
             <div>
-              <label className="text-xs font-bold text-slate-400 uppercase ml-1 mb-2 block">Full Name</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1.5">Full Name</label>
               <div className="relative">
-                <User className="absolute left-4 top-4 text-slate-500" size={20} />
+                <User className="w-5 h-5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input 
-                  type="text" 
-                  placeholder="John Doe" 
-                  className="w-full pl-12 pr-4 py-4 bg-slate-900/50 border border-slate-700 rounded-xl text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-600" 
-                  value={formData.name} 
-                  onChange={e => setFormData({...formData, name: e.target.value})} 
+                  type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})}
+                  className="w-full bg-slate-950/50 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                  placeholder="John Doe"
                 />
               </div>
             </div>
           )}
           
           <div>
-            <label className="text-xs font-bold text-slate-400 uppercase ml-1 mb-2 block">Email or Username</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1.5">Email Address</label>
             <div className="relative">
-              <Mail className="absolute left-4 top-4 text-slate-500" size={20} />
+              <Mail className="w-5 h-5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
               <input 
-                type="text" 
-                placeholder="user@example.com" 
-                className="w-full pl-12 pr-4 py-4 bg-slate-900/50 border border-slate-700 rounded-xl text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-600" 
-                value={formData.email} 
-                onChange={e => setFormData({...formData, email: e.target.value})} 
+                type="email" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})}
+                className="w-full bg-slate-950/50 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                placeholder="you@company.com"
               />
             </div>
           </div>
 
           <div>
-            <label className="text-xs font-bold text-slate-400 uppercase ml-1 mb-2 block">Password</label>
+            <label className="block text-sm font-medium text-slate-300 mb-1.5">Password</label>
             <div className="relative">
-              <Lock className="absolute left-4 top-4 text-slate-500" size={20} />
+              <Lock className="w-5 h-5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
               <input 
-                type="password" 
-                placeholder="••••••••" 
-                className="w-full pl-12 pr-4 py-4 bg-slate-900/50 border border-slate-700 rounded-xl text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-slate-600" 
-                value={formData.password} 
-                onChange={e => setFormData({...formData, password: e.target.value})} 
+                type="password" required value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})}
+                className="w-full bg-slate-950/50 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                placeholder="••••••••"
               />
             </div>
           </div>
 
-          <NeonButton 
-            loading={loading} 
-            onClick={handleSubmit} 
-            disabled={!formData.email || !formData.password || (!isLogin && !formData.name)} 
-            className="w-full py-4 text-lg mt-6"
-          >
-            {loading ? <Loader2 className="animate-spin" /> : (isLogin ? "Access Portal" : "Create Account")} 
-            {isLogin ? <LogIn size={20} /> : <UserPlus size={20} />}
-          </NeonButton>
+          <Button type="submit" fullWidth disabled={loading} className="mt-6" icon={loading ? Loader2 : (isLogin ? LogIn : UserPlus)}>
+            {loading ? 'Processing...' : (isLogin ? 'Sign In' : 'Create Account')}
+          </Button>
+        </form>
 
-          <div className="text-center mt-6">
-            <button onClick={toggleMode} className="text-slate-400 hover:text-white text-sm transition-colors">
-              {isLogin ? "New user? Register here" : "Already have an account? Login"}
-            </button>
-          </div>
+        <div className="mt-6 text-center text-sm text-slate-400">
+          {isLogin ? "Don't have an account? " : "Already have an account? "}
+          <button onClick={() => { setIsLogin(!isLogin); clearError(); }} className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
+            {isLogin ? 'Sign up' : 'Sign in'}
+          </button>
         </div>
-      </GlassCard>
+      </div>
     </div>
   );
 };
 
-// --- Admin Dashboard View ---
-const AdminDashboardView = ({ onLogout, onSwitchToStudentMode }) => {
+// --- EXAM ENGINE ---
+
+const ExamEngine = ({ moduleId, onComplete, onExit }) => {
+  const [questions, setQuestions] = useState([]);
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [score, setScore] = useState(0);
+
+  useEffect(() => {
+    const q = QUESTIONS_DB[moduleId] || [];
+    setQuestions(q);
+    const modDef = EXAM_MODULES.find(m => m.id === moduleId);
+    setTimeLeft((modDef?.time || 30) * 60);
+  }, [moduleId]);
+
+  useEffect(() => {
+    if (timeLeft <= 0 || isSubmitted) return;
+    const timer = setInterval(() => setTimeLeft(t => t - 1), 1000);
+    return () => clearInterval(timer);
+  }, [timeLeft, isSubmitted]);
+
+  useEffect(() => {
+    if (timeLeft === 0 && !isSubmitted && questions.length > 0) {
+      handleSubmit();
+    }
+  }, [timeLeft]);
+
+  const handleSelect = (qId, optionIdx) => {
+    if (isSubmitted) return;
+    setAnswers(prev => ({ ...prev, [qId]: optionIdx }));
+  };
+
+  const calculateScore = () => {
+    let earned = 0;
+    let total = 0;
+    questions.forEach(q => {
+      total += q.marks;
+      if (answers[q.id] === q.correct) earned += q.marks;
+    });
+    return Math.round((earned / total) * 100);
+  };
+
+  const handleSubmit = () => {
+    const finalScore = calculateScore();
+    setScore(finalScore);
+    setIsSubmitted(true);
+  };
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  };
+
+  if (questions.length === 0) return <div className="p-8 text-center text-slate-400 flex items-center justify-center min-h-screen"><Loader2 className="w-8 h-8 animate-spin" /></div>;
+
+  const currentQ = questions[currentIdx];
+  const moduleInfo = EXAM_MODULES.find(m => m.id === moduleId);
+
+  return (
+    <div className="min-h-screen bg-[#0A0F1C] text-slate-200 pb-20">
+      {/* Header */}
+      <div className="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+        <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button onClick={onExit} className="p-2 -ml-2 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition-colors">
+              <X className="w-5 h-5" />
+            </button>
+            <div className="flex items-center gap-2">
+              <moduleInfo.icon className={`w-5 h-5 ${moduleInfo.color}`} />
+              <span className="font-semibold text-white hidden sm:block">{moduleInfo.title}</span>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2 text-slate-400 text-sm">
+              <CheckSquare className="w-4 h-4" />
+              <span>{Object.keys(answers).length} / {questions.length} Answered</span>
+            </div>
+            {!isSubmitted && (
+              <div className={`flex items-center gap-2 font-mono px-3 py-1.5 rounded-lg border ${timeLeft < 300 ? 'bg-red-500/10 border-red-500/30 text-red-400 animate-pulse' : 'bg-slate-800/50 border-slate-700 text-slate-300'}`}>
+                <Clock className="w-4 h-4" />
+                {formatTime(timeLeft)}
+              </div>
+            )}
+            {isSubmitted && (
+              <div className="px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold">
+                Score: {score}%
+              </div>
+            )}
+          </div>
+        </div>
+        {/* Progress bar */}
+        <div className="h-1 bg-slate-800">
+          <div 
+            className={`h-full transition-all duration-300 ${isSubmitted ? 'bg-emerald-500' : 'bg-blue-500'}`} 
+            style={{ width: `${((currentIdx + 1) / questions.length) * 100}%` }}
+          />
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 mt-8">
+        {!isSubmitted ? (
+          <div className="animate-slide-up">
+            <div className="flex items-center justify-between mb-6">
+              <span className="text-sm font-medium text-slate-400 tracking-wider uppercase">Question {currentIdx + 1} of {questions.length}</span>
+              <span className="text-xs font-semibold px-2.5 py-1 bg-blue-500/10 text-blue-400 rounded-md">{currentQ.marks} {currentQ.marks > 1 ? 'Marks' : 'Mark'}</span>
+            </div>
+            
+            <h2 className="text-2xl font-medium text-white mb-8 leading-relaxed">
+              {currentQ.question}
+            </h2>
+
+            <div className="space-y-3">
+              {currentQ.options.map((opt, idx) => {
+                const isSelected = answers[currentQ.id] === idx;
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => handleSelect(currentQ.id, idx)}
+                    className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 flex items-center gap-4 ${
+                      isSelected 
+                        ? 'border-blue-500 bg-blue-500/10 text-white shadow-lg shadow-blue-500/5' 
+                        : 'border-slate-800 bg-slate-900/50 text-slate-300 hover:border-slate-600 hover:bg-slate-800'
+                    }`}
+                  >
+                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 ${isSelected ? 'border-blue-500' : 'border-slate-600'}`}>
+                      {isSelected && <div className="w-3 h-3 bg-blue-500 rounded-full" />}
+                    </div>
+                    <span className="text-lg">{opt}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8 text-center animate-slide-up">
+              <div className={`w-20 h-20 rounded-full mx-auto flex items-center justify-center mb-6 border-4 ${score >= 70 ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400' : 'bg-orange-500/20 border-orange-500/30 text-orange-400'}`}>
+                {score >= 70 ? <Award className="w-10 h-10" /> : <AlertCircle className="w-10 h-10" />}
+              </div>
+              <h2 className="text-3xl font-bold text-white mb-2">Exam Complete!</h2>
+              <p className="text-slate-400 mb-6">You scored {score}% on this assessment.</p>
+              <div className="flex items-center justify-center gap-4">
+                <Button onClick={() => onComplete(score)} icon={ChevronLeft}>Return to Dashboard</Button>
+              </div>
+            </div>
+
+            <div className="space-y-4 mt-8">
+              <h3 className="text-xl font-medium text-white px-2">Detailed Review</h3>
+              {questions.map((q, i) => {
+                const selected = answers[q.id];
+                const isCorrect = selected === q.correct;
+                const isUnanswered = selected === undefined;
+                
+                return (
+                  <div key={q.id} className={`p-6 rounded-xl border ${isCorrect ? 'bg-emerald-500/5 border-emerald-500/20' : (isUnanswered ? 'bg-slate-800/50 border-slate-700' : 'bg-red-500/5 border-red-500/20')}`}>
+                    <div className="flex gap-4">
+                      <div className="shrink-0 mt-1">
+                        {isCorrect ? <CheckCircle className="w-6 h-6 text-emerald-500" /> : (isUnanswered ? <Square className="w-6 h-6 text-slate-500" /> : <XCircle className="w-6 h-6 text-red-500" />)}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-lg text-white mb-4">{i + 1}. {q.question}</p>
+                        <div className="grid gap-2">
+                          {q.options.map((opt, idx) => {
+                            const isSelectedOpt = selected === idx;
+                            const isCorrectOpt = q.correct === idx;
+                            let style = "bg-slate-900/50 text-slate-400 border-transparent";
+                            if (isCorrectOpt) style = "bg-emerald-500/20 text-emerald-300 border-emerald-500/30 font-medium";
+                            else if (isSelectedOpt && !isCorrectOpt) style = "bg-red-500/20 text-red-300 border-red-500/30";
+                            
+                            return (
+                              <div key={idx} className={`px-4 py-2 rounded-lg border flex items-center justify-between ${style}`}>
+                                <span>{opt}</span>
+                                {isCorrectOpt && <CheckCircle className="w-4 h-4" />}
+                                {isSelectedOpt && !isCorrectOpt && <XCircle className="w-4 h-4" />}
+                              </div>
+                            );
+                          })}
+                        </div>
+                        {q.explanation && (
+                          <div className="mt-4 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg flex gap-3 text-blue-200">
+                            <Brain className="w-5 h-5 shrink-0 text-blue-400" />
+                            <p className="text-sm">{q.explanation}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Footer controls */}
+        {!isSubmitted && (
+          <div className="fixed bottom-0 left-0 right-0 p-4 bg-slate-900/90 backdrop-blur-md border-t border-slate-800 z-30">
+            <div className="max-w-4xl mx-auto flex items-center justify-between">
+              <Button 
+                variant="secondary" 
+                onClick={() => setCurrentIdx(p => Math.max(0, p - 1))}
+                disabled={currentIdx === 0}
+                icon={ChevronLeft}
+              >
+                Previous
+              </Button>
+              
+              {currentIdx === questions.length - 1 ? (
+                <Button variant="success" onClick={handleSubmit} icon={CheckCircle}>
+                  Submit Exam
+                </Button>
+              ) : (
+                <Button 
+                  onClick={() => setCurrentIdx(p => Math.min(questions.length - 1, p + 1))}
+                  className="flex-row-reverse"
+                >
+                  Next
+                  <ChevronRight className="w-4 h-4 ml-2" />
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+
+// --- ADMIN PANEL ---
+
+const AdminPanel = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [visiblePasswords, setVisiblePasswords] = useState({});
-  const [expandedUser, setExpandedUser] = useState(null);
-  
-  // New States for Edit/Delete
-  const [editingPasswordId, setEditingPasswordId] = useState(null);
-  const [newPasswordValue, setNewPasswordValue] = useState("");
-  const [deletingUser, setDeletingUser] = useState(null); // id of user to delete
-  const [actionLoading, setActionLoading] = useState(false);
+  const showToast = useContext(ToastContext);
 
-  const fetchUsers = () => {
+  // Edit State
+  const [editingUser, setEditingUser] = useState(null);
+  const [newPassword, setNewPassword] = useState('');
+
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const loadUsers = async () => {
     setLoading(true);
-    MockBackendService.getAdminData().then(data => {
-        setUsers(data);
-        setLoading(false);
-    });
+    const data = await MockBackendService.getAllUsers();
+    setUsers(data.filter(u => u.role !== 'admin'));
+    setLoading(false);
   };
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const togglePassword = (userId) => {
-    setVisiblePasswords(prev => ({...prev, [userId]: !prev[userId]}));
-  };
-
-  const toggleExpand = (userId) => {
-    setExpandedUser(expandedUser === userId ? null : userId);
-  };
-
-  const startEditingPassword = (user) => {
-      setEditingPasswordId(user.id);
-      setNewPasswordValue(user.password);
-  };
-
-  const saveNewPassword = async () => {
-      if(!newPasswordValue) return;
-      setActionLoading(true);
+  const handleDelete = async (userId) => {
+    if (confirm("Are you sure you want to completely remove this user? This action cannot be undone.")) {
       try {
-        await MockBackendService.updateUserPassword(editingPasswordId, newPasswordValue);
-        setEditingPasswordId(null);
-        fetchUsers();
-      } catch(e) {
-          alert(e.message);
-      } finally {
-          setActionLoading(false);
+        await MockBackendService.deleteUser(userId);
+        showToast("User deleted successfully", "success");
+        loadUsers();
+      } catch (e) {
+        showToast("Failed to delete user", "error");
       }
-  };
-
-  const confirmDeleteUser = async () => {
-      if(!deletingUser) return;
-      setActionLoading(true);
-      try {
-          await MockBackendService.deleteUser(deletingUser);
-          setDeletingUser(null);
-          fetchUsers();
-      } catch(e) {
-          alert(e.message);
-      } finally {
-          setActionLoading(false);
-      }
-  }
-
-  if (loading && users.length === 0) return (
-    <div className="min-h-screen bg-[#0f172a] flex items-center justify-center">
-        <Loader2 className="text-blue-500 animate-spin w-10 h-10" />
-    </div>
-  );
-
-  const totalExams = users.reduce((acc, u) => acc + u.history.length, 0);
-  const totalUsers = users.length;
-
-  return (
-    <div className="min-h-screen bg-[#0f172a] text-white p-6 relative">
-        <div className="fixed inset-0 pointer-events-none">
-            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-900/20 rounded-full blur-[120px]" />
-            <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-blue-900/20 rounded-full blur-[120px]" />
-        </div>
-
-        {/* Delete Confirmation Modal */}
-        {deletingUser && (
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                <GlassCard className="p-8 max-w-sm w-full border-red-500/30">
-                    <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
-                        <Trash2 size={32} />
-                    </div>
-                    <h3 className="text-xl font-bold text-center mb-2">Delete User?</h3>
-                    <p className="text-slate-400 text-center text-sm mb-6">
-                        This action cannot be undone. The user and their exam history will be permanently removed.
-                    </p>
-                    <div className="flex gap-3">
-                        <button onClick={() => setDeletingUser(null)} className="flex-1 py-3 rounded-xl bg-slate-700 hover:bg-slate-600 transition-colors font-bold text-sm">Cancel</button>
-                        <button onClick={confirmDeleteUser} disabled={actionLoading} className="flex-1 py-3 rounded-xl bg-gradient-to-r from-red-600 to-pink-600 text-white font-bold text-sm hover:shadow-lg hover:shadow-red-500/30">
-                            {actionLoading ? <Loader2 className="animate-spin mx-auto" /> : "Confirm Delete"}
-                        </button>
-                    </div>
-                </GlassCard>
-            </div>
-        )}
-
-        <nav className="flex justify-between items-center mb-8 relative z-10 max-w-7xl mx-auto">
-            <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center shadow-lg shadow-red-500/30">
-                    <ShieldAlert className="text-white w-6 h-6" />
-                </div>
-                <div>
-                    <h1 className="text-xl font-bold tracking-tight">Master<span className="text-red-500">Admin</span></h1>
-                    <p className="text-xs text-slate-500 uppercase tracking-widest">Access Level 5</p>
-                </div>
-            </div>
-            <div className="flex gap-4">
-                 <button onClick={onSwitchToStudentMode} className="flex items-center gap-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-4 py-2 rounded-lg transition-colors border border-blue-500/20">
-                    <Eye size={18} /> Student View
-                </button>
-                <button onClick={onLogout} className="flex items-center gap-2 bg-white/5 hover:bg-red-500/20 hover:text-red-400 text-slate-400 px-4 py-2 rounded-lg transition-colors border border-white/10">
-                    <LogOut size={18} /> Logout
-                </button>
-            </div>
-        </nav>
-
-        <main className="max-w-7xl mx-auto relative z-10 space-y-6">
-            {/* Stats Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <GlassCard className="p-6 flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
-                        <Users size={24} />
-                    </div>
-                    <div>
-                        <div className="text-2xl font-bold">{totalUsers}</div>
-                        <div className="text-slate-400 text-sm">Registered Users</div>
-                    </div>
-                </GlassCard>
-                <GlassCard className="p-6 flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
-                        <FileText size={24} />
-                    </div>
-                    <div>
-                        <div className="text-2xl font-bold">{totalExams}</div>
-                        <div className="text-slate-400 text-sm">Total Exams Taken</div>
-                    </div>
-                </GlassCard>
-                <GlassCard className="p-6 flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center text-green-400">
-                        <TrendingUp size={24} />
-                    </div>
-                    <div>
-                        <div className="text-2xl font-bold">Active</div>
-                        <div className="text-slate-400 text-sm">Platform Status</div>
-                    </div>
-                </GlassCard>
-            </div>
-
-            {/* User Registry Table */}
-            <GlassCard className="overflow-hidden">
-                <div className="p-6 border-b border-white/10">
-                    <h2 className="text-xl font-bold flex items-center gap-2">
-                        <Database size={20} className="text-slate-400" /> User Database & Credentials
-                    </h2>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-white/5 text-slate-400 text-sm uppercase tracking-wider">
-                                <th className="p-4 font-semibold">User Identity</th>
-                                <th className="p-4 font-semibold">Credentials (Admin Eyes Only)</th>
-                                <th className="p-4 font-semibold">Performance</th>
-                                <th className="p-4 font-semibold text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-white/5">
-                            {users.map(u => (
-                                <React.Fragment key={u.id}>
-                                    <tr className={`hover:bg-white/5 transition-colors ${expandedUser === u.id ? 'bg-white/5' : ''}`}>
-                                        <td className="p-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-600 flex items-center justify-center font-bold text-white shadow-lg">
-                                                    {u.name[0].toUpperCase()}
-                                                </div>
-                                                <div>
-                                                    <div className="font-bold text-white">{u.name}</div>
-                                                    <div className="text-xs text-slate-400">{u.id} • {u.role}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="p-4">
-                                            {editingPasswordId === u.id ? (
-                                                <div className="flex items-center gap-2">
-                                                    <div className="relative">
-                                                        <KeyRound size={14} className="absolute left-2 top-2.5 text-blue-400" />
-                                                        <input 
-                                                            type="text" 
-                                                            value={newPasswordValue}
-                                                            onChange={(e) => setNewPasswordValue(e.target.value)}
-                                                            className="pl-7 pr-2 py-1.5 rounded bg-black/40 border border-blue-500/50 text-sm text-white w-32 outline-none focus:ring-1 focus:ring-blue-500"
-                                                            autoFocus
-                                                        />
-                                                    </div>
-                                                    <button onClick={saveNewPassword} className="p-1.5 bg-green-500/20 text-green-400 rounded hover:bg-green-500/30">
-                                                        {actionLoading ? <Loader2 size={16} className="animate-spin"/> : <Save size={16} />}
-                                                    </button>
-                                                    <button onClick={() => setEditingPasswordId(null)} className="p-1.5 bg-red-500/20 text-red-400 rounded hover:bg-red-500/30">
-                                                        <X size={16} />
-                                                    </button>
-                                                </div>
-                                            ) : (
-                                                <div className="space-y-1">
-                                                    <div className="flex items-center gap-2 text-sm text-slate-300">
-                                                        <Mail size={14} className="text-blue-400" /> {u.email}
-                                                    </div>
-                                                    <div className="flex items-center gap-2 text-sm font-mono bg-black/20 px-2 py-1 rounded w-fit border border-white/5 group">
-                                                        <Lock size={12} className="text-red-400" /> 
-                                                        <span className={visiblePasswords[u.id] ? "text-red-200" : "text-slate-500 tracking-widest"}>
-                                                            {visiblePasswords[u.id] ? u.password : "••••••••"}
-                                                        </span>
-                                                        <div className="flex opacity-0 group-hover:opacity-100 transition-opacity ml-2 border-l border-white/10 pl-2 gap-1">
-                                                            <button onClick={() => togglePassword(u.id)} className="hover:text-white text-slate-500" title="Toggle Visibility">
-                                                                {visiblePasswords[u.id] ? <EyeOff size={14} /> : <Eye size={14} />}
-                                                            </button>
-                                                            {u.role !== 'admin' && (
-                                                                <button onClick={() => startEditingPassword(u)} className="hover:text-blue-400 text-slate-500" title="Change Password">
-                                                                    <Edit3 size={14} />
-                                                                </button>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </td>
-                                        <td className="p-4">
-                                            <div className="flex items-center gap-4">
-                                                <div className="text-center">
-                                                    <div className="text-lg font-bold">{u.history.length}</div>
-                                                    <div className="text-[10px] uppercase text-slate-500">Exams</div>
-                                                </div>
-                                                {u.history.length > 0 && (
-                                                    <div className="text-center">
-                                                        <div className="text-lg font-bold text-green-400">
-                                                            {Math.round(u.history.reduce((a,b)=>a+b.percentage,0)/u.history.length)}%
-                                                        </div>
-                                                        <div className="text-[10px] uppercase text-slate-500">Avg Score</div>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </td>
-                                        <td className="p-4 text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <button 
-                                                    onClick={() => toggleExpand(u.id)}
-                                                    className={`p-2 rounded-lg border transition-all ${expandedUser === u.id ? 'bg-blue-600 text-white border-blue-500' : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'}`}
-                                                    title="View History"
-                                                >
-                                                    {expandedUser === u.id ? <ChevronRight className="rotate-90" size={18} /> : <History size={18} />}
-                                                </button>
-                                                {u.role !== 'admin' && (
-                                                    <button 
-                                                        onClick={() => setDeletingUser(u.id)}
-                                                        className="p-2 rounded-lg border border-red-900/30 bg-red-900/10 text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all"
-                                                        title="Delete User"
-                                                    >
-                                                        <Trash2 size={18} />
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {/* Expanded History View */}
-                                    {expandedUser === u.id && (
-                                        <tr>
-                                            <td colSpan={4} className="bg-black/20 p-6 shadow-inner">
-                                                <div className="mb-2 text-xs font-bold uppercase text-slate-500 flex items-center gap-2">
-                                                    <ActivityLogIcon /> Examination History Log for {u.name}
-                                                </div>
-                                                {u.history.length === 0 ? (
-                                                    <div className="text-slate-500 italic py-2">No examination records found for this user.</div>
-                                                ) : (
-                                                    <div className="grid gap-3">
-                                                        {u.history.map((exam, i) => (
-                                                            <div key={i} className="flex items-center justify-between bg-slate-800/50 p-3 rounded border border-white/5">
-                                                                <div className="flex items-center gap-3">
-                                                                    <div className={`w-2 h-10 rounded-full ${exam.passed ? 'bg-green-500' : 'bg-red-500'}`} />
-                                                                    <div>
-                                                                        <div className="font-bold text-white">{SUBJECTS_METADATA[exam.subjectId]?.title || exam.subjectId}</div>
-                                                                        <div className="text-xs text-slate-400">{new Date(exam.date).toLocaleString()}</div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="flex items-center gap-6">
-                                                                    <div className="text-right">
-                                                                        <div className="font-mono text-white">{exam.score}/{exam.maxMarks}</div>
-                                                                        <div className="text-[10px] text-slate-500 uppercase">Points</div>
-                                                                    </div>
-                                                                    <div className={`px-3 py-1 rounded text-sm font-bold w-20 text-center ${exam.passed ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-                                                                        {exam.percentage.toFixed(0)}%
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    )}
-                                </React.Fragment>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </GlassCard>
-        </main>
-    </div>
-  );
-};
-
-const ActivityLogIcon = () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-);
-
-// --- Topic Selection View ---
-const TopicSelectionView = ({ subject, onStart, onBack }) => {
-    const [selectedTopics, setSelectedTopics] = useState([]);
-    const [searchTerm, setSearchTerm] = useState("");
-    
-    // Dynamically derive unique topics from the Question Database for this subject
-    const availableTopics = React.useMemo(() => {
-        const questions = QUESTIONS_DB[subject] || [];
-        const topics = [...new Set(questions.map(q => q.topic))].sort();
-        return topics;
-    }, [subject]);
-
-    // Handle "Select All"
-    const toggleAll = () => {
-        if (selectedTopics.length === availableTopics.length) {
-            setSelectedTopics([]);
-        } else {
-            setSelectedTopics(availableTopics);
-        }
-    };
-
-    const toggleTopic = (topic) => {
-        if (selectedTopics.includes(topic)) {
-            setSelectedTopics(prev => prev.filter(t => t !== topic));
-        } else {
-            setSelectedTopics(prev => [...prev, topic]);
-        }
-    };
-
-    const filteredTopics = availableTopics.filter(t => t.toLowerCase().includes(searchTerm.toLowerCase()));
-
-    const handleStart = () => {
-        onStart(selectedTopics.length === 0 ? ["ALL"] : selectedTopics);
-    };
-
-    return (
-        <div className="min-h-screen bg-[#0f172a] text-white p-6 relative">
-            <div className="fixed inset-0 pointer-events-none">
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[120px]" />
-                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px]" />
-            </div>
-
-            <nav className="flex items-center gap-4 mb-8 relative z-10 max-w-4xl mx-auto">
-                <button onClick={onBack} className="p-2 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors">
-                    <ArrowLeft size={24} />
-                </button>
-                <div>
-                    <h1 className="text-2xl font-bold">{SUBJECTS_METADATA[subject]?.title || subject.toUpperCase()}</h1>
-                    <p className="text-slate-400 text-sm">Select topics to customize your exam</p>
-                </div>
-            </nav>
-
-            <main className="max-w-4xl mx-auto relative z-10">
-                <GlassCard className="p-6 md:p-8">
-                    {/* Controls */}
-                    <div className="flex flex-col md:flex-row gap-4 justify-between items-center mb-6">
-                        <div className="relative w-full md:w-64">
-                            <ListFilter className="absolute left-3 top-3 text-slate-500" size={18} />
-                            <input 
-                                type="text" 
-                                placeholder="Filter topics..." 
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg py-2.5 pl-10 pr-4 text-sm focus:ring-1 focus:ring-blue-500 outline-none"
-                            />
-                        </div>
-                        <div className="flex gap-3 w-full md:w-auto">
-                            <button onClick={toggleAll} className="flex-1 md:flex-none px-4 py-2 bg-slate-700/50 hover:bg-slate-700 rounded-lg text-sm font-medium transition-colors">
-                                {selectedTopics.length === availableTopics.length ? "Deselect All" : "Select All"}
-                            </button>
-                            <span className="flex items-center text-sm text-slate-400 px-2">
-                                {selectedTopics.length} selected
-                            </span>
-                        </div>
-                    </div>
-
-                    {/* Topic Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 max-h-[50vh] overflow-y-auto custom-scrollbar pr-2 mb-8">
-                        {filteredTopics.map(topic => {
-                            const isSelected = selectedTopics.includes(topic);
-                            return (
-                                <button 
-                                    key={topic}
-                                    onClick={() => toggleTopic(topic)}
-                                    className={`flex items-center justify-between p-3 rounded-lg border transition-all text-left ${isSelected ? 'bg-blue-600/20 border-blue-500/50 text-white' : 'bg-slate-800/30 border-white/5 text-slate-400 hover:bg-slate-800/60'}`}
-                                >
-                                    <span className="font-medium text-sm truncate pr-2">{topic}</span>
-                                    {isSelected ? <CheckSquare size={18} className="text-blue-400 shrink-0" /> : <Square size={18} className="text-slate-600 shrink-0" />}
-                                </button>
-                            )
-                        })}
-                    </div>
-
-                    {/* Footer Actions */}
-                    <div className="flex justify-between items-center pt-6 border-t border-white/10">
-                        <span className="text-sm text-slate-500">
-                            {selectedTopics.length === 0 ? "Default: All topics included" : `${selectedTopics.length} topics included`}
-                        </span>
-                        <NeonButton onClick={handleStart} className="px-8">
-                            Start Exam <ChevronRight size={18} />
-                        </NeonButton>
-                    </div>
-                </GlassCard>
-            </main>
-        </div>
-    );
-};
-
-const DashboardView = ({ onSelectSubject, user, logout, onViewHistory, onOpenAdmin }) => {
-  return (
-    <div className="min-h-screen bg-[#0f172a] text-white p-6 relative">
-       {/* Ambient Background */}
-       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-[120px]" />
-      </div>
-
-      {/* Header */}
-      <nav className="flex justify-between items-center mb-10 relative z-10 max-w-7xl mx-auto">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-            <Award className="text-white w-6 h-6" />
-          </div>
-          <span className="text-xl font-bold tracking-tight">SkillMatrix<span className="text-blue-400">Exam</span></span>
-        </div>
-        <div className="flex items-center gap-4">
-          {user.role === 'admin' && (
-              <button onClick={onOpenAdmin} className="flex items-center gap-2 bg-red-600/10 hover:bg-red-600/20 text-red-400 px-4 py-2 rounded-full border border-red-500/20 transition-all font-bold text-sm">
-                  <Shield size={16} /> Admin Panel
-              </button>
-          )}
-          <button onClick={onViewHistory} className="flex items-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-2 rounded-full border border-white/10 transition-colors text-sm">
-            <History size={16} className="text-blue-400" />
-            <span className="hidden sm:inline text-slate-300">History</span>
-          </button>
-          <div className="flex items-center gap-3 bg-white/5 px-4 py-2 rounded-full border border-white/10">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-orange-400 flex items-center justify-center text-sm font-bold">
-              {(user.name?.[0] || 'U').toUpperCase()}
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium text-slate-300 leading-none">{user.name || "Unknown User"}</span>
-              <span className="text-[10px] text-slate-500 uppercase tracking-wider mt-1">{user.role}</span>
-            </div>
-          </div>
-          <button onClick={logout} className="p-2 hover:bg-white/10 rounded-full transition-colors text-slate-400 hover:text-red-400" title="Logout">
-            <LogOut size={20} />
-          </button>
-        </div>
-      </nav>
-
-      {/* Content */}
-      <main className="max-w-7xl mx-auto relative z-10">
-        <h2 className="text-4xl font-bold mb-2">Certification Tracks</h2>
-        <p className="text-slate-400 mb-8 text-lg">Select a domain to customize your assessment.</p>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {Object.entries(SUBJECTS_METADATA).map(([key, sub]) => {
-            // Dynamic Icon Component
-            const IconComp = { Terminal, Cpu, Database, Brain, Network: LayoutGrid, MessageSquare: Code, Sigma, Globe }[sub.icon] || Code;
-            // Get unique question count
-            const qCount = QUESTIONS_DB[key]?.length || 0;
-            
-            return (
-              <GlassCard key={key} className="p-6 group hover:-translate-y-2 transition-transform duration-300 cursor-pointer border-t-4 border-t-transparent hover:border-t-white/30">
-                <div onClick={() => onSelectSubject(key)}>
-                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${sub.color} flex items-center justify-center mb-6 shadow-lg`}>
-                      <IconComp className="text-white w-8 h-8" />
-                    </div>
-                    <h3 className="text-xl font-bold text-white mb-2">{sub.title}</h3>
-                    <p className="text-sm text-slate-400 mb-6">{qCount} Questions Bank</p>
-                    <div className="flex items-center justify-between mt-auto">
-                      <div className="flex -space-x-2">
-                        {[1,2,3].map(i => <div key={i} className="w-6 h-6 rounded-full bg-slate-700 border border-slate-800" />)}
-                      </div>
-                      <div className="flex items-center gap-1 text-sm font-bold text-blue-400 group-hover:translate-x-1 transition-transform">
-                        Select <ChevronRight size={14} />
-                      </div>
-                    </div>
-                </div>
-              </GlassCard>
-            );
-          })}
-        </div>
-      </main>
-    </div>
-  );
-};
-
-// --- History View ---
-const HistoryView = ({ history, onBack }) => {
-  return (
-    <div className="min-h-screen bg-[#0f172a] text-white p-6 relative">
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px]" />
-      </div>
-
-      <nav className="flex items-center gap-4 mb-10 relative z-10 max-w-4xl mx-auto">
-        <button onClick={onBack} className="p-2 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors">
-          <ArrowLeft size={24} />
-        </button>
-        <h1 className="text-2xl font-bold">Exam History</h1>
-      </nav>
-
-      <main className="max-w-4xl mx-auto relative z-10 space-y-4">
-        {history.length === 0 ? (
-          <GlassCard className="p-10 text-center">
-            <History className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-slate-300">No Exams Taken Yet</h3>
-            <p className="text-slate-500 mt-2">Complete a certification track to see your history.</p>
-          </GlassCard>
-        ) : (
-          history.map((item) => (
-            <GlassCard key={item.id} className="p-6 flex items-center justify-between group hover:bg-white/5 transition-colors">
-              <div className="flex items-center gap-4">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg ${item.passed ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-                  {item.percentage.toFixed(0)}%
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg text-white">{SUBJECTS_METADATA[item.subjectId]?.title || item.subjectId.toUpperCase()}</h3>
-                  <div className="flex items-center gap-3 text-sm text-slate-400 mt-1">
-                    <span className="flex items-center gap-1"><Clock size={12} /> {new Date(item.date).toLocaleDateString()} {new Date(item.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                    <span>•</span>
-                    <span className={item.passed ? "text-green-400" : "text-red-400"}>{item.passed ? "Passed" : "Failed"}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-2xl font-bold text-white">{item.score}<span className="text-sm text-slate-500">/{item.maxMarks}</span></div>
-                <div className="text-xs text-slate-500 uppercase font-bold tracking-wider">Score</div>
-              </div>
-            </GlassCard>
-          ))
-        )}
-      </main>
-    </div>
-  );
-};
-
-const ExamInterface = ({ session, user, onFinish }) => {
-  const [idx, setIdx] = useState(0);
-  const [answers, setAnswers] = useState({});
-  // Dynamic timer: 1.5 minutes (90 seconds) per question
-  const [timeLeft, setTimeLeft] = useState(session.questions.length * 90);
-  
-  // Safe navigation for questions
-  const q = session.questions && session.questions.length > 0 ? session.questions[idx] : null;
-
-  useEffect(() => {
-    const t = setInterval(() => setTimeLeft(prev => Math.max(0, prev - 1)), 1000);
-    return () => clearInterval(t);
-  }, []);
-
-  const handleFinish = async () => {
-    const res = await MockBackendService.submitExam(user.id, session.sessionId, answers, session.questions, session.subjectId);
-    onFinish(res, session.questions, answers);
-  };
-
-  if (!q) {
-    return (
-      <div className="min-h-screen bg-[#0f172a] text-white flex items-center justify-center">
-        <GlassCard className="p-10 text-center">
-          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-2">No Questions Available</h2>
-          <p className="text-slate-400">Could not load questions for this criteria.</p>
-        </GlassCard>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-[#0f172a] text-white flex flex-col relative overflow-hidden">
-       {/* Timer Bar */}
-       <div className={`h-1.5 transition-all duration-1000 ease-linear ${timeLeft < 300 ? 'bg-red-500' : 'bg-blue-500'}`} style={{ width: `${(timeLeft/1800)*100}%` }} />
-
-       <div className="flex-1 flex flex-col max-w-5xl mx-auto w-full p-6 relative z-10">
-          {/* Header */}
-          <div className="flex justify-between items-center mb-8">
-             <div className="flex items-center gap-4">
-                <span className="bg-white/10 px-3 py-1 rounded-lg border border-white/20 font-mono text-cyan-400">Q{idx + 1}/{session.questions.length}</span>
-                <span className="text-slate-400 font-medium">{q.topic}</span>
-             </div>
-             <div className="flex items-center gap-2 bg-black/30 px-4 py-2 rounded-full border border-white/10">
-                <Clock size={18} className={timeLeft < 300 ? "text-red-400 animate-pulse" : "text-blue-400"} />
-                <span className="font-mono font-bold text-lg">{Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</span>
-             </div>
-          </div>
-
-          {/* Question Card */}
-          <GlassCard className="flex-1 p-8 md:p-12 relative flex flex-col animate-slide-up">
-              <div className="flex justify-between items-start mb-6">
-                <span className="text-xs font-bold bg-slate-700/50 text-slate-300 px-2 py-1 rounded uppercase tracking-wider">{q.marks} Points</span>
-                {/* Visual Progress Dots */}
-                <div className="flex gap-1">
-                   {session.questions.map((_, i) => (
-                      <div key={i} className={`w-2 h-2 rounded-full transition-all ${i === idx ? 'bg-blue-500 scale-125' : answers[i] !== undefined ? 'bg-blue-500/50' : 'bg-slate-700'}`} />
-                   ))}
-                </div>
-              </div>
-
-              <h2 className="text-2xl md:text-3xl font-bold text-white mb-8 leading-relaxed">
-                 <CodeBlock text={q.question} />
-              </h2>
-
-              <div className="grid gap-4 mb-8">
-                 {q.options.map((opt, i) => (
-                    <button 
-                      key={i} 
-                      onClick={() => setAnswers({...answers, [idx]: i})}
-                      className={`w-full text-left p-5 rounded-xl border transition-all duration-200 group flex items-center gap-4
-                      ${answers[idx] === i 
-                        ? 'bg-blue-600/20 border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.2)]' 
-                        : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/30'}`}
-                    >
-                       <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center font-bold text-sm transition-colors
-                          ${answers[idx] === i ? 'border-blue-400 bg-blue-500 text-white' : 'border-slate-500 text-slate-500 group-hover:border-slate-300 group-hover:text-slate-300'}`}>
-                          {String.fromCharCode(65+i)}
-                       </div>
-                       <span className={`text-lg ${answers[idx] === i ? 'text-white' : 'text-slate-300'}`}>{opt}</span>
-                    </button>
-                 ))}
-              </div>
-
-              <div className="mt-auto flex justify-between pt-8 border-t border-white/10">
-                 <NeonButton variant="secondary" disabled={idx === 0} onClick={() => setIdx(i => i-1)}>
-                    <ChevronLeft size={18} /> Previous
-                 </NeonButton>
-                 
-                 {idx === session.questions.length - 1 ? (
-                    <NeonButton onClick={handleFinish} className="bg-gradient-to-r from-green-500 to-emerald-600">
-                       Submit Exam <CheckCircle size={18} />
-                    </NeonButton>
-                 ) : (
-                    <NeonButton onClick={() => setIdx(i => i+1)}>
-                       Next Question <ChevronRight size={18} />
-                    </NeonButton>
-                 )}
-              </div>
-          </GlassCard>
-       </div>
-    </div>
-  );
-};
-
-// --- SVG Gauge for Results ---
-const ResultGauge = ({ percentage }) => {
-  const radius = 60;
-  const stroke = 10;
-  const normalizedRadius = radius - stroke * 2;
-  const circumference = normalizedRadius * 2 * Math.PI;
-  const strokeDashoffset = circumference - (percentage / 100) * circumference;
-  const color = percentage >= 65 ? "#10b981" : "#ef4444"; // Emerald or Red
-
-  return (
-    <div className="relative flex items-center justify-center">
-      <svg height={radius * 2} width={radius * 2} className="rotate-[-90deg]">
-        <circle stroke="#334155" strokeWidth={stroke} r={normalizedRadius} cx={radius} cy={radius} fill="transparent" />
-        <circle 
-          stroke={color} 
-          fill="transparent" 
-          strokeWidth={stroke} 
-          strokeDasharray={circumference + ' ' + circumference} 
-          style={{ strokeDashoffset, transition: "stroke-dashoffset 1.5s ease-in-out" }} 
-          strokeLinecap="round" 
-          r={normalizedRadius} 
-          cx={radius} 
-          cy={radius} 
-        />
-      </svg>
-      <div className="absolute text-center">
-        <span className="text-3xl font-bold text-white">{percentage.toFixed(0)}%</span>
-      </div>
-    </div>
-  );
-};
-
-const ResultsView = ({ results, questions, answers, onHome }) => {
-  const subject = SUBJECTS_METADATA[results.subjectId] || { title: "Unknown Subject" };
-  
-  return (
-    <div className="min-h-screen bg-[#0f172a] p-6 flex flex-col items-center relative overflow-hidden overflow-y-auto">
-       {/* Fireworks / Glow effect based on result */}
-       <div className={`fixed inset-0 pointer-events-none opacity-20 ${results.passed ? 'bg-green-500/20' : 'bg-red-500/20'}`} />
-
-       <div className="w-full max-w-4xl relative z-10 space-y-6 pb-10">
-         <GlassCard className="p-10 text-center">
-            <div className="mb-8">
-               <ResultGauge percentage={results.percentage} />
-            </div>
-
-            <h1 className="text-4xl font-bold text-white mb-2">
-               {results.passed ? "Certification Granted" : "Assessment Failed"}
-            </h1>
-            <p className="text-slate-400 mb-8 text-lg">
-               {results.passed 
-                 ? `You have successfully demonstrated competency in ${subject.title}.` 
-                 : "You did not meet the passing criteria. Keep practicing!"}
-            </p>
-
-            <div className="grid grid-cols-3 gap-4 mb-10">
-               <div className="bg-slate-800/50 p-4 rounded-xl border border-white/5">
-                  <div className="text-slate-400 text-xs uppercase font-bold">Score</div>
-                  <div className="text-2xl font-bold text-white">{results.score}</div>
-               </div>
-               <div className="bg-slate-800/50 p-4 rounded-xl border border-white/5">
-                  <div className="text-slate-400 text-xs uppercase font-bold">Questions</div>
-                  <div className="text-2xl font-bold text-white">{questions.length}</div>
-               </div>
-               <div className="bg-slate-800/50 p-4 rounded-xl border border-white/5">
-                  <div className="text-slate-400 text-xs uppercase font-bold">Correct</div>
-                  <div className="text-2xl font-bold text-green-400">
-                     {Object.keys(answers).filter(k => answers[k] === questions[k].correct).length}
-                  </div>
-               </div>
-            </div>
-
-            <NeonButton onClick={onHome} className="w-full">Return to Dashboard</NeonButton>
-         </GlassCard>
-
-         <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-white px-2">Detailed Review</h2>
-            {questions.map((q, idx) => {
-               const userAnswer = answers[idx];
-               const isCorrect = userAnswer === q.correct;
-               const isSkipped = userAnswer === undefined;
-
-               return (
-                 <GlassCard key={idx} className={`p-6 border-l-4 ${isCorrect ? 'border-l-green-500' : 'border-l-red-500'}`}>
-                    <div className="flex items-start justify-between mb-4">
-                       <span className="text-slate-400 font-mono text-sm">Question {idx + 1} • <span className="text-slate-500">{q.topic}</span></span>
-                       <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${isCorrect ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-                          {isCorrect ? 'Correct' : isSkipped ? 'Skipped' : 'Incorrect'}
-                       </span>
-                    </div>
-                    <h3 className="text-lg font-bold text-white mb-4"><CodeBlock text={q.question} /></h3>
-                    
-                    <div className="space-y-2 mb-4">
-                       {/* Show User Answer if incorrect */}
-                       {!isCorrect && !isSkipped && (
-                          <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30">
-                             <div className="text-xs text-red-400 uppercase font-bold mb-1">Your Answer</div>
-                             <div className="text-red-200">{q.options[userAnswer]}</div>
-                          </div>
-                       )}
-                       
-                       {/* Always Show Correct Answer */}
-                       <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/30">
-                          <div className="text-xs text-green-400 uppercase font-bold mb-1">Correct Answer</div>
-                          <div className="text-green-200">{q.options[q.correct]}</div>
-                       </div>
-                    </div>
-
-                    <div className="text-sm text-slate-400 bg-slate-800/50 p-3 rounded-lg">
-                       <span className="font-bold text-slate-300">Explanation:</span> {q.explanation}
-                    </div>
-                 </GlassCard>
-               );
-            })}
-         </div>
-       </div>
-    </div>
-  );
-};
-
-// ==========================================
-// 5. MAIN CONTROLLER
-// ==========================================
-
-const MainController = () => {
-  const { user, login, logout } = useAuth();
-  const [view, setView] = useState('auth'); 
-  const [activeSubject, setActiveSubject] = useState(null);
-  const [session, setSession] = useState(null);
-  const [results, setResults] = useState(null);
-  const [examData, setExamData] = useState(null);
-  const [history, setHistory] = useState([]);
-
-  // Routing Logic
-  useEffect(() => {
-    if(user && view === 'auth') {
-        // If admin, go to Admin Dashboard by default
-        if (user.role === 'admin') {
-            setView('admin-dash');
-        } else {
-            setView('dash');
-        }
     }
-    if(!user) setView('auth');
-  }, [user]);
-
-  const fetchHistory = async () => {
-    const data = await MockBackendService.getHistory(user.id);
-    setHistory(data);
-    setView('history');
   };
 
-  const handleSubjectSelect = (subjectId) => {
-      setActiveSubject(subjectId);
-      setView('topic-select');
+  const handleUpdatePassword = async (e) => {
+    e.preventDefault();
+    if (!editingUser || !newPassword) return;
+    try {
+      await MockBackendService.updateUserPassword(editingUser.id, newPassword);
+      showToast("Password updated successfully", "success");
+      setEditingUser(null);
+      setNewPassword('');
+    } catch(e) {
+      showToast("Update failed", "error");
+    }
   };
 
-  const startSession = async (selectedTopics) => {
-     const sess = await MockBackendService.startExamSession(activeSubject, selectedTopics);
-     setSession(sess);
-     setView('exam');
-  };
+  if (loading) return <div className="p-8 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-blue-500" /></div>;
 
-  const finishExam = (res, q, a) => {
-    setResults(res);
-    setExamData({q, a});
-    setView('results');
-  };
+  return (
+    <div className="space-y-6 animate-slide-up">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-semibold text-white">User Management</h2>
+        <div className="px-4 py-2 bg-slate-800 rounded-lg text-sm text-slate-300">Total Students: {users.length}</div>
+      </div>
 
-  if (!user) return <AuthView />;
-  if (view === 'admin-dash') return <AdminDashboardView onLogout={logout} onSwitchToStudentMode={() => setView('dash')} />;
-  if (view === 'history') return <HistoryView history={history} onBack={() => setView('dash')} />;
-  if (view === 'topic-select') return <TopicSelectionView subject={activeSubject} onStart={startSession} onBack={() => setView('dash')} />;
-  if (view === 'exam' && session) return <ExamInterface session={session} user={user} onFinish={finishExam} />;
-  if (view === 'results') return <ResultsView results={results} questions={examData.q} answers={examData.a} onHome={() => setView('dash')} />;
-  
-  return <DashboardView user={user} logout={logout} onViewHistory={fetchHistory} onSelectSubject={handleSubjectSelect} onOpenAdmin={() => setView('admin-dash')} />;
+      {editingUser && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-semibold text-white">Edit User: {editingUser.name}</h3>
+              <button onClick={() => setEditingUser(null)} className="text-slate-400 hover:text-white"><X className="w-5 h-5"/></button>
+            </div>
+            
+            <form onSubmit={handleUpdatePassword} className="space-y-4">
+              <div>
+                <label className="block text-sm text-slate-400 mb-1">New Password</label>
+                <div className="relative">
+                  <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                  <input 
+                    type="text" required value={newPassword} onChange={e => setNewPassword(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 pl-9 pr-4 text-white focus:border-blue-500 outline-none"
+                    placeholder="Enter new password"
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <Button variant="ghost" onClick={() => setEditingUser(null)} type="button">Cancel</Button>
+                <Button variant="primary" icon={Save} type="submit">Save Changes</Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-800/50 border-b border-slate-800 text-slate-400 text-sm">
+                <th className="p-4 font-medium">Student Info</th>
+                <th className="p-4 font-medium">Joined Date</th>
+                <th className="p-4 font-medium">Modules Completed</th>
+                <th className="p-4 font-medium">Avg Score</th>
+                <th className="p-4 font-medium text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-800/50">
+              {users.map(u => {
+                const completed = Object.keys(u.scores).length;
+                const avgScore = completed ? Math.round(Object.values(u.scores).reduce((a,b)=>a+b,0) / completed) : 0;
+                
+                return (
+                  <tr key={u.id} className="hover:bg-slate-800/20 transition-colors">
+                    <td className="p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 font-semibold border border-blue-500/20">
+                          {u.name.charAt(0)}
+                        </div>
+                        <div>
+                          <div className="font-medium text-white">{u.name}</div>
+                          <div className="text-sm text-slate-500">{u.email}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="p-4 text-slate-400 text-sm">{u.joined}</td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-2">
+                        <div className="w-full bg-slate-800 rounded-full h-2 max-w-[100px]">
+                          <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${(completed/EXAM_MODULES.length)*100}%` }}></div>
+                        </div>
+                        <span className="text-sm text-slate-400">{completed}/{EXAM_MODULES.length}</span>
+                      </div>
+                    </td>
+                    <td className="p-4">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${avgScore >= 80 ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : avgScore >= 60 ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-slate-800 text-slate-400 border-slate-700'}`}>
+                        {avgScore}%
+                      </span>
+                    </td>
+                    <td className="p-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button 
+                          onClick={() => setEditingUser(u)}
+                          className="p-2 text-slate-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors"
+                          title="Edit Password"
+                        >
+                          <Edit3 className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(u.id)}
+                          className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                          title="Delete User"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+              {users.length === 0 && (
+                <tr>
+                  <td colSpan="5" className="p-8 text-center text-slate-500">No students found.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
 };
 
-const App = () => {
+
+// --- MAIN APP COMPONENT ---
+
+export default function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [toast, setToast] = useState(null);
+  
+  // Navigation State
+  const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard', 'exam', 'admin', 'revision'
+  const [activeModule, setActiveModule] = useState(null);
+
+  const showToast = (message, type = 'info') => {
+    setToast({ message, type, id: Date.now() });
+    setTimeout(() => setToast(null), 3000);
+  };
 
   const login = async (email, password) => {
-    setLoading(true);
-    setError(null);
+    setLoading(true); setError(null);
     try {
       const res = await MockBackendService.login(email, password);
       setUser(res.user);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
+      setCurrentView('dashboard');
+    } catch (e) { setError(e.message); } 
+    finally { setLoading(false); }
   };
 
   const register = async (name, email, password) => {
-    setLoading(true);
-    setError(null);
+    setLoading(true); setError(null);
     try {
       const res = await MockBackendService.register(name, email, password);
       setUser(res.user);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
+      setCurrentView('dashboard');
+    } catch (e) { setError(e.message); } 
+    finally { setLoading(false); }
+  };
+
+  const logout = () => {
+    setUser(null);
+    setCurrentView('dashboard');
+    setActiveModule(null);
+  };
+
+  const startExam = (moduleId) => {
+    setActiveModule(moduleId);
+    setCurrentView('exam');
+  };
+
+  const handleExamComplete = async (score) => {
+    try {
+      const updatedUser = await MockBackendService.updateScore(user.id, activeModule, score);
+      setUser(updatedUser);
+      setCurrentView('dashboard');
+      setActiveModule(null);
+      showToast(`Exam completed! Score: ${score}%`, 'success');
+    } catch(e) {
+      showToast("Error saving score", "error");
     }
   };
 
-  return (
-    <AuthContext.Provider value={{ user, login, register, logout: () => setUser(null), loading, error, clearError: () => setError(null) }}>
-      <ToastContext.Provider value={() => {}}>
-        <style>{`
-          @keyframes slide-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-          .animate-slide-up { animation: slide-up 0.5s ease-out forwards; }
-          .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-          .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
-          .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
-          .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.4); }
-        `}</style>
-        <MainController />
-      </ToastContext.Provider>
-    </AuthContext.Provider>
-  );
-};
+  // Auth Guard
+  if (!user) {
+    return (
+      <AuthContext.Provider value={{ login, register, loading, error, clearError: () => setError(null) }}>
+        <AuthScreen />
+      </AuthContext.Provider>
+    );
+  }
 
-export default App;
+  return (
+    <ToastContext.Provider value={showToast}>
+      <style>{`
+        @keyframes slide-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slide-up { animation: slide-up 0.4s ease-out forwards; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+      `}</style>
+      
+      <div className="min-h-screen bg-[#0A0F1C] text-slate-200 font-sans custom-scrollbar selection:bg-blue-500/30">
+        
+        {/* Navbar */}
+        {currentView !== 'exam' && (
+          <nav className="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between h-16 items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <Brain className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <span className="font-bold text-lg text-white tracking-tight hidden sm:block">Enterprise Exam Platform</span>
+                    <span className="text-xs text-blue-400 font-medium hidden sm:block">v10.2</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  {user.role === 'admin' && (
+                    <button 
+                      onClick={() => setCurrentView(currentView === 'admin' ? 'dashboard' : 'admin')}
+                      className={`px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors ${currentView === 'admin' ? 'bg-blue-500 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}
+                    >
+                      <Shield className="w-4 h-4" />
+                      Admin Panel
+                    </button>
+                  )}
+                  
+                  <div className="h-8 w-px bg-slate-800 mx-2 hidden sm:block"></div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="text-right hidden sm:block">
+                      <div className="text-sm font-medium text-white">{user.name}</div>
+                      <div className="text-xs text-slate-400 capitalize">{user.role}</div>
+                    </div>
+                    <div className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 font-medium">
+                      {user.name.charAt(0)}
+                    </div>
+                    <button onClick={logout} className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors" title="Sign Out">
+                      <LogOut className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </nav>
+        )}
+
+        {/* Main Content Area */}
+        <main className={currentView !== 'exam' ? "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" : ""}>
+          {currentView === 'dashboard' && (
+            <div className="animate-slide-up space-y-8">
+              
+              {/* Welcome Banner */}
+              <div className="bg-gradient-to-r from-blue-900/40 to-indigo-900/40 border border-blue-500/20 rounded-3xl p-8 relative overflow-hidden">
+                <div className="absolute right-0 top-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+                <div className="relative z-10 max-w-2xl">
+                  <h1 className="text-3xl font-bold text-white mb-3">Welcome back, {user.name.split(' ')[0]}! 👋</h1>
+                  <p className="text-blue-200/80 text-lg leading-relaxed mb-6">
+                    Continue your learning journey. You have completed {Object.keys(user.scores).length} out of {EXAM_MODULES.length} modules. New Agentic Workflow module is now live!
+                  </p>
+                  <div className="flex gap-4">
+                    <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-700 rounded-xl px-5 py-3 flex items-center gap-3">
+                      <Award className="w-6 h-6 text-amber-400" />
+                      <div>
+                        <div className="text-sm text-slate-400">Average Score</div>
+                        <div className="text-lg font-bold text-white">
+                          {Object.keys(user.scores).length > 0 
+                            ? Math.round(Object.values(user.scores).reduce((a,b)=>a+b,0)/Object.keys(user.scores).length) + '%'
+                            : 'N/A'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Revision Hub Banner */}
+              <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-6 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 hover:border-slate-700 transition-colors">
+                <div className="flex items-center gap-5 relative z-10">
+                   <div className="w-14 h-14 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-2xl flex items-center justify-center shrink-0">
+                     <BookOpen className="w-7 h-7" />
+                   </div>
+                   <div>
+                     <h3 className="text-xl font-bold text-white mb-1">Custom Revision Hub</h3>
+                     <p className="text-slate-400 text-sm">Upload any Question Bank (CSV) to generate an interactive study module and metrics dashboard.</p>
+                   </div>
+                </div>
+                <Button onClick={() => setCurrentView('revision')} icon={UploadCloud} className="shrink-0 w-full md:w-auto relative z-10">
+                  Open Revision Hub
+                </Button>
+              </div>
+
+              {/* Modules Grid */}
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-semibold text-white">Available Certifications</h2>
+                  <div className="flex gap-2">
+                    <button className="p-2 bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 transition"><Filter className="w-4 h-4" /></button>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {EXAM_MODULES.map((mod, idx) => {
+                    const score = user.scores[mod.id];
+                    const isCompleted = score !== undefined;
+                    
+                    return (
+                      <div key={mod.id} className="group bg-slate-900/50 border border-slate-800 rounded-2xl p-6 hover:border-slate-600 hover:bg-slate-800/50 transition-all duration-300 relative overflow-hidden flex flex-col h-full" style={{ animationDelay: `${idx * 50}ms` }}>
+                        
+                        {mod.id === 'genai_llm' && (
+                          <div className="absolute top-4 right-4 bg-purple-500/20 text-purple-400 text-xs font-bold px-2.5 py-1 rounded-full border border-purple-500/30">
+                            NEW
+                          </div>
+                        )}
+                        
+                        <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 ${mod.bg} ${mod.color}`}>
+                          <mod.icon className="w-7 h-7" />
+                        </div>
+                        
+                        <h3 className="text-xl font-bold text-white mb-2">{mod.title}</h3>
+                        <p className="text-slate-400 text-sm mb-6 flex-grow">{mod.description}</p>
+                        
+                        <div className="flex items-center justify-between mt-auto">
+                          <div className="flex flex-col gap-1">
+                            <div className="flex items-center text-xs text-slate-500 gap-1.5"><ListFilter className="w-3.5 h-3.5"/> {mod.total} Questions</div>
+                            <div className="flex items-center text-xs text-slate-500 gap-1.5"><Clock className="w-3.5 h-3.5"/> {mod.time} Mins</div>
+                          </div>
+                          
+                          {isCompleted ? (
+                            <div className="text-right">
+                              <div className="text-xs text-emerald-400/80 mb-1 font-medium">Completed</div>
+                              <div className={`text-xl font-bold ${score >= 80 ? 'text-emerald-400' : 'text-blue-400'}`}>{score}%</div>
+                            </div>
+                          ) : (
+                            <Button variant="secondary" onClick={() => startExam(mod.id)} className="group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-500">
+                              Start <ChevronRight className="w-4 h-4 ml-1 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                            </Button>
+                          )}
+                        </div>
+                        
+                        {/* Progress Bar Bottom */}
+                        {isCompleted && (
+                          <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-800">
+                            <div className={`h-full ${score >= 80 ? 'bg-emerald-500' : 'bg-blue-500'}`} style={{ width: `${score}%` }}></div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+            </div>
+          )}
+
+          {currentView === 'admin' && user.role === 'admin' && <AdminPanel />}
+          
+          {currentView === 'exam' && activeModule && (
+            <ExamEngine 
+              moduleId={activeModule} 
+              onComplete={handleExamComplete} 
+              onExit={() => { setCurrentView('dashboard'); setActiveModule(null); }} 
+            />
+          )}
+
+          {currentView === 'revision' && (
+            <RevisionModule onExit={() => setCurrentView('dashboard')} />
+          )}
+
+        </main>
+
+        {/* Global Toast */}
+        {toast && (
+          <div className="fixed bottom-6 right-6 z-50 animate-slide-up">
+            <div className={`px-6 py-4 rounded-xl shadow-xl flex items-center gap-3 border ${
+              toast.type === 'success' ? 'bg-emerald-900/90 border-emerald-500/50 text-emerald-200' : 
+              toast.type === 'error' ? 'bg-red-900/90 border-red-500/50 text-red-200' : 
+              'bg-slate-800 border-slate-700 text-slate-200'
+            }`}>
+              {toast.type === 'success' && <CheckCircle className="w-5 h-5 text-emerald-400" />}
+              {toast.type === 'error' && <AlertCircle className="w-5 h-5 text-red-400" />}
+              <span className="font-medium">{toast.message}</span>
+            </div>
+          </div>
+        )}
+      </div>
+    </ToastContext.Provider>
+  );
+}
